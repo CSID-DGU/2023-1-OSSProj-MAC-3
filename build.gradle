@@ -21,6 +21,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	runtimeOnly 'com.mysql:mysql-connector-j' //스프링 버전 업데이트 되면서 의존성 코드가 변경됨
 
 	//validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -32,6 +33,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+	implementation 'org.springframework:spring-test'
+
+	//Configuration 의존성
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
 
 
 
@@ -39,7 +45,8 @@ dependencies {
 	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
 
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
