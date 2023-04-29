@@ -30,4 +30,9 @@ public class UserController {
         }
         return userService.getResponseEntity(userDto);
     }
+
+    @PostMapping("/signin")
+    public ResponseEntity<?> authenticateUser(@RequestBody UserDto userDto) {
+        return userService.getResponseEntity(userDto);
+    }
 }
