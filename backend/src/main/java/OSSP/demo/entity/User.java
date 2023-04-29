@@ -1,42 +1,35 @@
 package OSSP.demo.entity;
 
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
-@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Data
+@Table(name = "user")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long user_Id;
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
+    private String id;
 
-    @Column(nullable = false, length = 10, unique = true)
-    private int student_Id;
+    @Column(name= "studentid", nullable = false, length = 10, unique = true)
+    private String studentId;
 
-    @Column(nullable = false, length = 20, unique = false)
+    @Column(nullable = false, length = 20)
     private String dept;
 
-    @Column(nullable = false, length = 10, unique = false)
+    @Column(nullable = false, length = 10)
     private String name;
 
-    @Column(length = 50)
+    @Column(length = 100)
     private String password;
-
-    @Builder
-    public User(String name, String password, String dept, int student_Id){
-        this.name = name;
-        this.password = password;
-        this.dept = dept;
-        this.student_Id = student_Id;
-    }
-
-
 }
