@@ -13,6 +13,6 @@ import java.util.Map;
 @AllArgsConstructor
 @Data
 public class ResponseDto<T> {
-    private String error;
+    private Map<String, String> error;
     private List<T> data;
 }
