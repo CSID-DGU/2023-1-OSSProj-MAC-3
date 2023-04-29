@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -25,6 +27,9 @@ public class User {
     @Column(nullable = false, length = 10, unique = false)
     private String name;
 
+    @OneToMany(mappedBy = "user")
+    private List<Member> members = new ArrayList<>();
+
     @Column(length = 50)
     private String password;
 
@@ -35,6 +40,4 @@ public class User {
         this.dept = dept;
         this.studentId = studentId;
     }
-
-
 }
