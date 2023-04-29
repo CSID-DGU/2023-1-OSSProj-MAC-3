@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="cb1b19fe-c5b1-491d-87ad-e89e7df2b694" name="Changes" comment="[23.04.26, pil hwan] (Add) FIle 업로드 서비스 로직 추가">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/OSSP/demo/S3Component.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/backend/gradlew" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/backend/gradlew.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/OSSP/demo/LmsDemoApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/OSSP/demo/LmsDemoApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/OSSP/demo/controller/FileDownloadController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/OSSP/demo/controller/FileDownloadController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/OSSP/demo/controller/FileUploadController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/OSSP/demo/controller/FileUploadController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/OSSP/demo/repository/FileRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/OSSP/demo/repository/NoticeRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/OSSP/demo/service/AWSS3UploadService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/OSSP/demo/service/AWSS3UploadService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/OSSP/demo/service/FileUploadService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/OSSP/demo/service/FileUploadService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/OSSP/demo/service/S3Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/OSSP/demo/service/S3Service.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/OSSP/demo/service/UploadService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/OSSP/demo/service/UploadService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/static/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/OSSP/demo/LmsDemoApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/OSSP/demo/LmsDemoApplicationTests.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="hwan" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2ORtBzv4vxvxKslPloP1HKXl7h8" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/ran/Desktop/동국대학교/3학년/오픈소스 플젝/MAC OSSP/demo/build.gradle&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;spring.boot&quot;,
+    &quot;spring.configuration.checksum&quot;: &quot;9de0862494cc3aa211be7c76dc6b547b&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="OSSP.demo.service" />
+      <recent name="OSSP.demo" />
+      <recent name="OSSP.demo.entity.dto" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/backend" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="LmsDemoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="demo.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="OSSP.demo.LmsDemoApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="cb1b19fe-c5b1-491d-87ad-e89e7df2b694" name="Changes" comment="" />
+      <created>1681535091689</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1681535091689</updated>
+      <workItem from="1681535094721" duration="8022000" />
+      <workItem from="1681705906079" duration="398000" />
+      <workItem from="1682007864426" duration="2555000" />
+      <workItem from="1682054250590" duration="1557000" />
+      <workItem from="1682055824414" duration="5023000" />
+      <workItem from="1682294224477" duration="12735000" />
+      <workItem from="1682337824803" duration="54000" />
+      <workItem from="1682338987192" duration="636000" />
+      <workItem from="1682342834707" duration="2086000" />
+      <workItem from="1682431040286" duration="6304000" />
+      <workItem from="1682441365235" duration="1810000" />
+    </task>
+    <task id="LOCAL-00001" summary="[23.04.26, pil hwan] (Add) AWS RDS 연결정보 추가">
+      <created>1682436478664</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1682436478665</updated>
+    </task>
+    <task id="LOCAL-00002" summary="[23.04.26, pil hwan] (Add) FIle 업로드 서비스 로직 추가">
+      <created>1682436572564</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1682436572565</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="application.yml" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="hwan" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="[23.04.26, pil hwan] (Add) AWS RDS 연결정보 추가" />
+    <MESSAGE value="[23.04.26, pil hwan] (Add) FIle 업로드 서비스 로직 추가" />
+    <option name="LAST_COMMIT_MESSAGE" value="[23.04.26, pil hwan] (Add) FIle 업로드 서비스 로직 추가" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

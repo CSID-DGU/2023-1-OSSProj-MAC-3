@@ -1,0 +1,398 @@
+Index: build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/build.gradle b/build.gradle
+--- a/build.gradle	
++++ b/build.gradle	
+@@ -21,6 +21,7 @@
+ dependencies {
+ 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+ 	implementation 'org.springframework.boot:spring-boot-starter-web'
++	runtimeOnly 'com.mysql:mysql-connector-j' //스프링 버전 업데이트 되면서 의존성 코드가 변경됨
+ 
+ 	//validation
+ 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+@@ -32,6 +33,11 @@
+ 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+ 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+ 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
++	implementation 'org.springframework:spring-test'
++
++	//Configuration 의존성
++	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
++
+ 
+ 
+ 
+@@ -39,7 +45,8 @@
+ 	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
+ 
+ 	compileOnly 'org.projectlombok:lombok'
+-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
++
++
+ 	annotationProcessor 'org.projectlombok:lombok'
+ 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+ 	testImplementation 'org.springframework.security:spring-security-test'
+Index: src/main/java/OSSP/demo/controller/FileUploadController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/OSSP/demo/controller/FileUploadController.java b/src/main/java/OSSP/demo/controller/FileUploadController.java
+--- a/src/main/java/OSSP/demo/controller/FileUploadController.java	
++++ b/src/main/java/OSSP/demo/controller/FileUploadController.java	
+@@ -1,9 +1,8 @@
+ package OSSP.demo.controller;
+ 
+-import OSSP.demo.service.FileUploadService;
++import OSSP.demo.service.FileService.FileUploadService;
+ import lombok.RequiredArgsConstructor;
+ import org.springframework.web.bind.annotation.PostMapping;
+-import org.springframework.web.bind.annotation.RequestParam;
+ import org.springframework.web.bind.annotation.RequestPart;
+ import org.springframework.web.bind.annotation.RestController;
+ import org.springframework.web.multipart.MultipartFile;
+@@ -14,8 +13,8 @@
+ 
+     private final FileUploadService fileUploadService;
+ 
+-//    @PostMapping("/upload")
+-////    public String uploadFile(@RequestPart MultipartFile multipartFile){
+-////        return fileUploadService.upload
+-////    }
++    @PostMapping("/upload")
++    public String uploadFile(@RequestPart MultipartFile multipartFile){
++        return fileUploadService.upload(multipartFile);
++    }
+ }
+Index: src/main/java/OSSP/demo/service/FileUploadService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/OSSP/demo/service/FileUploadService.java b/src/main/java/OSSP/demo/service/FileUploadService.java
+deleted file mode 100644
+--- a/src/main/java/OSSP/demo/service/FileUploadService.java	
++++ /dev/null	
+@@ -1,4 +0,0 @@
+-package OSSP.demo.service;
+-
+-public class FileUploadService {
+-}
+Index: src/main/java/OSSP/demo/service/S3Service.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/OSSP/demo/service/S3Service.java b/src/main/java/OSSP/demo/service/S3Service.java
+deleted file mode 100644
+--- a/src/main/java/OSSP/demo/service/S3Service.java	
++++ /dev/null	
+@@ -1,20 +0,0 @@
+-package OSSP.demo.service;
+-
+-import com.amazonaws.services.s3.AmazonS3;
+-import lombok.NoArgsConstructor;
+-import org.springframework.beans.factory.annotation.Value;
+-import org.springframework.stereotype.Service;
+-
+-@Service
+-@NoArgsConstructor //기본생성자를 만듦으로써 외부 생성을 막아둠.
+-public class S3Service {
+-    private AmazonS3 s3Client;
+-
+-    @Value("${cloud.aws.credentials.bucket}") //@Value의 패키지가 lombok이 아닌 beans.factory 여야한다.
+-    private String bucketName;
+-
+-
+-
+-
+-}
+-
+Index: src/main/java/OSSP/demo/S3Component.java
+===================================================================
+diff --git a/src/main/java/OSSP/demo/S3Component.java b/src/main/java/OSSP/demo/S3Component.java
+new file mode 100644
+--- /dev/null	
++++ b/src/main/java/OSSP/demo/S3Component.java	
+@@ -0,0 +1,15 @@
++package OSSP.demo;
++
++import lombok.Getter;
++import lombok.Setter;
++import org.springframework.boot.context.properties.ConfigurationProperties;
++import org.springframework.stereotype.Component;
++
++@Getter
++@Setter
++@ConfigurationProperties(prefix = "cloud.aws.s3")
++@Component
++public class S3Component {
++    private String bucket;
++
++}
+Index: src/main/java/OSSP/demo/repository/UserRepository.java
+===================================================================
+diff --git a/src/main/java/OSSP/demo/repository/UserRepository.java b/src/main/java/OSSP/demo/repository/UserRepository.java
+new file mode 100644
+--- /dev/null	
++++ b/src/main/java/OSSP/demo/repository/UserRepository.java	
+@@ -0,0 +1,9 @@
++package OSSP.demo.repository;
++
++import OSSP.demo.entity.User;
++import org.springframework.data.jpa.repository.JpaRepository;
++import org.springframework.stereotype.Repository;
++
++@Repository
++public interface UserRepository extends JpaRepository<User, Long> {
++}
+Index: src/main/java/OSSP/demo/repository/TeamRepository.java
+===================================================================
+diff --git a/src/main/java/OSSP/demo/repository/TeamRepository.java b/src/main/java/OSSP/demo/repository/TeamRepository.java
+new file mode 100644
+--- /dev/null	
++++ b/src/main/java/OSSP/demo/repository/TeamRepository.java	
+@@ -0,0 +1,9 @@
++package OSSP.demo.repository;
++
++import OSSP.demo.entity.Team;
++import org.springframework.data.jpa.repository.JpaRepository;
++import org.springframework.stereotype.Repository;
++
++@Repository
++public interface TeamRepository extends JpaRepository<Team, Long> {
++}
+Index: src/main/java/OSSP/demo/repository/MemberRepository.java
+===================================================================
+diff --git a/src/main/java/OSSP/demo/repository/MemberRepository.java b/src/main/java/OSSP/demo/repository/MemberRepository.java
+new file mode 100644
+--- /dev/null	
++++ b/src/main/java/OSSP/demo/repository/MemberRepository.java	
+@@ -0,0 +1,9 @@
++package OSSP.demo.repository;
++
++import OSSP.demo.entity.Member;
++import org.springframework.data.jpa.repository.JpaRepository;
++import org.springframework.stereotype.Repository;
++
++@Repository
++public interface MemberRepository extends JpaRepository<Member, Long> {
++}
+Index: src/main/java/OSSP/demo/service/FileService/AWSS3UploadService.java
+===================================================================
+diff --git a/src/main/java/OSSP/demo/service/FileService/AWSS3UploadService.java b/src/main/java/OSSP/demo/service/FileService/AWSS3UploadService.java
+new file mode 100644
+--- /dev/null	
++++ b/src/main/java/OSSP/demo/service/FileService/AWSS3UploadService.java	
+@@ -0,0 +1,26 @@
++package OSSP.demo.service.FileService;
++
++import OSSP.demo.S3Component;
++import com.amazonaws.services.s3.AmazonS3;
++import com.amazonaws.services.s3.model.ObjectMetadata;
++import lombok.RequiredArgsConstructor;
++import org.springframework.stereotype.Component;
++
++import java.io.InputStream;
++
++@RequiredArgsConstructor
++@Component
++public class AWSS3UploadService implements UploadService{
++    private final AmazonS3 amazonS3;
++    private final S3Component component;
++
++    @Override
++    public void uploadFile(InputStream inputStream, ObjectMetadata objectMetadata, String fileName) {
++
++    }
++
++    @Override
++    public String getFileUrl(String fileName) {
++        return null;
++    }
++}
+Index: src/main/java/OSSP/demo/service/FileService/UploadService.java
+===================================================================
+diff --git a/src/main/java/OSSP/demo/service/FileService/UploadService.java b/src/main/java/OSSP/demo/service/FileService/UploadService.java
+new file mode 100644
+--- /dev/null	
++++ b/src/main/java/OSSP/demo/service/FileService/UploadService.java	
+@@ -0,0 +1,12 @@
++package OSSP.demo.service.FileService;
++
++import com.amazonaws.services.s3.model.ObjectMetadata;
++
++import java.io.InputStream;
++
++public interface UploadService {
++
++    void uploadFile(InputStream inputStream, ObjectMetadata objectMetadata, String fileName);
++
++    String getFileUrl(String fileName);
++}
+Index: src/main/java/OSSP/demo/repository/FileRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/OSSP/demo/repository/FileRepository.java b/src/main/java/OSSP/demo/repository/FileRepository.java
+--- a/src/main/java/OSSP/demo/repository/FileRepository.java	
++++ b/src/main/java/OSSP/demo/repository/FileRepository.java	
+@@ -1,9 +1,9 @@
+ package OSSP.demo.repository;
+ 
+-import OSSP.demo.entity.File;
++import OSSP.demo.entity.FileItem;
+ import org.springframework.data.jpa.repository.JpaRepository;
+ import org.springframework.stereotype.Repository;
+ 
+ @Repository
+-public interface FileRepository extends JpaRepository<File, Long> {
++public interface FileRepository extends JpaRepository<FileItem, Long> {
+ }
+Index: src/main/java/OSSP/demo/service/UserService/UserService.java
+===================================================================
+diff --git a/src/main/java/OSSP/demo/service/UserService/UserService.java b/src/main/java/OSSP/demo/service/UserService/UserService.java
+new file mode 100644
+--- /dev/null	
++++ b/src/main/java/OSSP/demo/service/UserService/UserService.java	
+@@ -0,0 +1,27 @@
++package OSSP.demo.service.UserService;
++
++import OSSP.demo.entity.User;
++import OSSP.demo.repository.UserRepository;
++import lombok.RequiredArgsConstructor;
++import org.springframework.stereotype.Service;
++import org.springframework.transaction.annotation.Transactional;
++
++import java.util.List;
++import java.util.Optional;
++
++@Service
++@RequiredArgsConstructor
++@Transactional(readOnly = true)
++public class UserService {
++    private final UserRepository userRepository;
++
++
++    public User findById(Long userId){
++        return userRepository.findById(userId).get(); //예외 처리 해주기
++    }
++
++    public List<User> findUser(){
++        return userRepository.findAll();
++    }
++
++}
+Index: src/main/java/OSSP/demo/service/FileService/FileUploadService.java
+===================================================================
+diff --git a/src/main/java/OSSP/demo/service/FileService/FileUploadService.java b/src/main/java/OSSP/demo/service/FileService/FileUploadService.java
+new file mode 100644
+--- /dev/null	
++++ b/src/main/java/OSSP/demo/service/FileService/FileUploadService.java	
+@@ -0,0 +1,48 @@
++package OSSP.demo.service.FileService;
++
++import OSSP.demo.repository.FileRepository;
++import com.amazonaws.services.s3.model.ObjectMetadata;
++import lombok.RequiredArgsConstructor;
++import org.springframework.stereotype.Service;
++import org.springframework.web.multipart.MultipartFile;
++
++import java.io.IOException;
++import java.io.InputStream;
++import java.util.UUID;
++
++@Service
++@RequiredArgsConstructor
++public class FileUploadService {
++
++    private final UploadService s3Service;
++    private final FileRepository fileRepository;
++
++
++
++    public String upload(MultipartFile file) {
++        String fileName = createFileName(file.getOriginalFilename());
++        ObjectMetadata objectMetadata = new ObjectMetadata();
++        objectMetadata.setContentLength(file.getSize());
++        objectMetadata.setContentType(file.getContentType());
++        try(InputStream inputStream = file.getInputStream()){
++            s3Service.uploadFile(inputStream, objectMetadata, fileName);
++        }catch (IOException e){
++            throw new IllegalArgumentException(String.format("파일 변환중 에러가 발생했습니다. (%s)", file.getOriginalFilename()));
++        }
++
++        return s3Service.getFileUrl(fileName);
++
++    }
++
++    private String createFileName(String originalFilename) {
++        return UUID.randomUUID().toString().concat(getFileExtension(originalFilename));
++    }
++
++    private String getFileExtension(String fileName) {
++        try {
++            return fileName.substring(fileName.lastIndexOf("."));
++        }catch (StringIndexOutOfBoundsException e){
++            throw new IllegalArgumentException(String.format("잘못된 형식의 파일 입니다. (%s) ", fileName));
++        }
++    }
++}
+Index: src/main/java/OSSP/demo/service/MemberService/MemberFindService.java
+===================================================================
+diff --git a/src/main/java/OSSP/demo/service/MemberService/MemberFindService.java b/src/main/java/OSSP/demo/service/MemberService/MemberFindService.java
+new file mode 100644
+--- /dev/null	
++++ b/src/main/java/OSSP/demo/service/MemberService/MemberFindService.java	
+@@ -0,0 +1,10 @@
++package OSSP.demo.service.MemberService;
++
++public class MemberFindService {
++
++    //팀조회
++
++    //유저 조회
++
++
++}
+Index: LICENSE
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LICENSE b/LICENSE
+--- a/LICENSE	
++++ b/LICENSE	
+@@ -286,8 +286,8 @@
+ free software which everyone can redistribute and change under these terms.
+ 
+   To do so, attach the following notices to the program.  It is safest
+-to attach them to the start of each source file to most effectively
+-convey the exclusion of warranty; and each file should have at least
++to attach them to the start of each source fileItem to most effectively
++convey the exclusion of warranty; and each fileItem should have at least
+ the "copyright" line and a pointer to where the full notice is found.
+ 
+     <one line to give the program's name and a brief idea of what it does.>
+Index: gradlew.bat
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/gradlew.bat b/gradlew.bat
+--- a/gradlew.bat	
++++ b/gradlew.bat	
+@@ -2,7 +2,7 @@
+ @rem Copyright 2015 the original author or authors.
+ @rem
+ @rem Licensed under the Apache License, Version 2.0 (the "License");
+-@rem you may not use this file except in compliance with the License.
++@rem you may not use this fileItem except in compliance with the License.
+ @rem You may obtain a copy of the License at
+ @rem
+ @rem      https://www.apache.org/licenses/LICENSE-2.0
