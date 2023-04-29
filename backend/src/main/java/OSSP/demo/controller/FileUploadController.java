@@ -13,7 +13,7 @@ public class FileUploadController {
 
     private final FileUploadService fileUploadService;
 
-    @PostMapping("/api/v1/upload")
+    @PostMapping("/upload")
     public String uploadFile(@RequestPart MultipartFile file){
         return fileUploadService.uploadImage(file);
     }
