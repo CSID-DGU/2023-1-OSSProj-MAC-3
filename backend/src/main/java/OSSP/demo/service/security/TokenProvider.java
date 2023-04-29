@@ -31,4 +31,13 @@ public class TokenProvider {
                 .getBody();
         return claims.getSubject();
     }
+
+    public boolean validateTimeToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+        Date expirationDate = claims.getExpiration();
+        return expirationDate.after(new Date());
+    }
 }
