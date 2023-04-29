@@ -5,9 +5,13 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
+@Slf4j
+@Service
 public class TokenProvider {
     @Value("${jwt.secretKey}")
     private String secretKey;
