@@ -4,6 +4,7 @@ import OSSP.demo.entity.User;
 import OSSP.demo.model.ResponseDto;
 import OSSP.demo.model.UserDto;
 import OSSP.demo.repository.UserRepository;
+import OSSP.demo.service.security.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TokenProvider tokenProvider;
 
     private PasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -94,9 +98,11 @@ public class UserService {
             ResponseDto responseErrorDto = getResponseErrorDto(message);
             return ResponseEntity.badRequest().body(responseErrorDto);
         }
-        final UserDto responseUserDto = getResponseUserDto(userDto, user);
+        final String token = tokenProvider.create(user);
+        final UserDto responseUserDto = getResponseUserDto(userDto, user, token);
         return ResponseEntity.ok().body(responseUserDto);
     }
+
 
     private static ResponseDto getResponseErrorDto(String message) {
         Map<String, String> loginResult = new HashMap<>();
@@ -105,10 +111,11 @@ public class UserService {
         return responseDto;
     }
 
-    private static UserDto getResponseUserDto(UserDto userDto, User user) {
+    private static UserDto getResponseUserDto(UserDto userDto, User user, String token) {
         final UserDto responseUserDto = userDto.builder()
                 .id(user.getId())
                 .studentId(user.getStudentId())
+                .token(token)
                 .name(user.getName())
                 .dept(user.getDept())
                 .build();
