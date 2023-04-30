@@ -1,43 +1,38 @@
 package OSSP.demo.entity;
 
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
-@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Data
+@Table(name = "user")
 public class User {
 
+    //system uuid로 중복 없는 id 생성
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
+    private String id;
 
+    // 고유한 키로 학번 사용
     @Column(nullable = false, length = 10, unique = true)
-    private int studentId;
+    private String studentId;
 
-    @Column(nullable = false, length = 20, unique = false)
+    @Column(nullable = false, length = 20)
     private String dept;
 
-    @Column(nullable = false, length = 10, unique = false)
+    @Column(nullable = false, length = 10)
     private String name;
 
-    @OneToMany(mappedBy = "user")
-    private List<Member> members = new ArrayList<>();
-
-    @Column(length = 50)
+    // 암호화된 비밀번호 저장하기 위해 길이를 100으로 설정
+    @Column(length = 100)
     private String password;
-
-    @Builder
-    public User(String name, String password, String dept, int studentId){
-        this.name = name;
-        this.password = password;
-        this.dept = dept;
-        this.studentId = studentId;
-    }
 }
