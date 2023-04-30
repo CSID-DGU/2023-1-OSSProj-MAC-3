@@ -1,10 +1,9 @@
 package OSSP.demo.service.upload;
 
-
-import OSSP.demo.dto.FileInfoReq;
 import OSSP.demo.entity.File;
 import OSSP.demo.entity.FileVersion;
 import OSSP.demo.entity.Member;
+import OSSP.demo.model.FileInfoReq;
 import OSSP.demo.repository.FileRepository;
 import OSSP.demo.repository.FileVersionRepository;
 import OSSP.demo.service.find.MemberFindService;

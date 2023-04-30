@@ -1,7 +1,7 @@
 package OSSP.demo.controller;
 
-//import OSSP.demo.dto.FileInfoReq;
-import OSSP.demo.dto.FileInfoReq;
+
+import OSSP.demo.model.FileInfoReq;
 import OSSP.demo.service.upload.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
