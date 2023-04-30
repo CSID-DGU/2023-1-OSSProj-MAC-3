@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
+//global response dto, error나 data를 담음
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

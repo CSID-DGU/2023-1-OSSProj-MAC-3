@@ -3,6 +3,7 @@ package OSSP.demo.entity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+// 회원가입 검증 위한 학번 데이터
 @Getter
 @RequiredArgsConstructor
 public enum StudentId {

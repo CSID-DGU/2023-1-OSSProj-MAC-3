@@ -22,6 +22,7 @@ public class UserDto {
     private String name;
     private String dept;
 
+    //회원가입시 필요한 정보 검증
     @Data
     @Builder
     @NoArgsConstructor
@@ -47,12 +48,14 @@ public class UserDto {
         @NotBlank(message = "학과를 선택해주세요.")
         private String dept;
 
+        //학번이 범위 내에 있는지 검증
         @AssertTrue(message = "학번이 등록되어있지 않습니다.")
         private boolean isValidStudentId() {
             int studentIdValue = Integer.parseInt(studentId);
             return studentIdValue >= studentIdData.STUDENT_ID_MIN.getValue() && studentIdValue <= studentIdData.STUDENT_ID_MAX.getValue();
         }
 
+        //학과가 목록에 있는지 검증
         @AssertTrue(message = "학과를 입력해주세요.")
         public boolean isDeptValid() {
             return deptData.getDeptList().contains(dept);

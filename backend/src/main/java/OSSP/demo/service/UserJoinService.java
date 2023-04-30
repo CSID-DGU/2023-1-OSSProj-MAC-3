@@ -33,14 +33,17 @@ public class UserJoinService {
                 .password(encoder.encode(userDto.getPassword()))
                 .name(userDto.getName())
                 .dept(userDto.getDept())
-                .build();
-        User registerdUser;
+                .build(); // UserDto -> User
+        User registerdUser; // 회원가입 처리 후 결과를 받음
+        // 회원가입 처리
         try {
             registerdUser = join(user);
         } catch (IllegalArgumentException e) {
+            // 회원가입 실패 시, 예외 메시지를 받아서 ResponseDto에 담아 반환
             ResponseDto responseErrorDto = getResponseErrorDto(e);
             return ResponseEntity.badRequest().body(responseErrorDto);
         }
+        // 회원가입 성공 시, 회원 정보를 받아서 ResponseDto에 담아 반환
         UserDto responseUserDto = getResponseUserDto(registerdUser);
         return ResponseEntity.ok().body(responseUserDto);
     }
@@ -62,8 +65,10 @@ public class UserJoinService {
         return responseDto;
     }
 
-    @Transactional(readOnly = true)
+    // 유효성 검사
+    @Transactional(readOnly = true) // 읽기 전용 트랜잭션
     public Map<String, String> validateHandling(Errors errors) {
+        // 유효성 검사, 중복 검사에 실패한 필드 목록을 받음
         Map<String, String> validatorResult = new HashMap<>();
         for (FieldError error : errors.getFieldErrors()) {
             String validKeyName = String.format("valid_%s", error.getField());
@@ -72,11 +77,14 @@ public class UserJoinService {
         return validatorResult;
     }
 
+    // 회원가입 처리
     public User join(final User user) {
+        // 유효성 검사
         if (user == null || user.getStudentId() == null) {
             throw new IllegalArgumentException("유저 정보가 없습니다.");
         }
         final String studentId = user.getStudentId();
+        // 중복 검사
         if (userRepository.existsByStudentId(studentId)) {
             throw new IllegalArgumentException("이미 존재하는 학번입니다.");
         }
