@@ -1,6 +1,7 @@
 package OSSP.demo.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,4 +27,22 @@ public class File {
     @JoinColumn(name = "memberId")
     private Member member;
 
+
+    @Builder
+    public File (String fileName, Member member){
+        this.fileName=fileName;
+        this.member=member;
+    }
+
+
+    //== 연관관계 편의메서드 ==
+
+    public void setMember(Member member){
+        this.member = member;
+    }
+
+    public void addFileVersion(FileVersion fileVersion){
+        fileVersionList.add(fileVersion);
+        fileVersion.setFile(this);
+    }
 }
