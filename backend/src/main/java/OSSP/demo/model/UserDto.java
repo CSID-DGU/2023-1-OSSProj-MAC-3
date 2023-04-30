@@ -16,7 +16,7 @@ import javax.validation.constraints.Pattern;
 @AllArgsConstructor
 public class UserDto {
     private String token;
-    private String id;
+    private Long id;
     private String studentId;
     private String password;
     private String name;
@@ -32,7 +32,7 @@ public class UserDto {
         private StudentId studentIdData;
 
 
-        private String id;
+        private Long id;
 
         @NotBlank(message = "학번을 입력해주세요.")
         private String studentId;

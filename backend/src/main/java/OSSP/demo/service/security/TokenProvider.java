@@ -4,7 +4,7 @@ import OSSP.demo.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import java.util.Date;
 @Service
 public class TokenProvider {
     // application.yml에 설정한 jwt.secretKey를 가져옴
-    @Value("${jwt.secretKey}")
+    @Value("${jwt.secret}")
     private String secretKey;
 
     // 토큰 생성

@@ -1,38 +1,60 @@
 package OSSP.demo.entity;
 
-import lombok.AllArgsConstructor;
+<<<<<<< Updated upstream
+import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+=======
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+>>>>>>> Stashed changes
+import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Getter
 @Entity
+<<<<<<< Updated upstream
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+=======
 @Data
+@Getter
 @Table(name = "user")
+>>>>>>> Stashed changes
 public class User {
 
-    //system uuid로 중복 없는 id 생성
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+<<<<<<< Updated upstream
+    private Long userId;
+=======
+    private Long id;
+>>>>>>> Stashed changes
 
-    // 고유한 키로 학번 사용
     @Column(nullable = false, length = 10, unique = true)
-    private String studentId;
+    private int studentId;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = false)
     private String dept;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 10, unique = false)
     private String name;
 
-    // 암호화된 비밀번호 저장하기 위해 길이를 100으로 설정
-    @Column(length = 100)
+    @OneToMany(mappedBy = "user")
+    private List<Member> members = new ArrayList<>();
+
+    @Column(length = 50)
     private String password;
+
+    @Builder
+    public User(String name, String password, String dept, int studentId){
+        this.name = name;
+        this.password = password;
+        this.dept = dept;
+        this.studentId = studentId;
+    }
 }

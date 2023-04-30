@@ -36,19 +36,19 @@ public class Member {
         this.team = team;
     }
 
-    // ==연관관계 편의 메서드==
-    public void setUser(User user){
-        this.user=user;
-        user.getMembers().add(this);
-    }
-
-    public void setTeam(Team team){
-        this.team=team;
-        user.getMembers().add(this);
-    }
-
-    public void addFileItem(File file){
-        fileList.add(file);
-        file.setMember(this);
-    }
+//    // ==연관관계 편의 메서드==
+//    public void setUser(User user){
+//        this.user=user;
+//        user.getMembers().add(this);
+//    }
+//
+//    public void setTeam(Team team){
+//        this.team=team;
+//        user.getMembers().add(this);
+//    }
+//
+//    public void addFileItem(File file){
+//        fileList.add(file);
+//        file.setMember(this);
+//    }
 }
