@@ -1,6 +1,5 @@
 package OSSP.demo.entity;
 
-<<<<<<< Updated upstream
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,35 +7,23 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-=======
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
->>>>>>> Stashed changes
 import java.util.List;
 
 @Getter
 @Entity
-<<<<<<< Updated upstream
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-=======
 @Data
-@Getter
 @Table(name = "user")
->>>>>>> Stashed changes
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-<<<<<<< Updated upstream
-    private Long userId;
-=======
     private Long id;
->>>>>>> Stashed changes
+
 
     @Column(nullable = false, length = 10, unique = true)
-    private int studentId;
+    private String studentId;
 
     @Column(nullable = false, length = 20, unique = false)
     private String dept;
@@ -47,11 +34,11 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Member> members = new ArrayList<>();
 
-    @Column(length = 50)
+    @Column(length = 100)
     private String password;
 
     @Builder
-    public User(String name, String password, String dept, int studentId){
+    public User(String name, String password, String dept, String studentId){
         this.name = name;
         this.password = password;
         this.dept = dept;
