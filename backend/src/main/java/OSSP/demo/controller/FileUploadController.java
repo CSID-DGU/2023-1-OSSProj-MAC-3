@@ -1,7 +1,10 @@
 package OSSP.demo.controller;
 
-import OSSP.demo.service.FileUploadService;
+//import OSSP.demo.dto.FileInfoReq;
+import OSSP.demo.dto.FileInfoReq;
+import OSSP.demo.service.upload.FileUploadService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,8 +16,8 @@ public class FileUploadController {
 
     private final FileUploadService fileUploadService;
 
-    @PostMapping("/upload")
-    public String uploadFile(@RequestPart MultipartFile file){
-        return fileUploadService.uploadImage(file);
+    @PostMapping("/{memberId}/upload")
+    public String uploadFile(@PathVariable Long memberId, @RequestPart MultipartFile file, FileInfoReq fileInfoReq){
+        return fileUploadService.uploadImage(memberId, file, fileInfoReq);
     }
 }
