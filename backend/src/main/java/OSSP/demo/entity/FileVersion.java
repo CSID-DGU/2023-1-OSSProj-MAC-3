@@ -1,6 +1,7 @@
 package OSSP.demo.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +14,7 @@ public class FileVersion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long fileVersion;
+    private Long fileVersionId;
 
     private String commitMessage;
 
@@ -24,5 +25,15 @@ public class FileVersion {
     @JoinColumn(name = "fileId")
     private File file;
 
+    @Builder
+    public FileVersion(String commitMessage, String s3Url, File file){
+        this.commitMessage=commitMessage;
+        this.s3Url=s3Url;
+        this.file=file;
+    }
 
+    // ==연관관계 편의 메서드 ==
+    public void setFile(File file){
+        this.file = file;
+    }
 }
