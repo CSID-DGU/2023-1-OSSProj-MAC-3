@@ -23,7 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable() //기본 설정 사용 안함
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//세션 사용 안함
                 .and()
-                .authorizeRequests().antMatchers("/", "/auth/**", "/{memberId}/upload").permitAll()//해당 url은 인증 없이 접근 가능
+                .authorizeRequests().antMatchers("/", "/auth/**", "/{memberId}/upload", "/download/{fileId}/{fileVersionId}").permitAll()//해당 url은 인증 없이 접근 가능
                 .anyRequest().authenticated(); //그 외의 url은 인증 필요
         http.addFilterAfter(jwtAuthenticationFilter, CorsFilter.class); //jwtAuthenticationFilter를 CorsFilter 전에 추가
     }
