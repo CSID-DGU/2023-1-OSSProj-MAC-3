@@ -1,5 +1,6 @@
 package OSSP.demo.entity;
 
+import OSSP.demo.model.FileVersionDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,8 +33,8 @@ public class FileVersion {
         this.file=file;
     }
 
-    // ==연관관계 편의 메서드 ==
-    public void setFile(File file){
-        this.file = file;
-    }
+//    // ==연관관계 편의 메서드 ==
+//    public void setFile(File file){
+//        this.file = file;
+//    }
 }
