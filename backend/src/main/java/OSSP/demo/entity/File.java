@@ -18,9 +18,11 @@ public class File {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long fileId;
 
+    private String s3FileUrl;
+
     private String fileName;
 
-    @OneToMany(mappedBy = "file")
+    @OneToMany(mappedBy = "file", cascade = CascadeType.ALL)
     private List<FileVersion> fileVersionList = new ArrayList<>();
 
     @ManyToOne
@@ -29,9 +31,10 @@ public class File {
 
 
     @Builder
-    public File(String fileName, Member member) {
+    public File(String fileName, Member member, String s3FileUrl) {
         this.fileName = fileName;
         this.member = member;
+        this.s3FileUrl=s3FileUrl;
     }
 }
 
