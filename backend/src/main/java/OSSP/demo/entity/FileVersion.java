@@ -20,16 +20,16 @@ public class FileVersion {
     private String commitMessage;
 
     @Column(length = 1000)
-    private String s3Url;
+    private String s3FileVersionUrl;
 
     @ManyToOne
     @JoinColumn(name = "fileId")
     private File file;
 
     @Builder
-    public FileVersion(String commitMessage, String s3Url, File file){
+    public FileVersion(String commitMessage, String s3FileVersionUrl, File file){
         this.commitMessage=commitMessage;
-        this.s3Url=s3Url;
+        this.s3FileVersionUrl=s3FileVersionUrl;
         this.file=file;
     }
 
