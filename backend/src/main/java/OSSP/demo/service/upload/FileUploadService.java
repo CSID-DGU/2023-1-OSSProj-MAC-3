@@ -39,16 +39,6 @@ public class FileUploadService {
         // fileRepository에 현재 업로드 하는 파일과 같은 이름의 파일을 조회
         File findfile = fileRepository.findFileByFileName(uploadFile.getOriginalFilename());
 
-        // 파일이 없을시,
-        if (findfile == null) {
-            //파일 객체 생성
-            File file = File.builder().
-                    fileName(fileName).
-                    member(member).build();
-            fileRepository.save(file);
-            findfile=file;
-        }
-
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(uploadFile.getSize()); //파일 크기
         objectMetadata.setContentType(uploadFile.getContentType()); // 파일 확장자
@@ -64,15 +54,27 @@ public class FileUploadService {
 
         String url = s3Service.getFileUrl(fileName); //업로드 파일 url 반환.
 
+        // 파일이 없을시,
+        if (findfile == null) {
+            //파일 객체 생성
+            File file = File.builder().
+                    fileName(fileName).
+                    member(member).
+                    s3FileUrl(url).
+                    build();
+            fileRepository.save(file);
+            findfile=file;
+        }
+
         //커밋 메세지 누락 부분과 s3url이 s3에 대표 url이 올라가는게 아닌, 각각 버전별로 올라가도록 설정하자.
         // FileVersion에 업로드한 파일을 저장.
         FileVersion fileVersion = FileVersion.builder().
                 commitMessage(fileVersionDto.getCommitMessage()).
-                s3Url(url+"?versionId="+versionId). //각 버전별 url
+                s3FileVersionUrl(url+"?versionId="+versionId). //각 버전별 url
                 file(findfile).
                 build();
 
         fileVersionRepository.save(fileVersion);
-        return url;
+        return url+"?versionId="+versionId;
     }
 }
