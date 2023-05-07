@@ -18,9 +18,11 @@ public class File {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long fileId;
 
+    private String s3FileUrl;
+
     private String fileName;
 
-    @OneToMany(mappedBy = "file")
+    @OneToMany(mappedBy = "file", cascade = CascadeType.ALL)
     private List<FileVersion> fileVersionList = new ArrayList<>();
 
     @ManyToOne
@@ -29,20 +31,22 @@ public class File {
 
 
     @Builder
-    public File (String fileName, Member member){
-        this.fileName=fileName;
-        this.member=member;
+    public File(String fileName, Member member, String s3FileUrl) {
+        this.fileName = fileName;
+        this.member = member;
+        this.s3FileUrl=s3FileUrl;
     }
+}
 
 
     //== 연관관계 편의메서드 ==
 
-    public void setMember(Member member){
-        this.member = member;
-    }
-
-    public void addFileVersion(FileVersion fileVersion){
-        fileVersionList.add(fileVersion);
-        fileVersion.setFile(this);
-    }
-}
+//    public void setMember(Member member){
+//        this.member = member;
+//    }
+//
+//    public void addFileVersion(FileVersion fileVersion){
+//        fileVersionList.add(fileVersion);
+//        fileVersion.setFile(this);
+//    }
+//}
