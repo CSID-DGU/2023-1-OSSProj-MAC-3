@@ -2,28 +2,29 @@ package OSSP.demo.controller;
 
 import OSSP.demo.model.ResponseDto;
 import OSSP.demo.model.UserDto;
-import OSSP.demo.service.UserJoinService;
-import OSSP.demo.service.UserLoginService;
+import OSSP.demo.service.user.UserJoinService;
+import OSSP.demo.service.user.UserLoginService;
+import OSSP.demo.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @Slf4j
 @RestController
-@RequestMapping("auth")
+@RequestMapping("user")
 public class UserController {
 
     @Autowired
     private UserJoinService userJoinService;
     @Autowired
     private UserLoginService userLoginService;
+    @Autowired
+    private UserService userService;
 
     // 회원가입 서비스,  @Valid: DTO에 정의한 대로 검증, Errors: 검증 결과를 담아줌
     @PostMapping("/signup")
@@ -44,5 +45,9 @@ public class UserController {
     public ResponseEntity<?> authenticateUser(@RequestBody UserDto userDto) {
         // 로그인 서비스를 통해 로그인을 시도하고, 결과를 반환
         return userLoginService.getResponseEntity(userDto);
+    }
+    @GetMapping
+    public ResponseEntity getUser(@AuthenticationPrincipal String username) {
+        return userService.getUser(username);
     }
 }
