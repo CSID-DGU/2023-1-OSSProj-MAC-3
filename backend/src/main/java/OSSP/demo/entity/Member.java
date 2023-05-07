@@ -1,22 +1,21 @@
 package OSSP.demo.entity;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
+@Data
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "userId")
@@ -30,8 +29,7 @@ public class Member {
     List<File> fileList = new ArrayList<>();
 
     @Builder
-    public Member (Long memberId, User user, Team team){
-        this.memberId = memberId;
+    public Member(User user, Team team){
         this.user = user;
         this.team = team;
     }
