@@ -1,5 +1,6 @@
-package OSSP.demo.service.security;
+package OSSP.demo.config;
 
+import OSSP.demo.service.security.JwtAuthenticationFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,8 +24,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable() //기본 설정 사용 안함
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//세션 사용 안함
                 .and()
-                .authorizeRequests().antMatchers("/", "/auth/**", "/{memberId}/upload", "/download/{fileId}/{fileVersionId}",
-                "/delete/file/{fileId}", "/delete/fileVersion/{fileVersionId}").permitAll()//해당 url은 인증 없이 접근 가능
+                .authorizeRequests().antMatchers("/", "/user/singup", "/user/signin").permitAll()//해당 url은 인증 없이 접근 가능
                 .anyRequest().authenticated(); //그 외의 url은 인증 필요
         http.addFilterAfter(jwtAuthenticationFilter, CorsFilter.class); //jwtAuthenticationFilter를 CorsFilter 전에 추가
     }
