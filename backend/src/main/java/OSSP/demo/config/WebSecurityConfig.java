@@ -1,5 +1,6 @@
-package OSSP.demo.service.security;
+package OSSP.demo.config;
 
+import OSSP.demo.service.security.JwtAuthenticationFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
