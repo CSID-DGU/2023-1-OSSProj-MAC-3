@@ -74,4 +74,52 @@ public class TeamService {
             return ResponseEntity.badRequest().body(ResponseDto.builder().error(Collections.singletonMap("create_team", "팀 생성에 실패했습니다.")).build());
         }
     }
+
+    @Transactional
+    public ResponseEntity deleteTeam(String username, Long teamId) {
+        try {
+            Long userId = userRepository.findByStudentId(username).get().getId();
+            Optional<Team> optionalTeam = teamRepository.findById(teamId);
+            if (optionalTeam.isPresent()) {
+                Team team = optionalTeam.get();
+                List<Member> members = memberRepository.findByTeamId(teamId);
+                if (members.size()>1) {
+                    Map<String, String> error = new HashMap<>();
+                    error.put("delete_team", "팀에 가입한 멤버가 2명 이상입니다.");
+                    ResponseDto<Team> responseErrorDto = ResponseDto.<Team>builder().error(error).build();
+                    return ResponseEntity.badRequest().body(responseErrorDto);
+                }
+                if (members.isEmpty()) {
+                    Map<String, String> error = new HashMap<>();
+                    error.put("delete_team", "해당 팀에 가입한 멤버가 없습니다.");
+                    ResponseDto<Team> responseErrorDto = ResponseDto.<Team>builder().error(error).build();
+                    return ResponseEntity.badRequest().body(responseErrorDto);
+                }
+                List<User> users = new ArrayList<>();
+                for (Member member : members) {
+                    users.add(member.getUser());
+                }
+                if (users.contains(userRepository.findById(userId).get())) {
+                    for (Member member : members) {
+                        memberRepository.delete(member);
+                    }
+                    teamRepository.delete(team);
+                    return ResponseEntity.ok().body(Collections.singletonMap("delete_team_result", "팀 삭제에 성공했습니다."));
+                } else {
+                    Map<String, String> error = new HashMap<>();
+                    error.put("delete_team", "해당 팀에 가입한 멤버가 아닙니다.");
+                    ResponseDto<Team> responseErrorDto = ResponseDto.<Team>builder().error(error).build();
+                    return ResponseEntity.badRequest().body(responseErrorDto);
+                }
+            } else {
+                Map<String, String> error = new HashMap<>();
+                error.put("delete_team", "해당 팀이 존재하지 않습니다.");
+                ResponseDto<Team> responseErrorDto = ResponseDto.<Team>builder().error(error).build();
+                return ResponseEntity.badRequest().body(responseErrorDto);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.badRequest().body(ResponseDto.<Team>builder().error(Collections.singletonMap("delete_team", "팀 삭제에 실패했습니다.")).build());
+    }
 }
