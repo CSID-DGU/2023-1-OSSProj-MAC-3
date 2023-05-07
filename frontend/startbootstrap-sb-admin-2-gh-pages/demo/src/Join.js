@@ -11,6 +11,11 @@ const Join = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
+    if (!name || !studentId || !dept || !password) {
+      alert("모든 항목을 입력해주세요.");
+      return;
+    }
+
     const data = {
       name,
       studentId,
@@ -29,16 +34,26 @@ const Join = () => {
         if (response.ok) {
           return response.json();
         } else {
-          throw new Error("이미 존재하는 학번입니다.");
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
         }
       })
       .then((data) => {
-        localStorage.setItem("token", data.token);
         goLogin();
       })
       .catch((error) => {
-        alert(error);
+        alert(error.message);
       });
+  };
+
+  const showErrorMessages = (jsonData) => {
+    const errorMessages = Object.values(jsonData.error).join("\n");
+
+    // 메시지들을 결합하여 alert 창에 보여줍니다.
+    return errorMessages;
   };
 
   const movePage = useNavigate();

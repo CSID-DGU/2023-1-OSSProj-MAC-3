@@ -10,6 +10,11 @@ const Login = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
+    if (!studentId || !password) {
+      alert("모든 항목을 입력해주세요.");
+      return;
+    }
+
     const data = {
       studentId,
       password,
@@ -27,22 +32,33 @@ const Login = () => {
         if (response.ok) {
           return response.json();
         } else {
-          throw new Error("로그인 정보가 올바르지 않습니다.");
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
         }
       })
       .then((data) => {
         localStorage.setItem("token", data.token);
-        goJoin();
+        goSelect();
       })
       .catch((error) => {
-        alert(error);
+        alert(error.message);
       });
+  };
+
+  const showErrorMessages = (jsonData) => {
+    const errorMessages = Object.values(jsonData.error).join("\n");
+
+    // 메시지들을 결합하여 alert 창에 보여줍니다.
+    return errorMessages;
   };
 
   const movePage = useNavigate();
 
   function goSelect() {
-    movePage("/");
+    movePage("/Select");
   }
   function goJoin() {
     movePage("/join");
