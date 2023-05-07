@@ -1,4 +1,4 @@
-package OSSP.demo.service;
+package OSSP.demo.service.user;
 
 import OSSP.demo.entity.User;
 import OSSP.demo.model.ResponseDto;
