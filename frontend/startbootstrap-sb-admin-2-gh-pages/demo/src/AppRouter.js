@@ -4,6 +4,7 @@ import App from "./App";
 import Login from "./Login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Join from "./Join";
+import Select from "./Select";
 //import {Typography, Box} from "@mui/material";
 
 function AppRouter() {
@@ -13,6 +14,7 @@ function AppRouter() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
+          <Route path="/select" element={<Select />} />
         </Routes>
       </BrowserRouter>
     </div>

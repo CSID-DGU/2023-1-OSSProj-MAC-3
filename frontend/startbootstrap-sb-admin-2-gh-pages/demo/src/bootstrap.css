@@ -10331,3 +10331,8 @@ body.sidebar-toggled footer.sticky-footer {
 .login-dongguk-logo {
   width: 200px;
 }
+@media (max-width: 992px) {
+  .container-mine {
+    width: 992px;
+  }
+}
