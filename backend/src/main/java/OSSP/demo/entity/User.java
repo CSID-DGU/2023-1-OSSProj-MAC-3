@@ -13,7 +13,6 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Data
 @Table(name = "user")
 public class User {
 
