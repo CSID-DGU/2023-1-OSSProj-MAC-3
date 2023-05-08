@@ -22,15 +22,19 @@ public class FileVersion {
     @Column(length = 1000)
     private String s3FileVersionUrl;
 
+    //파일 합본 여부
+    private Boolean combination;
+
     @ManyToOne
     @JoinColumn(name = "fileId")
     private File file;
 
     @Builder
-    public FileVersion(String commitMessage, String s3FileVersionUrl, File file){
+    public FileVersion(String commitMessage, String s3FileVersionUrl, File file, Boolean combination){
         this.commitMessage=commitMessage;
         this.s3FileVersionUrl=s3FileVersionUrl;
         this.file=file;
+        this.combination=combination;
     }
 
 //    // ==연관관계 편의 메서드 ==
