@@ -23,7 +23,7 @@ const Join = () => {
       password,
     };
 
-    fetch("http://localhost:8080/auth/signup", {
+    fetch("http://localhost:8080/user/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

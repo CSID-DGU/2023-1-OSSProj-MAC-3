@@ -20,8 +20,9 @@ const Login = () => {
       password,
       rememberMe,
     };
-
-    fetch("http://localhost:8080/auth/signin", {
+    const token = localStorage.getItem("token");
+    console.log("token:" + token);
+    fetch("http://localhost:8080/user/signin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
