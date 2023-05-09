@@ -1,8 +1,35 @@
 import "./bootstrap.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Select() {
+  const [userInfo, setUserInfo] = useState({});
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    console.log(token);
+    fetch("http://localhost:8080/user", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setUserInfo(data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  const goTeam = () => {
+    navigate("/team");
+  };
+
   return (
     <div className="container-mine container">
       {/* <!-- Outer Row --> */}
@@ -31,7 +58,7 @@ function Select() {
                     <div className="p-1">
                       {/* <!--사용자 이름, 학번 정보--> */}
                       <span className="mr-2 d-none d-lg-inline text-gray-800 small border-right-0">
-                        김동국(2023000001)님
+                        {`${userInfo.name}(${userInfo.studentId})`}님
                       </span>
                       {/* <!--마이페이지 버튼--> */}
                       <a
@@ -45,8 +72,8 @@ function Select() {
                     </div>
                     <div className="p-1 py-3">
                       <a
-                        href="index.html"
                         className="btn btn-primary btn-user btn-block"
+                        onClick={handleLogout}
                       >
                         Logout
                       </a>
@@ -66,17 +93,14 @@ function Select() {
                       <form className="user">
                         <div className="form-group">
                           <a
-                            href="index.html"
                             className="btn btn-primary btn-user btn-block"
+                            onClick={goTeam}
                           >
                             오픈소스소프트웨어실습
                           </a>
                         </div>
                         <div className="form-group">
-                          <a
-                            href="index.html"
-                            className="btn btn-primary btn-user btn-block"
-                          >
+                          <a className="btn btn-primary btn-user btn-block">
                             오픈소스소프트웨어프로젝트
                           </a>
                         </div>
