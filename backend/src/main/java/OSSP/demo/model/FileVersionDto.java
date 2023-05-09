@@ -15,10 +15,18 @@ public class FileVersionDto {
     private String commitMessage;
     private Boolean combination;
 
+    private String s3Url;
+
     @Builder
-    public FileVersionDto(String commitMessage, Boolean combination){
+    public FileVersionDto(String commitMessage, Boolean combination, String s3Url){
         this.commitMessage=commitMessage;
         this.combination=combination;
+        this.s3Url=s3Url;
+    }
+
+    @Builder
+    public FileVersionDto(String s3Url){
+        this.s3Url=s3Url;
     }
 
     public FileVersion toEntity(){
