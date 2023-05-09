@@ -25,20 +25,37 @@ public class FileVersion {
     //파일 합본 여부
     private Boolean combination;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fileId")
     private File file;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memberId")
+    private Member member;
+
     @Builder
-    public FileVersion(String commitMessage, String s3FileVersionUrl, File file, Boolean combination){
+    public FileVersion(String commitMessage, String s3FileVersionUrl, Boolean combination){
         this.commitMessage=commitMessage;
         this.s3FileVersionUrl=s3FileVersionUrl;
-        this.file=file;
+//        this.file=file;
         this.combination=combination;
+//        this.member=member;
     }
 
-//    // ==연관관계 편의 메서드 ==
-//    public void setFile(File file){
-//        this.file = file;
-//    }
+    // ==연관관계 편의 메서드 ==
+    public void setFile(File file){
+        this.file = file;
+
+        if(!file.getFileVersionList().contains(this)){
+            file.getFileVersionList().add(this);
+        }
+    }
+
+    public void setMember(Member member){
+        this.member=member;
+
+        if(!member.getFileVersions().contains(this)){
+            member.getFileVersions().add(this);
+        }
+    }
 }

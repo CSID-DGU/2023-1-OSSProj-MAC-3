@@ -17,36 +17,23 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamId")
     private Team team;
 
     @OneToMany(mappedBy = "member")
     List<File> fileList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member")
+    private List<FileVersion> fileVersions = new ArrayList<>();
+
     @Builder
     public Member(User user, Team team){
         this.user = user;
         this.team = team;
     }
-
-//    // ==연관관계 편의 메서드==
-//    public void setUser(User user){
-//        this.user=user;
-//        user.getMembers().add(this);
-//    }
-//
-//    public void setTeam(Team team){
-//        this.team=team;
-//        user.getMembers().add(this);
-//    }
-//
-//    public void addFileItem(File file){
-//        fileList.add(file);
-//        file.setMember(this);
-//    }
 }

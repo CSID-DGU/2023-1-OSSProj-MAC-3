@@ -25,28 +25,34 @@ public class File {
     @OneToMany(mappedBy = "file", cascade = CascadeType.ALL)
     private List<FileVersion> fileVersionList = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")
     private Member member;
 
 
     @Builder
-    public File(String fileName, Member member, String s3FileUrl) {
+    public File(String fileName, String s3FileUrl) {
         this.fileName = fileName;
-        this.member = member;
+//        this.member = member;
         this.s3FileUrl=s3FileUrl;
     }
+
+
+//    == 연관관계 편의메서드 ==
+
+    public void setMember(Member member){
+        this.member = member;
+
+        if(!member.getFileList().contains(this)){
+            member.getFileList().add(this);
+        }
+    }
+
+    public void addFileVersion(FileVersion fileVersion){
+        this.fileVersionList.add(fileVersion);
+
+        if(fileVersion.getFile()!=this){
+            fileVersion.setFile(this);
+        }
+    }
 }
-
-
-    //== 연관관계 편의메서드 ==
-
-//    public void setMember(Member member){
-//        this.member = member;
-//    }
-//
-//    public void addFileVersion(FileVersion fileVersion){
-//        fileVersionList.add(fileVersion);
-//        fileVersion.setFile(this);
-//    }
-//}
