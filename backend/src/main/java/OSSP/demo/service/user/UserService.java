@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -23,10 +25,27 @@ public class UserService {
         }
         User user = userRepository.findByStudentId(username).get();
         UserDto userDto = UserDto.builder()
+                .id(user.getId())
                 .studentId(user.getStudentId())
                 .name(user.getName())
                 .dept(user.getDept())
                 .build();
         return ResponseEntity.ok(userDto);
+    }
+
+    public ResponseEntity getUserList(String username) {
+        List<User> users = userRepository.findAll();
+        users.remove(userRepository.findByStudentId(username).get());
+        List<UserDto> userDtoList = new ArrayList<>();
+        for (User user : users) {
+            UserDto userDto = UserDto.builder()
+                    .id(user.getId())
+                    .studentId(user.getStudentId())
+                    .name(user.getName())
+                    .dept(user.getDept())
+                    .build();
+            userDtoList.add(userDto);
+        }
+        return ResponseEntity.ok(userDtoList);
     }
 }
