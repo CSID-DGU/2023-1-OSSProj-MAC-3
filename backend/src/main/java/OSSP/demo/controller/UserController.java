@@ -50,4 +50,9 @@ public class UserController {
     public ResponseEntity getUser(@AuthenticationPrincipal String username) {
         return userService.getUser(username);
     }
+
+    @GetMapping("/all")
+    public ResponseEntity getUserList(@AuthenticationPrincipal String username) {
+        return userService.getUserList(username);
+    }
 }
