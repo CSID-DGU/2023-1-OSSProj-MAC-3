@@ -1,6 +1,7 @@
-package OSSP.demo.service;
+package OSSP.demo.service.team;
 
 import OSSP.demo.entity.Member;
+import OSSP.demo.entity.Role;
 import OSSP.demo.entity.Team;
 import OSSP.demo.entity.User;
 import OSSP.demo.model.ResponseDto;
@@ -26,47 +27,59 @@ public class TeamService {
     @Autowired
     private MemberRepository memberRepository;
 
-    public ResponseEntity getTeams(String username) {
-        Long userId = userRepository.findByStudentId(username).get().getId();
-        if (memberRepository.existsByUserId(userId)) {
-            List<Member> userMembers = memberRepository.findByUserId(userId);
-            List<TeamDto> teamDtoList = new ArrayList<>();
-            for (Member userMember : userMembers) {
-                Team team = userMember.getTeam();
-                List<Member> teamMember = team.getMembers();
-                List<TeamDto.TeamMemberDto> teamMembers = new ArrayList<>();
-                for (Member m : teamMember) {
-                    teamMembers.add(TeamDto.TeamMemberDto.builder().studentId(m.getUser().getStudentId()).name(m.getUser().getName()).build());
+    public ResponseEntity getTeam(String username, Long teamId) {
+        if (userRepository.existsByStudentId(username)) {
+            Long userId = userRepository.findByStudentId(username).get().getId();
+            if (memberRepository.existsByUserIdAndTeamId(userId, teamId)
+                    && teamRepository.existsById(teamId)) {
+                Team team = teamRepository.findById(teamId).get();
+                List<Member> members = memberRepository.findByTeamId(teamId);
+                List<TeamDto.TeamFellowDto> teamMemberDto = new ArrayList<>();
+                for (Member member : members) {
+                    teamMemberDto.add(TeamDto.TeamFellowDto.builder()
+                            .studentId(member.getUser().getStudentId())
+                            .name(member.getUser().getName())
+                            .build());
                 }
-                teamDtoList.add(TeamDto.builder().teamName(team.getTeamName()).teamMembers(teamMembers).build());
+                TeamDto teamResponseDto = TeamDto.builder().teamName(team.getTeamName()).teamFellow(teamMemberDto).build();
+                return ResponseEntity.ok().body(teamResponseDto);
             }
-            ResponseDto responseTeamDto = ResponseDto.<TeamDto>builder().data(teamDtoList).build();
-            return ResponseEntity.ok().body(responseTeamDto);
+            ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("get_team", "팀 정보가 존재하지 않습니다.")).build();
+            return ResponseEntity.badRequest().body(responseErrorDto);
         }
-        Map<String, String> error = new HashMap<>();
-        error.put("get_teams", "팀이 존재하지 않습니다.");
-        ResponseDto responseErrorDto = ResponseDto.builder().error(error).build();
+        ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("get_team", "사용자 정보가 존재하지 않습니다.")).build();
+        return ResponseEntity.badRequest().body(responseErrorDto);
+    }
+
+    public ResponseEntity getTeams(String username) {
+        if (userRepository.existsByStudentId(username)) {
+            Long userId = userRepository.findByStudentId(username).get().getId();
+            if (memberRepository.existsByUserId(userId)) {
+                List<Member> userMembers = memberRepository.findByUserId(userId);
+                Map<String, String> teams = new HashMap();
+                for (Member userMember : userMembers) {
+                    teams.put(userMember.getTeam().getId().toString(), userMember.getTeam().getTeamName());
+                }
+                return ResponseEntity.ok().body(teams);
+            }
+            ResponseDto responseTeamIdsNullDto = ResponseDto.<String>builder().build();
+            return ResponseEntity.badRequest().body(responseTeamIdsNullDto);
+        }
+        ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("get_team_ids", "사용자 정보가 존재하지 않습니다.")).build();
         return ResponseEntity.badRequest().body(responseErrorDto);
     }
 
     @Transactional
-    public ResponseEntity createTeam(String username, String teamName, List<String> members) {
+    public ResponseEntity createTeam(String username, String teamName) {
         try {
             if (!userRepository.existsByStudentId(username)) {
                 return ResponseEntity.badRequest().body(ResponseDto.builder().error(Collections.singletonMap("create_team", "존재하지 않는 학번입니다.")).build());
             }
-            if (!userRepository.existsByStudentIdIn(members)) {
-                return ResponseEntity.badRequest().body(ResponseDto.builder().error(Collections.singletonMap("create_team", "존재하지 않는 학번이 있습니다.")).build());
-            }
             Long userId = userRepository.findByStudentId(username).get().getId();
             Team team = new Team(teamName);
             teamRepository.save(team);
-            Member member = new Member(userRepository.findById(userId).get(), team);
+            Member member = new Member(userRepository.findById(userId).get(), team, Role.Leader);
             memberRepository.save(member);
-            for (String memberName : members) {
-                Long memberId = userRepository.findByStudentId(memberName).get().getId();
-                memberRepository.save(new Member(userRepository.findById(memberId).get(), team));
-            }
             ResponseDto responseTeamDto = ResponseDto.<Team>builder().data(Collections.singletonList(team)).build();
             return ResponseEntity.ok().body(responseTeamDto);
         } catch (Exception e) {
