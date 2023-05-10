@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 public class TeamDto {
     private String teamName;
-    private List<TeamMemberDto> teamMembers;
+    private List<TeamFellowDto> teamFellow;
 
     @Builder
     @NoArgsConstructor
@@ -21,14 +21,13 @@ public class TeamDto {
     @Data
     public static class TeamRequestDto {
         private String teamName;
-        private List<String> teamMembers;
     }
 
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     @Data
-    public static class TeamMemberDto {
+    public static class TeamFellowDto {
         private String studentId;
         private String name;
     }
