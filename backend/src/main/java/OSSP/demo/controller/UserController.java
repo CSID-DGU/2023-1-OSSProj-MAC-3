@@ -47,12 +47,12 @@ public class UserController {
         return userLoginService.getResponseEntity(userDto);
     }
     @GetMapping
-    public ResponseEntity getUser(@AuthenticationPrincipal String username) {
-        return userService.getUser(username);
+    public ResponseEntity getUser(@AuthenticationPrincipal String studentId) {
+        return userService.getUser(studentId);
     }
 
     @GetMapping("/all")
-    public ResponseEntity getUserList(@AuthenticationPrincipal String username) {
-        return userService.getUserList(username);
+    public ResponseEntity getUserList(@AuthenticationPrincipal String studentId) {
+        return userService.getUserList(studentId);
     }
 }
