@@ -21,47 +21,47 @@ public class TeamController {
     private InvitationService invitationService;
 
     @GetMapping
-    public ResponseEntity getTeams(@AuthenticationPrincipal String username) {
-        return teamService.getTeams(username);
+    public ResponseEntity getTeams(@AuthenticationPrincipal String studentId) {
+        return teamService.getTeams(studentId);
     }
 
     @GetMapping("/{teamId}")
-    public ResponseEntity getTeam(@AuthenticationPrincipal String username, @PathVariable Long teamId) {
-        return teamService.getTeam(username, teamId);
+    public ResponseEntity getTeam(@AuthenticationPrincipal String studentId, @PathVariable Long teamId) {
+        return teamService.getTeam(studentId, teamId);
     }
 
     @PostMapping
-    public ResponseEntity createTeam(@AuthenticationPrincipal String username, @RequestBody TeamDto.TeamRequestDto teamDto) {
-        return teamService.createTeam(username, teamDto.getTeamName());
+    public ResponseEntity createTeam(@AuthenticationPrincipal String studentId, @RequestBody TeamDto.TeamRequestDto teamDto) {
+        return teamService.createTeam(studentId, teamDto.getTeamName());
     }
 
     @DeleteMapping("/{teamId}")
-    public ResponseEntity deleteTeam(@AuthenticationPrincipal String username, @PathVariable Long teamId) {
-        return teamService.deleteTeam(username, teamId);
+    public ResponseEntity deleteTeam(@AuthenticationPrincipal String studentId, @PathVariable Long teamId) {
+        return teamService.deleteTeam(studentId, teamId);
     }
 
     @PostMapping("/invitation")
-    public ResponseEntity sendInvitation(@AuthenticationPrincipal String username, @RequestBody InvitationDto.InvitationRequestDto invitationDto) {
-        return invitationService.sendInvitations(username, invitationDto);
+    public ResponseEntity sendInvitation(@AuthenticationPrincipal String studentId, @RequestBody InvitationDto.InvitationRequestDto invitationDto) {
+        return invitationService.sendInvitations(studentId, invitationDto);
     }
 
     @GetMapping("/invitation")
-    public ResponseEntity getInvitation(@AuthenticationPrincipal String username) {
-        return invitationService.getInvitations(username);
+    public ResponseEntity getInvitation(@AuthenticationPrincipal String studentId) {
+        return invitationService.getInvitations(studentId);
     }
 
     @PutMapping("/invitation/{invitationId}/accept")
-    public ResponseEntity acceptInvitation(@AuthenticationPrincipal String username, @PathVariable Long invitationId) {
-        return invitationService.acceptInvitation(username, invitationId);
+    public ResponseEntity acceptInvitation(@AuthenticationPrincipal String studentId, @PathVariable Long invitationId) {
+        return invitationService.acceptInvitation(studentId, invitationId);
     }
 
     @PutMapping ("/invitation/{invitationId}/reject")
-    public ResponseEntity rejectInvitation(@AuthenticationPrincipal String username, @PathVariable Long invitationId) {
-        return invitationService.rejectInvitation(username, invitationId);
+    public ResponseEntity rejectInvitation(@AuthenticationPrincipal String studentId, @PathVariable Long invitationId) {
+        return invitationService.rejectInvitation(studentId, invitationId);
     }
 
     @DeleteMapping("/invitation/{invitationId}")
-    public ResponseEntity deleteInvitation(@AuthenticationPrincipal String username, @PathVariable Long invitationId) {
-        return invitationService.deleteInvitation(username, invitationId);
+    public ResponseEntity deleteInvitation(@AuthenticationPrincipal String studentId, @PathVariable Long invitationId) {
+        return invitationService.deleteInvitation(studentId, invitationId);
     }
 }
