@@ -27,9 +27,9 @@ public class TeamService {
     @Autowired
     private MemberRepository memberRepository;
 
-    public ResponseEntity getTeam(String username, Long teamId) {
-        if (userRepository.existsByStudentId(username)) {
-            Long userId = userRepository.findByStudentId(username).get().getId();
+    public ResponseEntity getTeam(String studentId, Long teamId) {
+        if (userRepository.existsByStudentId(studentId)) {
+            Long userId = userRepository.findByStudentId(studentId).get().getId();
             if (memberRepository.existsByUserIdAndTeamId(userId, teamId)
                     && teamRepository.existsById(teamId)) {
                 Team team = teamRepository.findById(teamId).get();
@@ -51,9 +51,9 @@ public class TeamService {
         return ResponseEntity.badRequest().body(responseErrorDto);
     }
 
-    public ResponseEntity getTeams(String username) {
-        if (userRepository.existsByStudentId(username)) {
-            Long userId = userRepository.findByStudentId(username).get().getId();
+    public ResponseEntity getTeams(String studentId) {
+        if (userRepository.existsByStudentId(studentId)) {
+            Long userId = userRepository.findByStudentId(studentId).get().getId();
             if (memberRepository.existsByUserId(userId)) {
                 List<Member> userMembers = memberRepository.findByUserId(userId);
                 Map<String, String> teams = new HashMap();
@@ -70,12 +70,12 @@ public class TeamService {
     }
 
     @Transactional
-    public ResponseEntity createTeam(String username, String teamName) {
+    public ResponseEntity createTeam(String studentId, String teamName) {
         try {
-            if (!userRepository.existsByStudentId(username)) {
+            if (!userRepository.existsByStudentId(studentId)) {
                 return ResponseEntity.badRequest().body(ResponseDto.builder().error(Collections.singletonMap("create_team", "존재하지 않는 학번입니다.")).build());
             }
-            Long userId = userRepository.findByStudentId(username).get().getId();
+            Long userId = userRepository.findByStudentId(studentId).get().getId();
             Team team = new Team(teamName);
             teamRepository.save(team);
             Member member = new Member(userRepository.findById(userId).get(), team, Role.Leader);
@@ -89,9 +89,9 @@ public class TeamService {
     }
 
     @Transactional
-    public ResponseEntity deleteTeam(String username, Long teamId) {
+    public ResponseEntity deleteTeam(String studentId, Long teamId) {
         try {
-            Long userId = userRepository.findByStudentId(username).get().getId();
+            Long userId = userRepository.findByStudentId(studentId).get().getId();
             Optional<Team> optionalTeam = teamRepository.findById(teamId);
             if (optionalTeam.isPresent()) {
                 Team team = optionalTeam.get();
