@@ -29,11 +29,11 @@ public class InvitationService {
     @Autowired
     MemberRepository memberRepository;
 
-    public ResponseEntity sendInvitations(String username, InvitationDto.InvitationRequestDto invitationDto) {
-        if (!userRepository.existsByStudentId(username)) {
+    public ResponseEntity sendInvitations(String studentId, InvitationDto.InvitationRequestDto invitationDto) {
+        if (!userRepository.existsByStudentId(studentId)) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("send_invitation", "사용자 정보가 존재하지 않습니다."));
         }
-        Long leaderId = userRepository.findByStudentId(username).get().getId();
+        Long leaderId = userRepository.findByStudentId(studentId).get().getId();
         if (!memberRepository.existsByUserIdAndTeamId(leaderId, invitationDto.getTeamId())) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("send_invitation", "팀장이 아닙니다."));
         }
@@ -65,11 +65,11 @@ public class InvitationService {
         return ResponseEntity.ok().body(Collections.singletonMap("send_invitations", invitationDtoList));
     }
 
-    public ResponseEntity getInvitations(String username) {
-        if (!userRepository.existsByStudentId(username)) {
+    public ResponseEntity getInvitations(String studentId) {
+        if (!userRepository.existsByStudentId(studentId)) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("get_invitations", "사용자 정보가 존재하지 않습니다."));
         }
-        Long fellowId = userRepository.findByStudentId(username).get().getId();
+        Long fellowId = userRepository.findByStudentId(studentId).get().getId();
         if (!invitationRepository.existsByFellowId(fellowId)) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("get_invitations", "초대된 팀이 존재하지 않습니다."));
         }
@@ -87,11 +87,11 @@ public class InvitationService {
         return ResponseEntity.ok().body(Collections.singletonMap("get_invitations", invitationDtoList));
     }
 
-    public ResponseEntity acceptInvitation(String username, Long invitationId) {
-        if (!userRepository.existsByStudentId(username)) {
+    public ResponseEntity acceptInvitation(String studentId, Long invitationId) {
+        if (!userRepository.existsByStudentId(studentId)) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("accept_invitation", "사용자 정보가 존재하지 않습니다."));
         }
-        Long memberId = userRepository.findByStudentId(username).get().getId();
+        Long memberId = userRepository.findByStudentId(studentId).get().getId();
         if (!invitationRepository.existsById(invitationId)) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("accept_invitation", "초대 정보가 존재하지 않습니다."));
         }
@@ -116,11 +116,11 @@ public class InvitationService {
     }
 
 
-    public ResponseEntity rejectInvitation(String username, Long invitationId) {
-        if (!userRepository.existsByStudentId(username)) {
+    public ResponseEntity rejectInvitation(String studentId, Long invitationId) {
+        if (!userRepository.existsByStudentId(studentId)) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("reject_invitation", "사용자 정보가 존재하지 않습니다."));
         }
-        Long memberId = userRepository.findByStudentId(username).get().getId();
+        Long memberId = userRepository.findByStudentId(studentId).get().getId();
         if (!invitationRepository.existsById(invitationId)) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("reject_invitation", "초대 정보가 존재하지 않습니다."));
         }
@@ -142,11 +142,11 @@ public class InvitationService {
         return ResponseEntity.ok().body(Collections.singletonMap("reject_invitation", invitationResponseDto));
     }
 
-    public ResponseEntity deleteInvitation(String username, Long invitationId) {
-        if (!userRepository.existsByStudentId(username)) {
+    public ResponseEntity deleteInvitation(String studentId, Long invitationId) {
+        if (!userRepository.existsByStudentId(studentId)) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("delete_invitation", "사용자 정보가 존재하지 않습니다."));
         }
-        Long leaderId = userRepository.findByStudentId(username).get().getId();
+        Long leaderId = userRepository.findByStudentId(studentId).get().getId();
         if (!invitationRepository.existsById(invitationId)) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("delete_invitation", "초대 정보가 존재하지 않습니다."));
         }
