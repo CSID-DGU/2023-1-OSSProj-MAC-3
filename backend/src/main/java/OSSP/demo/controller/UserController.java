@@ -37,14 +37,14 @@ public class UserController {
         }
         // 에러가 없으면
         // 회원가입 서비스를 통해 회원가입을 시도하고, 결과를 반환
-        return userJoinService.getResponseEntity(userDto);
+        return userJoinService.signup(userDto);
     }
 
     // 로그인 서비스, @RequestBody: 요청 바디를 읽어서 UserDto에 매핑
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody UserDto userDto) {
         // 로그인 서비스를 통해 로그인을 시도하고, 결과를 반환
-        return userLoginService.getResponseEntity(userDto);
+        return userLoginService.signin(userDto);
     }
     @GetMapping
     public ResponseEntity getUser(@AuthenticationPrincipal String studentId) {
