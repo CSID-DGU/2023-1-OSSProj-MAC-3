@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -28,10 +28,14 @@ public class Member {
     @OneToMany(mappedBy = "member")
     List<File> fileList = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Builder
-    public Member(User user, Team team){
+    public Member(User user, Team team, Role role){
         this.user = user;
         this.team = team;
+        this.role = role;
     }
 
 //    // ==연관관계 편의 메서드==
