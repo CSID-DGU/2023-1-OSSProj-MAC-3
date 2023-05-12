@@ -25,7 +25,7 @@ public class UserLoginService {
     // 비밀번호 암호화위한 encoder
     private PasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    public ResponseEntity<?> getResponseEntity(UserDto userDto) {
+    public ResponseEntity<?> signin(UserDto userDto) {
         User user = authenticateStudentId(userDto.getStudentId()); // 학번으로 유저 찾기
         if (user == null) { // 유저가 없으면 에러
             String message = "학번이 올바르지 않습니다.";
