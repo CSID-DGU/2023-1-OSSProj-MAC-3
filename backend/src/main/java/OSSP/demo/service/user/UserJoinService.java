@@ -27,7 +27,7 @@ public class UserJoinService {
 
     private PasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    public ResponseEntity<?> getResponseEntity(UserDto.UserJoinRequestDto userDto) {
+    public ResponseEntity<?> signup(UserDto.UserJoinRequestDto userDto) {
         User user = User.builder()
                 .studentId(userDto.getStudentId())
                 .password(encoder.encode(userDto.getPassword()))
