@@ -28,12 +28,18 @@ public class Member {
     @OneToMany(mappedBy = "member")
     List<File> fileList = new ArrayList<>();
 
+
     @OneToMany(mappedBy = "member")
     private List<FileVersion> fileVersions = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+
     @Builder
-    public Member(User user, Team team){
+    public Member(User user, Team team, Role role){
         this.user = user;
         this.team = team;
+        this.role = role;
     }
 }
