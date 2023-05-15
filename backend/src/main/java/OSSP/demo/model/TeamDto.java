@@ -1,5 +1,6 @@
 package OSSP.demo.model;
 
+import OSSP.demo.entity.Role;
 import lombok.*;
 
 import java.util.List;
@@ -27,5 +28,6 @@ public class TeamDto {
     public static class TeamFellowDto {
         private String studentId;
         private String name;
+        private Role role;
     }
 }
