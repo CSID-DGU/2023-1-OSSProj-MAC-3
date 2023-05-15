@@ -39,6 +39,7 @@ public class TeamService {
                     teamMemberDto.add(TeamDto.TeamFellowDto.builder()
                             .studentId(member.getUser().getStudentId())
                             .name(member.getUser().getName())
+                            .role(member.getRole())
                             .build());
                 }
                 TeamDto teamResponseDto = TeamDto.builder().teamName(team.getTeamName()).teamFellow(teamMemberDto).build();
@@ -96,7 +97,7 @@ public class TeamService {
             if (optionalTeam.isPresent()) {
                 Team team = optionalTeam.get();
                 List<Member> members = memberRepository.findByTeamId(teamId);
-                if (members.size()>1) {
+                if (members.size() > 1) {
                     Map<String, String> error = new HashMap<>();
                     error.put("delete_team", "팀에 가입한 멤버가 2명 이상입니다.");
                     ResponseDto<Team> responseErrorDto = ResponseDto.<Team>builder().error(error).build();
