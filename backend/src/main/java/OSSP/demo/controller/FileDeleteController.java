@@ -1,6 +1,6 @@
 package OSSP.demo.controller;
 
-import OSSP.demo.service.delete.FileDeleteService;
+import OSSP.demo.service.file.FileDeleteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

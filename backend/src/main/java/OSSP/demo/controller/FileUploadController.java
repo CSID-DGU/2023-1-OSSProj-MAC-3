@@ -1,7 +1,7 @@
 package OSSP.demo.controller;
 
 import OSSP.demo.model.FileVersionDto;
-import OSSP.demo.service.upload.FileUploadService;
+import OSSP.demo.service.file.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

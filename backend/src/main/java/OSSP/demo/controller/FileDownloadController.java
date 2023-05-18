@@ -1,6 +1,6 @@
 package OSSP.demo.controller;
 
-import OSSP.demo.service.download.FileDownloadService;
+import OSSP.demo.service.file.FileDownloadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
