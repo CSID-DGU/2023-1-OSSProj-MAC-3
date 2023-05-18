@@ -1,4 +1,4 @@
-package OSSP.demo.service.download;
+package OSSP.demo.service.file;
 
 import OSSP.demo.entity.FileVersion;
 import OSSP.demo.model.FileVersionDto;
@@ -26,7 +26,9 @@ public class FileDownloadService {
         try {
             FileVersion findFile = fileVersionRepository.findByFileVersionIdAndFile_FileId(fileVersionId, fileId);
             FileVersionDto fileVersionDto = FileVersionDto.builder().
-                    s3Url(findFile.getS3FileVersionUrl()).build();
+                    s3Url(findFile.getS3FileVersionUrl()).
+                    fileName(findFile.getFile().getRealFileName()).build();
+            //프론트 단에서 이름을 원래 이름으로(dto에 있는이름으로 바꿔서 다운)
             return ResponseEntity.ok().body(fileVersionDto);
         } catch (Exception e) {
             log.error(e.getMessage());

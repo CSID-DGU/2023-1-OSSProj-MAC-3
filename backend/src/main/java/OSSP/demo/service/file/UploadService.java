@@ -1,4 +1,4 @@
-package OSSP.demo.service.upload;
+package OSSP.demo.service.file;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectResult;

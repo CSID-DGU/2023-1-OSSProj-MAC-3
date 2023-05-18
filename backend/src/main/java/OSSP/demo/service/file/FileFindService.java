@@ -1,6 +1,7 @@
-package OSSP.demo.service.find;
+package OSSP.demo.service.file;
 
 import OSSP.demo.entity.File;
+import OSSP.demo.model.FilePagingResponseDto;
 import OSSP.demo.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,15 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FileFindService {
 
     private final FileRepository fileRepository;
 
-//    @Transactional
-//    public Page<File> findAllFile(Pageable pageable, String studentId){
-//
-//
-//
-//        return
-//    }
+    public Page<FilePagingResponseDto> findAllFile(Pageable pageable, Long teamId){
+        return fileRepository.findByTeamIdOrderByUpdateDateDesc(teamId, pageable)
+                .map(FilePagingResponseDto::from);
+    }
 }
