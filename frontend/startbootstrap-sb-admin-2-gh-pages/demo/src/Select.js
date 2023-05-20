@@ -7,8 +7,8 @@ function Select() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    console.log("after login token:\n" + token);
+    const token = localStorage.getItem("token");
+    console.log(token);
     fetch("http://localhost:8080/user", {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -22,7 +22,7 @@ function Select() {
   }, []);
 
   const handleLogout = () => {
-    sessionStorage.removeItem("token");
+    localStorage.removeItem("token");
     navigate("/login");
   };
 

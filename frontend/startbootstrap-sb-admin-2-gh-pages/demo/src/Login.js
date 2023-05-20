@@ -7,8 +7,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
-  sessionStorage.removeItem("token");
-
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -22,8 +20,8 @@ const Login = () => {
       password,
       rememberMe,
     };
-    const token = sessionStorage.getItem("token");
-    console.log("before login token:\n" + token);
+    const token = localStorage.getItem("token");
+    console.log("token:" + token);
     fetch("http://localhost:8080/user/signin", {
       method: "POST",
       headers: {
@@ -36,14 +34,14 @@ const Login = () => {
           return response.json();
         } else {
           return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지 출력
-            // 에러를 throw 하여 다음 catch 블록으로 이동
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
             throw new Error(showErrorMessages(jsonData));
           });
         }
       })
       .then((data) => {
-        sessionStorage.setItem("token", data.token);
+        localStorage.setItem("token", data.token);
         goSelect();
       })
       .catch((error) => {
@@ -53,6 +51,7 @@ const Login = () => {
 
   const showErrorMessages = (jsonData) => {
     const errorMessages = Object.values(jsonData.error).join("\n");
+
     // 메시지들을 결합하여 alert 창에 보여줍니다.
     return errorMessages;
   };
@@ -94,7 +93,6 @@ const Login = () => {
                           id="loginInputID"
                           aria-describedby="idHelp"
                           placeholder="student ID"
-                          autoComplete="off"
                           value={studentId}
                           onChange={(event) => setStudentId(event.target.value)}
                         />
@@ -105,7 +103,6 @@ const Login = () => {
                           className="form-control form-control-user"
                           id="loginInputPassword"
                           placeholder="Password"
-                          autoComplete="off"
                           value={password}
                           onChange={(event) => setPassword(event.target.value)}
                         />

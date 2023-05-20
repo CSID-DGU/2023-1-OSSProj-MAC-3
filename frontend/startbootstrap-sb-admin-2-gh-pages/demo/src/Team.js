@@ -1,33 +1,6 @@
 import "./bootstrap.css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBell,
-  faBars,
-  faSearch,
-  faPlus,
-  faEdit,
-  faTrash,
-  faDownload,
-} from "@fortawesome/free-solid-svg-icons";
-
-function DropdownButton({ label, content, style }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
-
-  return (
-    <div className="dropdown">
-      <a className={`dropdown-button ${style}`} onClick={toggleDropdown}>
-        {label}
-      </a>
-      {isOpen && <div>{content}</div>}
-    </div>
-  );
-}
 
 function Team() {
   const [userInfo, setUserInfo] = useState({});
@@ -48,13 +21,8 @@ function Team() {
   }, []);
 
   const handleLogout = () => {
-    //localStorage.removeItem("token");
+    localStorage.removeItem("token");
     navigate("/login");
-  };
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen); // 드롭다운 상태를 반전시킴
   };
 
   return (
@@ -80,14 +48,14 @@ function Team() {
 
         {/*<!-- Nav Item - 메인 페이지 -->*/}
         <li className="nav-item active">
-          <li className="nav-item dropdown no-arrow mx-1">
-            <a className="nav-link collapsed dropdown-button">
-              {/*<!--<i className="fas fa-fw fa-tachometer-alt"></i>-->*/}
-              <div style={{ textAlign: "center" }}>
-                <span>메인 페이지</span>
-              </div>
-            </a>
-          </li>
+          <a
+            className="nav-link"
+            href="index.html"
+            style={{ textAlign: "center" }}
+          >
+            {/*<!--<i className="fas fa-fw fa-tachometer-alt"></i>-->*/}
+            <span>메인 페이지</span>
+          </a>
         </li>
 
         {/*<!-- Divider -->*/}
@@ -95,39 +63,14 @@ function Team() {
 
         {/*<!-- Nav Item - 팀 활동 페이지 -->*/}
         <li className="nav-item active">
-          <li className="nav-item dropdown no-arrow mx-1">
-            <DropdownButton
-              label={
-                <div style={{ textAlign: "center" }}>
-                  <i class="fas fa-fw fa-cog"></i>
-                  <span>팀 활동 페이지</span>
-                </div>
-              }
-              content={
-                <div className="collapse" style={{ display: "block" }}>
-                  <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">팀 목록 :</h6>
-                    <a class="collapse-item">
-                      {/*href="buttons.html">*/}
-                      오픈소스
-                    </a>
-                    <a class="collapse-item">MAC</a>
-                    <div
-                      className="btn btn-secondary btn-sm"
-                      style={{
-                        width: "100%",
-                        border: "none",
-                        backgroundColor: "#ccd1d9",
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faPlus} />
-                    </div>
-                  </div>
-                </div>
-              }
-              style="nav-link collapsed"
-            />
-          </li>
+          <a
+            className="nav-link"
+            href="index.html"
+            style={{ textAlign: "center" }}
+          >
+            {/*<!--<i className="fas fa-fw fa-tachometer-alt"></i>-->*/}
+            <span>팀 활동 페이지</span>
+          </a>
         </li>
 
         {/*<!-- Divider -->*/}
@@ -145,7 +88,7 @@ function Team() {
               id="sidebarToggleTop"
               className="btn btn-link d-md-none rounded-circle mr-3"
             >
-              <FontAwesomeIcon icon={faBars} />
+              <i className="fa fa-bars"></i>
             </button>
 
             {/*<!-- Topbar Search -->*/}
@@ -159,86 +102,56 @@ function Team() {
 
             {/*<!-- Topbar Navbar -->*/}
             <ul className="navbar-nav ml-auto">
-              {/*<!-- Nav Item - Alerts -->*/}
-
-              <li className="nav-item dropdown no-arrow mx-1">
-                <DropdownButton
-                  label={
-                    <div>
-                      <FontAwesomeIcon icon={faBell} />
-                      {/* Counter - Alerts */}
-                      <span className="badge badge-danger badge-counter">
-                        3+
-                      </span>
-                    </div>
-                  }
-                  content={
-                    <div
-                      className="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                      aria-labelledby="alertsDropdown"
-                      style={{ display: "block" }}
-                    >
-                      <h6 className="dropdown-header">
-                        <span>김동국(2023000002)</span>
-                        님이
-                        <span>MAC</span>
-                        팀에
-                        <span>홍길동</span>
-                        님을 초대하셨습니다.
-                      </h6>
-                      <a
-                        className="dropdown-item d-flex align-items-center"
-                        href="#"
-                      >
-                        <div
-                          className="btn btn-secondary btn-sm"
-                          style={{
-                            width: "100%",
-                            backgroundColor: "#fc9a9d",
-                            border: "none",
-                          }}
-                        >
-                          수락
-                        </div>
-                        <div
-                          className="btn btn-secondary btn-sm"
-                          style={{
-                            width: "100%",
-                            backgroundColor: "#9abbfc",
-                            border: "none",
-                          }}
-                        >
-                          거절
-                        </div>
-                      </a>
-                    </div>
-                  }
-                  style="nav-link dropdown-toggle"
-                />
-              </li>
-              {/*<!-- Nav Item - User Information -->*/}
-              <li className="nav-item dropdown no-arrow">
+              {/*<!-- Nav Item - Search Dropdown (Visible Only XS) -->*/}
+              <li className="nav-item dropdown no-arrow d-sm-none">
                 <a
                   className="nav-link dropdown-toggle"
                   href="#"
-                  id="userDropdown"
+                  id="searchDropdown"
                   role="button"
                   data-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  <span className="mr-2 d-none d-lg-inline text-gray-600 small">
-                    김동국(2023000001)
-                  </span>
-                  {/*<!-- <span style="padding-right: 5px"> -->*/}
-                  <div className="btn btn-primary btn-user">My Page</div>
-                  <div
-                    className="btn btn-primary btn-user"
-                    style={{ marginLeft: "5px" }}
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </div>
+                  <i className="fas fa-search fa-fw"></i>
+                </a>
+                {/*<!-- Dropdown - Messages -->*/}
+                <div
+                  className="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                  aria-labelledby="searchDropdown"
+                >
+                  <form className="form-inline mr-auto w-100 navbar-search">
+                    <div className="input-group">
+                      <input
+                        type="text"
+                        className="form-control bg-light border-0 small"
+                        placeholder="Search for..."
+                        aria-label="Search"
+                        aria-describedby="basic-addon2"
+                      />
+                      <div className="input-group-append">
+                        <button className="btn btn-primary" type="button">
+                          <i className="fas fa-search fa-sm"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </li>
+              {/*<!-- Nav Item - User Information -->*/}
+              <li className="nav-item dropdown no-arrow">
+                <span className="mr-2 d-none d-lg-inline text-gray-600 small">
+                  {`${userInfo.name}(${userInfo.studentId})`}
+                </span>
+                {/*<!--마이페이지 버튼-->*/}
+                <span style={{ paddingRight: "5px" }}>
+                  <a href="index.html" className="btn btn-primary btn-user">
+                    My Page
+                  </a>
+                </span>
+                {/*<!--로그아웃 버튼-->*/}
+                <a className="btn btn-primary btn-user" onClick={handleLogout}>
+                  Logout
                 </a>
               </li>
             </ul>
@@ -270,7 +183,7 @@ function Team() {
                         aria-haspopup="true"
                         aria-expanded="false"
                       >
-                        <FontAwesomeIcon icon={faPlus} />
+                        <i className="fa fa-plus"></i>
                       </a>
                       <div
                         className="dropdown-menu dropdown-menu-right shadow animated--fade-in"
@@ -323,19 +236,19 @@ function Team() {
                                           className="btn"
                                           style={{ padding: "0.1rem 0.5rem" }}
                                         >
-                                          <FontAwesomeIcon icon={faEdit} />
+                                          <i className="fa fa-edit text-black-50"></i>
                                         </a>
                                         <a
                                           className="btn"
                                           style={{ padding: "0.1rem 0.5rem" }}
                                         >
-                                          <FontAwesomeIcon icon={faTrash} />
+                                          <i className="fa fa-trash text-black-50"></i>
                                         </a>
                                         <a
                                           className="btn"
                                           style={{ padding: "0.1rem 0.5rem" }}
                                         >
-                                          <FontAwesomeIcon icon={faDownload} />
+                                          <i className="fa fa-download text-black-50"></i>
                                         </a>
                                         <div
                                           className="dropdown no-arrow btn"
@@ -353,7 +266,7 @@ function Team() {
                                             aria-haspopup="true"
                                             aria-expanded="false"
                                           >
-                                            <FontAwesomeIcon icon={faBars} />
+                                            <i className="fa fa-bars text-black-50"></i>
                                           </a>
                                           <div
                                             className="dropdown-menu dropdown-menu-right shadow animated--fade-in"
@@ -396,19 +309,19 @@ function Team() {
                                           className="btn"
                                           style={{ padding: "0.1rem 0.5rem" }}
                                         >
-                                          <FontAwesomeIcon icon={faEdit} />
+                                          <i className="fa fa-edit text-black-50"></i>
                                         </a>
                                         <a
                                           className="btn"
                                           style={{ padding: "0.1rem 0.5rem" }}
                                         >
-                                          <FontAwesomeIcon icon={faTrash} />
+                                          <i className="fa fa-trash text-black-50"></i>
                                         </a>
                                         <a
                                           className="btn"
                                           style={{ padding: "0.1rem 0.5rem" }}
                                         >
-                                          <FontAwesomeIcon icon={faDownload} />
+                                          <i className="fa fa-download text-black-50"></i>
                                         </a>
                                         <div
                                           className="dropdown no-arrow btn"
@@ -426,7 +339,7 @@ function Team() {
                                             aria-haspopup="true"
                                             aria-expanded="false"
                                           >
-                                            <FontAwesomeIcon icon={faBars} />
+                                            <i className="fa fa-bars text-black-50"></i>
                                           </a>
                                           <div
                                             className="dropdown-menu dropdown-menu-right shadow animated--fade-in"
@@ -487,7 +400,7 @@ function Team() {
                         aria-haspopup="true"
                         aria-expanded="false"
                       >
-                        <FontAwesomeIcon icon={faPlus} />
+                        <i className="fa fa-plus"></i>
                       </a>
                       <div
                         className="dropdown-menu dropdown-menu-right shadow animated--fade-in"
@@ -531,7 +444,7 @@ function Team() {
                         aria-haspopup="true"
                         aria-expanded="false"
                       >
-                        <FontAwesomeIcon icon={faPlus} />
+                        <i className="fa fa-plus"></i>
                       </a>
                       <div
                         className="dropdown-menu dropdown-menu-right shadow animated--fade-in"
