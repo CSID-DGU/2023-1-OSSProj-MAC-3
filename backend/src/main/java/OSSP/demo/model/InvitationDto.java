@@ -9,7 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class InvitationDto {
-    private Long id;
+    private Long invitationId;
     private Long teamId;
     private Long leaderId;
     private Long fellowId;

@@ -62,7 +62,7 @@ public class InvitationService {
                         .build();
                 invitationRepository.save(invitation);
                 InvitationDto invitationResponseDto = InvitationDto.builder()
-                        .id(invitation.getId())
+                        .invitationId(invitation.getId())
                         .leaderId(invitation.getLeader().getId())
                         .fellowId(invitation.getFellow().getId())
                         .teamId(invitation.getTeam().getId())
@@ -93,7 +93,7 @@ public class InvitationService {
         List<InvitationDto> invitationDtoList = new ArrayList<>();
         for (Invitation invitation : invitations) {
             InvitationDto invitationResponseDto = InvitationDto.builder()
-                    .id(invitation.getId())
+                    .invitationId(invitation.getId())
                     .leaderId(invitation.getLeader().getId())
                     .fellowId(invitation.getFellow().getId())
                     .teamId(invitation.getTeam().getId())
@@ -126,7 +126,7 @@ public class InvitationService {
         Member member = new Member(invitation.getFellow(), invitation.getTeam(), Role.Member);
         memberRepository.save(member);
         InvitationDto invitationResponseDto = InvitationDto.builder()
-                .id(invitation.getId())
+                .invitationId(invitation.getId())
                 .leaderId(invitation.getLeader().getId())
                 .fellowId(invitation.getFellow().getId())
                 .teamId(invitation.getTeam().getId())
@@ -157,7 +157,7 @@ public class InvitationService {
         }
         invitation.setIsAccepted(false);
         InvitationDto invitationResponseDto = InvitationDto.builder()
-                .id(invitation.getId())
+                .invitationId(invitation.getId())
                 .leaderId(invitation.getLeader().getId())
                 .fellowId(invitation.getFellow().getId())
                 .teamId(invitation.getTeam().getId())
