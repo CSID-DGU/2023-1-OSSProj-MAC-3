@@ -92,6 +92,9 @@ public class TeamService {
                 return ResponseEntity.badRequest().body(ResponseDto.builder().error(Collections.singletonMap("create_team", "존재하지 않는 학번입니다.")).build());
             }
             Long userId = userRepository.findByStudentId(studentId).get().getId();
+            if (teamName.equals("") || teamName == null) {
+                return ResponseEntity.badRequest().body(ResponseDto.builder().error(Collections.singletonMap("create_team", "팀 이름을 입력해주세요.")).build());
+            }
             Team team = new Team(teamName);
             teamRepository.save(team);
             Member member = new Member(userRepository.findById(userId).get(), team, Role.Leader);
