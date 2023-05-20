@@ -9,8 +9,11 @@ import {
   faPlus,
   faEdit,
   faTrash,
-  faDownload,
+  faDownload
 } from "@fortawesome/free-solid-svg-icons";
+import TeamInfo from "./components/TeamInfo";
+import Notice from "./components/Notice";
+import FileStorage from "./components/FileStorage";
 
 function DropdownButton({ label, content, style }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,8 +40,8 @@ function Team() {
     console.log(token);
     fetch("http://localhost:8080/user", {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
       .then((response) => response.json())
       .then((data) => {
@@ -117,7 +120,7 @@ function Team() {
                       style={{
                         width: "100%",
                         border: "none",
-                        backgroundColor: "#ccd1d9",
+                        backgroundColor: "#ccd1d9"
                       }}
                     >
                       <FontAwesomeIcon icon={faPlus} />
@@ -195,7 +198,7 @@ function Team() {
                           style={{
                             width: "100%",
                             backgroundColor: "#fc9a9d",
-                            border: "none",
+                            border: "none"
                           }}
                         >
                           수락
@@ -205,7 +208,7 @@ function Team() {
                           style={{
                             width: "100%",
                             backgroundColor: "#9abbfc",
-                            border: "none",
+                            border: "none"
                           }}
                         >
                           거절
@@ -254,311 +257,12 @@ function Team() {
 
             <div className="row">
               {/*<!-- 파일 스토리지 섹션 -->*/}
-              <div className="col-xl-8">
-                <div className="card shadow mb-4">
-                  <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 className="m-0 font-weight-bold text-primary">
-                      파일 스토리지
-                    </h6>
-                    <div className="dropdown no-arrow">
-                      <a
-                        className="dropdown-toggle"
-                        href="#"
-                        role="button"
-                        id="dropdownMenuLink"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        <FontAwesomeIcon icon={faPlus} />
-                      </a>
-                      <div
-                        className="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                        aria-labelledby="dropdownMenuLink"
-                      >
-                        <div className="dropdown-header">Dropdown Header:</div>
-                        <a className="dropdown-item" href="#">
-                          Action
-                        </a>
-                        <a className="dropdown-item" href="#">
-                          Another action
-                        </a>
-                        <div className="dropdown-divider"></div>
-                        <a className="dropdown-item" href="#">
-                          Something else here
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  {/*<!-- Card Body -->*/}
-                  <div className="card-body">
-                    <div className="chart-area">
-                      {/*<!--<canvas id="myAreaChart"></canvas>-->*/}
-                      <div className="row">
-                        <div className="col-lg-12">
-                          <div className="card">
-                            <div className="card-body">
-                              <div className="table-responsive project-list">
-                                <table className="table project-table table-centered table-nowrap">
-                                  <thead>
-                                    <tr>
-                                      <th scope="col">#</th>
-                                      <th scope="col">파일명</th>
-                                      <th scope="col">수정사항</th>
-                                      <th scope="col">수정일</th>
-                                      <th scope="col">작성자</th>
-                                      <th scope="col"></th>
-                                      {/*<!--<th scope="col">Action</th>-->*/}
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <tr>
-                                      <th scope="row">1</th>
-                                      <td>OSS 착수</td>
-                                      <td>서론 작성</td>
-                                      <td>02/5/2019</td>
-                                      <td>김동국</td>
-                                      <td style={{ textAlign: "center" }}>
-                                        <a
-                                          className="btn"
-                                          style={{ padding: "0.1rem 0.5rem" }}
-                                        >
-                                          <FontAwesomeIcon icon={faEdit} />
-                                        </a>
-                                        <a
-                                          className="btn"
-                                          style={{ padding: "0.1rem 0.5rem" }}
-                                        >
-                                          <FontAwesomeIcon icon={faTrash} />
-                                        </a>
-                                        <a
-                                          className="btn"
-                                          style={{ padding: "0.1rem 0.5rem" }}
-                                        >
-                                          <FontAwesomeIcon icon={faDownload} />
-                                        </a>
-                                        <div
-                                          className="dropdown no-arrow btn"
-                                          style={{
-                                            display: "inline",
-                                            padding: "0.1rem 0.5rem",
-                                          }}
-                                        >
-                                          <a
-                                            className="dropdown-toggle"
-                                            href="#"
-                                            role="button"
-                                            id="dropdownMenuLink"
-                                            data-toggle="dropdown"
-                                            aria-haspopup="true"
-                                            aria-expanded="false"
-                                          >
-                                            <FontAwesomeIcon icon={faBars} />
-                                          </a>
-                                          <div
-                                            className="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink"
-                                          >
-                                            <div className="dropdown-header">
-                                              Dropdown Header:
-                                            </div>
-                                            <a
-                                              className="dropdown-item"
-                                              href="#"
-                                            >
-                                              Action
-                                            </a>
-                                            <a
-                                              className="dropdown-item"
-                                              href="#"
-                                            >
-                                              Another action
-                                            </a>
-                                            <div className="dropdown-divider"></div>
-                                            <a
-                                              className="dropdown-item"
-                                              href="#"
-                                            >
-                                              Something else here
-                                            </a>
-                                          </div>
-                                        </div>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <th scope="row">1</th>
-                                      <td>OSS 착수</td>
-                                      <td>서론 작성</td>
-                                      <td>02/5/2019</td>
-                                      <td>김동국</td>
-                                      <td style={{ textAlign: "center" }}>
-                                        <a
-                                          className="btn"
-                                          style={{ padding: "0.1rem 0.5rem" }}
-                                        >
-                                          <FontAwesomeIcon icon={faEdit} />
-                                        </a>
-                                        <a
-                                          className="btn"
-                                          style={{ padding: "0.1rem 0.5rem" }}
-                                        >
-                                          <FontAwesomeIcon icon={faTrash} />
-                                        </a>
-                                        <a
-                                          className="btn"
-                                          style={{ padding: "0.1rem 0.5rem" }}
-                                        >
-                                          <FontAwesomeIcon icon={faDownload} />
-                                        </a>
-                                        <div
-                                          className="dropdown no-arrow btn"
-                                          style={{
-                                            display: "inline",
-                                            padding: "0.1rem 0.5rem",
-                                          }}
-                                        >
-                                          <a
-                                            className="dropdown-toggle"
-                                            href="#"
-                                            role="button"
-                                            id="dropdownMenuLink"
-                                            data-toggle="dropdown"
-                                            aria-haspopup="true"
-                                            aria-expanded="false"
-                                          >
-                                            <FontAwesomeIcon icon={faBars} />
-                                          </a>
-                                          <div
-                                            className="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink"
-                                          >
-                                            <div className="dropdown-header">
-                                              Dropdown Header:
-                                            </div>
-                                            <a
-                                              className="dropdown-item"
-                                              href="#"
-                                            >
-                                              Action
-                                            </a>
-                                            <a
-                                              className="dropdown-item"
-                                              href="#"
-                                            >
-                                              Another action
-                                            </a>
-                                            <div className="dropdown-divider"></div>
-                                            <a
-                                              className="dropdown-item"
-                                              href="#"
-                                            >
-                                              Something else here
-                                            </a>
-                                          </div>
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
+              <FileStorage />
               <div className="col-xl-4 mb-4">
                 {/*<!-- 팀 구성 정보 -->*/}
-                <div className="card shadow mb-4">
-                  <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 className="m-0 font-weight-bold text-primary">
-                      팀 구성 정보
-                    </h6>
-                    <div className="dropdown no-arrow">
-                      <a
-                        className="dropdown-toggle"
-                        href="#"
-                        role="button"
-                        id="dropdownMenuLink"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        <FontAwesomeIcon icon={faPlus} />
-                      </a>
-                      <div
-                        className="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                        aria-labelledby="dropdownMenuLink"
-                      >
-                        <div className="dropdown-header">Dropdown Header:</div>
-                        <a className="dropdown-item" href="#">
-                          Action
-                        </a>
-                        <a className="dropdown-item" href="#">
-                          Another action
-                        </a>
-                        <div className="dropdown-divider"></div>
-                        <a className="dropdown-item" href="#">
-                          Something else here
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card-body">
-                    <ul className="list-group">
-                      <li className="list-group-item">20230001 김동국</li>
-
-                      <li className="list-group-item">20230001 김건국</li>
-                    </ul>
-                  </div>
-                </div>
+                <TeamInfo />
                 {/*<!--공지사항-->*/}
-                <div className="card shadow mb-4">
-                  <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 className="m-0 font-weight-bold text-primary">
-                      공지 사항
-                    </h6>
-                    <div className="dropdown no-arrow">
-                      <a
-                        className="dropdown-toggle"
-                        href="#"
-                        role="button"
-                        id="dropdownMenuLink"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        <FontAwesomeIcon icon={faPlus} />
-                      </a>
-                      <div
-                        className="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                        aria-labelledby="dropdownMenuLink"
-                      >
-                        <div className="dropdown-header">Dropdown Header:</div>
-                        <a className="dropdown-item" href="#">
-                          Action
-                        </a>
-                        <a className="dropdown-item" href="#">
-                          Another action
-                        </a>
-                        <div className="dropdown-divider"></div>
-                        <a className="dropdown-item" href="#">
-                          Something else here
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card-body">
-                    <ul className="list-group">
-                      <li className="list-group-item">착수 보고 데드라인</li>
-                    </ul>
-                  </div>
-
-                  {/*<!-- Pie Chart -->*/}
-                </div>
+                <Notice />
               </div>
               {/*<!-- /.container-fluid -->*/}
             </div>
