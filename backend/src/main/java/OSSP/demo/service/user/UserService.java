@@ -46,6 +46,6 @@ public class UserService {
                     .build();
             userDtoList.add(userDto);
         }
-        return ResponseEntity.ok(userDtoList);
+        return ResponseEntity.ok(Collections.singletonMap("get_user_list", userDtoList));
     }
 }
