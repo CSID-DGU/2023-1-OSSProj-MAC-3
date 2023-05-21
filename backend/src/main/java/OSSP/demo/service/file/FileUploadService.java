@@ -1,4 +1,4 @@
-package OSSP.demo.service.upload;
+package OSSP.demo.service.file;
 
 import OSSP.demo.entity.*;
 import OSSP.demo.model.FileVersionDto;
@@ -37,46 +37,60 @@ public class FileUploadService {
     public ResponseEntity uploadImage(String studentId, Long teamId, MultipartFile uploadFile,
                                       FileVersionDto fileVersionDto){
         try {
-            User finduser = userRepository.findByStudentId(studentId).get();
+            User user = userRepository.findByStudentId(studentId).get();
+            Member member;
 
-            //현재 사용자 조회
-            Member member = memberRepository.findByUserIdAndTeamId(finduser.getId(), teamId).get();
+            try{
+                //현재 사용자 조회
+                member = memberRepository.findByUserIdAndTeamId(user.getId(), teamId).get();
+
+            }catch (Exception e){
+                log.error(e.getMessage());
+                return ResponseEntity.badRequest().body(ResponseDto.builder().error(Collections.singletonMap("upload_file", "올바른 접근이 아닙니다.(사용자)")).build());
+            }
 
             // 파일 이름 추출
-            String fileName = uploadFile.getOriginalFilename();
+            String fileName = uploadFile.getOriginalFilename(); //원래 파일이름.확장자
+            String fileFirstName = fileName.substring(0, fileName.lastIndexOf(".")); //파일 이름
+            String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1); //파일 확장자
 
-            // fileRepository에 현재 업로드 하는 파일과 같은 이름의 파일을 조회
-            File findfile = fileRepository.findFileByFileName(uploadFile.getOriginalFilename());
+            //여러 팀에서 같은 이름으로 파일을 올릴 수 있기 때문에 유니크한 이름으로 s3에 저장하고, db에는 file원래 이름으로 저장.
+            String fileNamePlusTeam = fileFirstName+"temaId_"+teamId+"."+fileExtension;
 
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(uploadFile.getSize()); //파일 크기
-            objectMetadata.setContentType(uploadFile.getContentType()); // 파일 확장자
-            String versionId;
+            objectMetadata.setContentType(uploadFile.getContentType()); // 파일 타입
 
+            String versionId;
             try (InputStream inputStream = uploadFile.getInputStream()) {
                 //아래 라인을 통해 s3에 업로드 되는 파일의 Object 정보를 받아옴.
-                PutObjectResult putObjectResult = s3Service.uploadFile(inputStream, objectMetadata, fileName); // s3에 파일 업로드.
+                PutObjectResult putObjectResult = s3Service.uploadFile(inputStream, objectMetadata, fileNamePlusTeam); // s3에 파일 업로드.
                 versionId = putObjectResult.getVersionId(); //버전id를 받아옴
             } catch (IOException e) {
-                throw new IllegalArgumentException(String.format("파일 변환 중 에러가 발생하였습니다. (%s)", fileName));
+                throw new IllegalArgumentException(String.format("파일 변환 중 에러가 발생하였습니다. (%s)", fileNamePlusTeam));
             }
 
-            String url = s3Service.getFileUrl(fileName); //업로드 파일 url 반환.
+            String url = s3Service.getFileUrl(fileNamePlusTeam); //업로드 파일 url 반환.
+
+            // fileRepository에 현재 업로드 하는 파일과 같은 이름의 파일을 조회
+            File findfile = fileRepository.findFileByTransFileName(fileNamePlusTeam);
 
             // 파일이 없을시,
             if (findfile == null) {
-                System.out.println(member);
                 //파일 객체 생성
                 File file = File.builder().
-                        fileName(fileName).
-
+                        realFileName(fileName).
+                        transFileName(fileNamePlusTeam).
                         s3FileUrl(url).
+                        commitMessage(fileVersionDto.getCommitMessage()).
                         build();
                 fileRepository.save(file);
                 findfile = file;
+                findfile.setMember(member);
+            }else{
+                findfile.setMember(member);
+                findfile.setS3FileUrl(url);
             }
-
-            findfile.setMember(member);
 
             // FileVersion에 업로드한 파일을 저장.
             FileVersion fileVersion = FileVersion.builder(). //컬럼으로 팀장이 합본을 올린것을 알 수 있도록 불리안으로 컬럼하나 생성.
@@ -94,6 +108,7 @@ public class FileUploadService {
             FileVersionDto fileVersionDto1 = FileVersionDto.builder().
                     commitMessage(fileVersionDto.getCommitMessage()).
                     combination(fileVersionDto.getCombination()).
+                    fileName(fileName).
                     s3Url(url + "?versionId=" + versionId).build();
 
             return ResponseEntity.ok().body(fileVersionDto1);

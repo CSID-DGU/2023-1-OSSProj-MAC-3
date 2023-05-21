@@ -1,4 +1,4 @@
-package OSSP.demo.service.delete;
+package OSSP.demo.service.file;
 
 import OSSP.demo.model.ResponseDto;
 import OSSP.demo.repository.FileRepository;
@@ -32,7 +32,7 @@ public class FileDeleteService {
     // 파일 전체 삭제(하위 버전도 같이 삭제)
     public ResponseEntity deleteAll(Long fileId) {
         try {
-            String keyName = fileRepository.findById(fileId).get().getFileName(); //keyName이 파일 이름
+            String keyName = fileRepository.findById(fileId).get().getTransFileName(); //keyName이 파일 이름
             String deleteUrl = fileRepository.findById(fileId).get().getS3FileUrl();
             amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, keyName));
             fileRepository.deleteById(fileId); //db에서 삭제.
@@ -47,7 +47,7 @@ public class FileDeleteService {
     // 파일 버전 하나 삭제
     public ResponseEntity deleteOne(Long fileVersionId){
         try {
-            String keyName = fileVersionRepository.findById(fileVersionId).get().getFile().getFileName();
+            String keyName = fileVersionRepository.findById(fileVersionId).get().getFile().getTransFileName();
             String deleteUrl = fileVersionRepository.findById(fileVersionId).get().getS3FileVersionUrl();
 
             String versionId = deleteUrl.substring(deleteUrl.indexOf("=") + 1);

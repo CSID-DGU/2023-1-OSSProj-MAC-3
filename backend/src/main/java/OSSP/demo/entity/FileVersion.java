@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FileVersion {
+public class FileVersion extends TimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
