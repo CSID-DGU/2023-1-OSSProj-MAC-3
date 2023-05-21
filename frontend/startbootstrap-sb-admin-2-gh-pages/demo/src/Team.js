@@ -11,6 +11,8 @@ import {
   faTrash,
   faDownload,
 } from "@fortawesome/free-solid-svg-icons";
+import TeamList from "./components/TeamList.js";
+import InviteMsg from "./components/InviteMsg.js";
 
 function DropdownButton({ label, content, style }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -99,30 +101,13 @@ function Team() {
             <DropdownButton
               label={
                 <div style={{ textAlign: "center" }}>
-                  <i class="fas fa-fw fa-cog"></i>
+                  <i className="fas fa-fw fa-cog"></i>
                   <span>팀 활동 페이지</span>
                 </div>
               }
               content={
                 <div className="collapse" style={{ display: "block" }}>
-                  <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">팀 목록 :</h6>
-                    <a class="collapse-item">
-                      {/*href="buttons.html">*/}
-                      오픈소스
-                    </a>
-                    <a class="collapse-item">MAC</a>
-                    <div
-                      className="btn btn-secondary btn-sm"
-                      style={{
-                        width: "100%",
-                        border: "none",
-                        backgroundColor: "#ccd1d9",
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faPlus} />
-                    </div>
-                  </div>
+                  <TeamList />
                 </div>
               }
               style="nav-link collapsed"
@@ -172,47 +157,7 @@ function Team() {
                       </span>
                     </div>
                   }
-                  content={
-                    <div
-                      className="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                      aria-labelledby="alertsDropdown"
-                      style={{ display: "block" }}
-                    >
-                      <h6 className="dropdown-header">
-                        <span>김동국(2023000002)</span>
-                        님이
-                        <span>MAC</span>
-                        팀에
-                        <span>홍길동</span>
-                        님을 초대하셨습니다.
-                      </h6>
-                      <a
-                        className="dropdown-item d-flex align-items-center"
-                        href="#"
-                      >
-                        <div
-                          className="btn btn-secondary btn-sm"
-                          style={{
-                            width: "100%",
-                            backgroundColor: "#fc9a9d",
-                            border: "none",
-                          }}
-                        >
-                          수락
-                        </div>
-                        <div
-                          className="btn btn-secondary btn-sm"
-                          style={{
-                            width: "100%",
-                            backgroundColor: "#9abbfc",
-                            border: "none",
-                          }}
-                        >
-                          거절
-                        </div>
-                      </a>
-                    </div>
-                  }
+                  content={<InviteMsg />}
                   style="nav-link dropdown-toggle"
                 />
               </li>
