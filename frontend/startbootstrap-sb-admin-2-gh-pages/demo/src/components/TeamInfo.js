@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faRefresh } from "@fortawesome/free-solid-svg-icons";
 
 const TeamInfo = ({ teamId, handleInviteModalShow }) => {
   const [teamInfo, setTeamInfo] = useState(null);
@@ -32,12 +32,19 @@ const TeamInfo = ({ teamId, handleInviteModalShow }) => {
           <h6 className="m-0 font-weight-bold text-primary">팀 구성 정보</h6>
           <div className="dropdown no-arrow">
             <a
+              className="dropdown-toggle mr-3"
+              onClick={() => {
+                if (teamId.id > 0) {
+                  fetchTeam();
+                } else {
+                  window.alert("팀을 선택해주세요.");
+                }
+              }}
+            >
+              <FontAwesomeIcon icon={faRefresh} />
+            </a>
+            <a
               className="dropdown-toggle"
-              role="button"
-              id="dropdownMenuLink"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
               onClick={() => {
                 if (teamId.id > 0) {
                   handleInviteModalShow(true);
