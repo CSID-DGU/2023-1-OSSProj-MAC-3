@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
   faBars,
+  faMessage,
   faSearch,
   faPlus,
   faEdit,
@@ -12,28 +13,13 @@ import {
   faDownload
 } from "@fortawesome/free-solid-svg-icons";
 import TeamList from "./components/TeamList.js";
-import InviteMsg from "./components/InviteMsg.js";
+import InviteMsg from "./components/InvitationMsg.js";
 import TeamInfo from "./components/TeamInfo";
 import Notice from "./components/Notice";
 import FileStorage from "./components/FileStorage";
 import InviteModal from "./components/InviteModal";
-
-function DropdownButton({ label, content, style }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
-
-  return (
-    <div className="dropdown">
-      <a className={`dropdown-button ${style}`} onClick={toggleDropdown}>
-        {label}
-      </a>
-      {isOpen && <div>{content}</div>}
-    </div>
-  );
-}
+import InvitationNav from "./components/InvitationNav";
+import DropdownButton from "./components/DropdownButton";
 
 function Team() {
   const [userInfo, setUserInfo] = useState({});
@@ -56,6 +42,7 @@ function Team() {
   const handleInviteModalShow = (data) => {
     setInviteModalShow(data);
   };
+
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     console.log(token);
@@ -74,11 +61,6 @@ function Team() {
   const handleLogout = () => {
     //localStorage.removeItem("token");
     navigate("/login");
-  };
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen); // 드롭다운 상태를 반전시킴
   };
 
   return (
@@ -141,6 +123,7 @@ function Team() {
         <hr className="sidebar-divider d-none d-md-block" />
       </ul>
       {/*<!-- End of Sidebar -->*/}
+
       {/*<!-- Content Wrapper -->*/}
       <div id="content-wrapper" className="d-flex flex-column">
         {/*<!-- Main Content -->*/}
@@ -167,33 +150,10 @@ function Team() {
             {/*<!-- Topbar Navbar -->*/}
             <ul className="navbar-nav ml-auto">
               {/*<!-- Nav Item - Alerts -->*/}
-
-              <li className="nav-item dropdown no-arrow mx-1">
-                <DropdownButton
-                  label={
-                    <div>
-                      <FontAwesomeIcon icon={faBell} />
-                      {/* Counter - Alerts */}
-                      <span className="badge badge-danger badge-counter">
-                        3+
-                      </span>
-                    </div>
-                  }
-                  content={<InviteMsg />}
-                  style="nav-link dropdown-toggle"
-                />
-              </li>
+              <InvitationNav />
               {/*<!-- Nav Item - User Information -->*/}
               <li className="nav-item dropdown no-arrow">
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#"
-                  id="userDropdown"
-                  role="button"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
+                <a className="nav-link dropdown-toggle">
                   <span className="mr-2 d-none d-lg-inline text-gray-600 small">
                     {userInfo.name} ({userInfo.studentId})
                   </span>
