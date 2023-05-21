@@ -15,25 +15,25 @@ public class NoticeController {
 
     private final NoticeService noticeService;
 
-    @GetMapping("/{teamId}/notice")
+    @GetMapping("/team/{teamId}/notice")
     public ResponseEntity findAll(@AuthenticationPrincipal String studentId, @PathVariable Long teamId){
         return noticeService.findAll(studentId, teamId);
     }
 
-    @PostMapping("/{teamId}/notice")
+    @PostMapping("/team/{teamId}/notice")
     public ResponseEntity writeNotice(@AuthenticationPrincipal String studentId, @PathVariable Long teamId,
                                       @RequestBody NoticeRequest noticeRequest){
         return noticeService.write(studentId, teamId, noticeRequest);
     }
 
-    @PutMapping("/{teamId}/{noticeId}")
+    @PutMapping("/team/{teamId}/notice/{noticeId}")
     public ResponseEntity updateNotice(@AuthenticationPrincipal String studentId,
                                        @PathVariable Long teamId, @PathVariable Long noticeId,
                                        @RequestBody NoticeRequest noticeRequest){
         return noticeService.update(studentId, teamId, noticeId, noticeRequest);
     }
 
-    @DeleteMapping("/{teamId}/{noticeId}")
+    @DeleteMapping("/team/{teamId}/notice/{noticeId}")
     public ResponseEntity deleteNotice(@AuthenticationPrincipal String studentId,
                                        @PathVariable Long teamId, @PathVariable Long noticeId){
         return noticeService.delete(studentId, teamId, noticeId);

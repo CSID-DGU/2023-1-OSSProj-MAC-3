@@ -13,7 +13,7 @@ public class FileDownloadController {
 
     private final FileDownloadService fileDownloadService;
 
-    @GetMapping("download/{fileId}/{fileVersionId}")
+    @GetMapping("/team/{teamId}/file/{fileId}/{fileVersionId}")
     public ResponseEntity downloadFile(@PathVariable Long fileId, @PathVariable Long fileVersionId){
         return fileDownloadService.downloadImage(fileId, fileVersionId);
     }
