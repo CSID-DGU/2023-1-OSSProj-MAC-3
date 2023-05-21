@@ -195,7 +195,7 @@ function Team() {
                   aria-expanded="false"
                 >
                   <span className="mr-2 d-none d-lg-inline text-gray-600 small">
-                    김동국(2023000001)
+                    {userInfo.name} ({userInfo.studentId})
                   </span>
                   {/*<!-- <span style="padding-right: 5px"> -->*/}
                   <div className="btn btn-primary btn-user">My Page</div>
