@@ -16,6 +16,7 @@ import InviteMsg from "./components/InviteMsg.js";
 import TeamInfo from "./components/TeamInfo";
 import Notice from "./components/Notice";
 import FileStorage from "./components/FileStorage";
+import InviteModal from "./components/InviteModal";
 
 function DropdownButton({ label, content, style }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +38,8 @@ function DropdownButton({ label, content, style }) {
 function Team() {
   const [userInfo, setUserInfo] = useState({});
   const [teamId, setTeamId] = useState(0);
+  const [inviteModalShow, setInviteModalShow] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,6 +48,13 @@ function Team() {
 
   const handleTeamIdFromChild = (data) => {
     setTeamId(data);
+  };
+
+  useEffect(() => {
+    console.log(inviteModalShow);
+  }, [inviteModalShow]);
+  const handleInviteModalShow = (data) => {
+    setInviteModalShow(data);
   };
   useEffect(() => {
     const token = sessionStorage.getItem("token");
@@ -214,7 +224,13 @@ function Team() {
               <FileStorage />
               <div className="col-xl-4 mb-4">
                 {/*<!-- 팀 구성 정보 -->*/}
-                <TeamInfo />
+                {/* {useEffect(() => {
+                  <TeamInfo teamId={teamId} />;
+                }, [teamId])} */}
+                <TeamInfo
+                  teamId={{ id: teamId }}
+                  handleInviteModalShow={handleInviteModalShow}
+                />
                 {/*<!--공지사항-->*/}
                 <Notice />
               </div>
@@ -235,6 +251,15 @@ function Team() {
           {/*<!-- End of Content Wrapper -->*/}
         </div>
       </div>
+      {/* 팀원 초대 모달 */}
+      {inviteModalShow && (
+        <InviteModal
+          userInfo={userInfo}
+          teamId={{ id: teamId }}
+          inviteModalShow={inviteModalShow}
+          handleInviteModalShow={handleInviteModalShow}
+        />
+      )}
     </div>
   );
 }
