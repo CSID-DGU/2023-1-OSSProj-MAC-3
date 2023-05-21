@@ -19,9 +19,9 @@ const TeamList = ({ handleTeamIdFromChild }) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ teamName: newTeamName })
+      body: JSON.stringify({ teamName: newTeamName }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -35,12 +35,13 @@ const TeamList = ({ handleTeamIdFromChild }) => {
 
   const handleDeleteTeam = (teamID) => {
     const token = sessionStorage.getItem("token");
+    console.log(teamID);
     fetch(`http://localhost:8080/team/${teamID}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     })
       .then((response) => response.json())
       .then((data) => {
@@ -49,6 +50,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
         setTeams((prevTeams) =>
           prevTeams.filter((team) => team.teamID !== teamID)
         );
+        fetchTeams();
       })
       .catch((error) => console.log(error));
   };
@@ -58,8 +60,8 @@ const TeamList = ({ handleTeamIdFromChild }) => {
     console.log(token);
     fetch("http://localhost:8080/team", {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => response.json())
       .then((data) => {
@@ -74,6 +76,12 @@ const TeamList = ({ handleTeamIdFromChild }) => {
   useEffect(() => {
     fetchTeams();
   }, []);
+
+  const handleEnterKey = (event) => {
+    if (event.key === "Enter") {
+      handleAddTeam();
+    }
+  };
 
   return (
     <div className="bg-white py-2 collapse-inner rounded">
@@ -94,7 +102,10 @@ const TeamList = ({ handleTeamIdFromChild }) => {
                 >
                   {team.teamName}
                 </a>
-                <span className="btn">
+                <span
+                  className="btn"
+                  onClick={() => handleDeleteTeam(team.teamId)}
+                >
                   <FontAwesomeIcon icon={faTrash} />
                 </span>
               </div>
@@ -112,10 +123,11 @@ const TeamList = ({ handleTeamIdFromChild }) => {
             aria-describedby="basic-addon2"
             value={newTeamName}
             onChange={handleInputChange}
+            onKeyDown={handleEnterKey}
           />
           <div className="input-group-append">
             <button
-              className="btn btn-secodary"
+              className="btn btn-secodary btn-user"
               type="button"
               onClick={handleAddTeam}
             >
@@ -129,7 +141,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
             style={{
               width: "100%",
               border: "none",
-              backgroundColor: "#ccd1d9"
+              backgroundColor: "#ccd1d9",
             }}
             onClick={() => setShowInput(true)}
           >
@@ -142,7 +154,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
           style={{
             width: "100%",
             border: "none",
-            backgroundColor: "#ccd1d9"
+            backgroundColor: "#ccd1d9",
           }}
           onClick={() => setShowInput(true)}
         >
