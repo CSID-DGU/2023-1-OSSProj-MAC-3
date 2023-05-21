@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const TeamList = ({ handleTeamIdFromChild }) => {
   const [userInfo, setUserInfo] = useState({});
@@ -19,16 +19,36 @@ const TeamList = ({ handleTeamIdFromChild }) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ teamName: newTeamName })
+      body: JSON.stringify({ teamName: newTeamName }),
     })
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
         fetchTeams();
         setNewTeamName("");
-        setShowInput(true);
+        setShowInput(false);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const handleDeleteTeam = (teamID) => {
+    const token = sessionStorage.getItem("token");
+    fetch(`http://localhost:8080/team/${teamID}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        // 삭제된 팀 정보를 업데이트합니다.
+        setTeams((prevTeams) =>
+          prevTeams.filter((team) => team.teamID !== teamID)
+        );
       })
       .catch((error) => console.log(error));
   };
@@ -38,8 +58,8 @@ const TeamList = ({ handleTeamIdFromChild }) => {
     console.log(token);
     fetch("http://localhost:8080/team", {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => response.json())
       .then((data) => {
@@ -59,16 +79,26 @@ const TeamList = ({ handleTeamIdFromChild }) => {
     <div className="bg-white py-2 collapse-inner rounded">
       <h6 className="collapse-header">팀 목록 :</h6>
       {teams && teams.length > 0
-        ? teams.map((team, index) => (
-            <div key={index}>
-              <a
-                className="collapse-item"
-                onClick={handleTeamIdFromChild(team.teamID)}
+        ? teams.map((team, index) => {
+            const handleClick = () => handleTeamIdFromChild(team.teamID);
+            return (
+              <div
+                key={index}
+                style={{ display: "flex", alignItems: "center" }}
               >
-                {team.teamName}
-              </a>
-            </div>
-          ))
+                <a
+                  className="collapse-item"
+                  onClick={handleClick}
+                  style={{ flex: 1 }}
+                >
+                  {team.teamName}
+                </a>
+                <span className="btn">
+                  <FontAwesomeIcon icon={faTrash} />
+                </span>
+              </div>
+            );
+          })
         : null}
 
       {showInput ? (
@@ -93,6 +123,17 @@ const TeamList = ({ handleTeamIdFromChild }) => {
               </i>
             </button>
           </div>
+          <div
+            className="btn btn-secondary btn-sm"
+            style={{
+              width: "100%",
+              border: "none",
+              backgroundColor: "#ccd1d9",
+            }}
+            onClick={() => setShowInput(true)}
+          >
+            <FontAwesomeIcon icon={faPlus} />
+          </div>
         </div>
       ) : (
         <div
@@ -100,7 +141,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
           style={{
             width: "100%",
             border: "none",
-            backgroundColor: "#ccd1d9"
+            backgroundColor: "#ccd1d9",
           }}
           onClick={() => setShowInput(true)}
         >
