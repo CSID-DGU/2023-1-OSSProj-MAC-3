@@ -9,7 +9,7 @@ import {
   faPlus,
   faEdit,
   faTrash,
-  faDownload,
+  faDownload
 } from "@fortawesome/free-solid-svg-icons";
 import TeamList from "./components/TeamList.js";
 import InviteMsg from "./components/InviteMsg.js";
@@ -36,20 +36,23 @@ function DropdownButton({ label, content, style }) {
 
 function Team() {
   const [userInfo, setUserInfo] = useState({});
-  const [teamId, setTeamId] = useState({});
+  const [teamId, setTeamId] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log(teamId);
+  }, [teamId]);
 
   const handleTeamIdFromChild = (data) => {
     setTeamId(data);
-    console.log(teamId);
   };
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     console.log(token);
     fetch("http://localhost:8080/user", {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
       .then((response) => response.json())
       .then((data) => {
