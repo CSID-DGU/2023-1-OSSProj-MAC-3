@@ -74,7 +74,7 @@ public class TeamService {
             for (Member userMember : userMembers) {
                 Map<String, String> team = new HashMap();
                 team.put("teamName", userMember.getTeam().getTeamName());
-                team.put("teamID", userMember.getTeam().getId().toString());
+                team.put("teamId", userMember.getTeam().getId().toString());
                 teams.add(team);
             }
             return ResponseEntity.ok().body(Collections.singletonMap("get_teams", teams));
