@@ -1,19 +1,8 @@
-import "./bootstrap.css";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBell,
-  faBars,
-  faMessage,
-  faSearch,
-  faPlus,
-  faEdit,
-  faTrash,
-  faDownload
-} from "@fortawesome/free-solid-svg-icons";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 import TeamList from "./components/TeamList.js";
-import InviteMsg from "./components/InvitationMsg.js";
 import TeamInfo from "./components/TeamInfo";
 import Notice from "./components/Notice";
 import FileStorage from "./components/FileStorage";
@@ -21,7 +10,7 @@ import InviteModal from "./components/InviteModal";
 import InvitationNav from "./components/InvitationNav";
 import DropdownButton from "./components/DropdownButton";
 
-function Team() {
+const Team = () => {
   const [userInfo, setUserInfo] = useState({});
   const [teamId, setTeamId] = useState(0);
   const [inviteModalShow, setInviteModalShow] = useState(false);
@@ -39,6 +28,7 @@ function Team() {
   useEffect(() => {
     console.log(inviteModalShow);
   }, [inviteModalShow]);
+
   const handleInviteModalShow = (data) => {
     setInviteModalShow(data);
   };
@@ -185,8 +175,8 @@ function Team() {
               <div className="col-xl-4 mb-4">
                 {/*<!-- 팀 구성 정보 -->*/}
                 {/* {useEffect(() => {
-                  <TeamInfo teamId={teamId} />;
-                }, [teamId])} */}
+              <TeamInfo teamId={teamId} />;
+            }, [teamId])} */}
                 <TeamInfo
                   teamId={{ id: teamId }}
                   handleInviteModalShow={handleInviteModalShow}
@@ -208,6 +198,7 @@ function Team() {
             </footer>
             {/*<!-- End of Footer -->*/}
           </div>
+
           {/*<!-- End of Content Wrapper -->*/}
         </div>
       </div>
@@ -222,6 +213,6 @@ function Team() {
       )}
     </div>
   );
-}
+};
 
 export default Team;
