@@ -19,9 +19,9 @@ const TeamList = ({ handleTeamIdFromChild }) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({ teamName: newTeamName }),
+      body: JSON.stringify({ teamName: newTeamName })
     })
       .then((response) => response.json())
       .then((data) => {
@@ -39,8 +39,8 @@ const TeamList = ({ handleTeamIdFromChild }) => {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json"
+      }
     })
       .then((response) => response.json())
       .then((data) => {
@@ -58,8 +58,8 @@ const TeamList = ({ handleTeamIdFromChild }) => {
     console.log(token);
     fetch("http://localhost:8080/team", {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
       .then((response) => response.json())
       .then((data) => {
@@ -80,7 +80,6 @@ const TeamList = ({ handleTeamIdFromChild }) => {
       <h6 className="collapse-header">팀 목록 :</h6>
       {teams && teams.length > 0
         ? teams.map((team, index) => {
-            const handleClick = () => handleTeamIdFromChild(team.teamID);
             return (
               <div
                 key={index}
@@ -88,7 +87,9 @@ const TeamList = ({ handleTeamIdFromChild }) => {
               >
                 <a
                   className="collapse-item"
-                  onClick={handleClick}
+                  onClick={() => {
+                    handleTeamIdFromChild(team.teamId);
+                  }}
                   style={{ flex: 1 }}
                 >
                   {team.teamName}
@@ -128,7 +129,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
             style={{
               width: "100%",
               border: "none",
-              backgroundColor: "#ccd1d9",
+              backgroundColor: "#ccd1d9"
             }}
             onClick={() => setShowInput(true)}
           >
@@ -141,7 +142,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
           style={{
             width: "100%",
             border: "none",
-            backgroundColor: "#ccd1d9",
+            backgroundColor: "#ccd1d9"
           }}
           onClick={() => setShowInput(true)}
         >
