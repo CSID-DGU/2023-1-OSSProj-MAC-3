@@ -1,19 +1,18 @@
 package OSSP.demo.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import OSSP.demo.entity.Role;
+import lombok.*;
 
 import java.util.List;
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
 public class TeamDto {
+    private String teamId;
     private String teamName;
-    private List<TeamMemberDto> teamMembers;
+    private List<TeamFellowDto> teamFellow;
 
     @Builder
     @NoArgsConstructor
@@ -21,15 +20,15 @@ public class TeamDto {
     @Data
     public static class TeamRequestDto {
         private String teamName;
-        private List<String> teamMembers;
     }
 
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     @Data
-    public static class TeamMemberDto {
+    public static class TeamFellowDto {
         private String studentId;
         private String name;
+        private Role role;
     }
 }

@@ -1,10 +1,8 @@
-package OSSP.demo.service.find;
+package OSSP.demo.service.member;
 
 import OSSP.demo.entity.Member;
 import OSSP.demo.repository.MemberRepository;
 import com.amazonaws.services.kms.model.NotFoundException;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -23,7 +23,7 @@ public class UserDto {
     private String dept;
 
     //회원가입시 필요한 정보 검증
-    @Data
+    @Getter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
