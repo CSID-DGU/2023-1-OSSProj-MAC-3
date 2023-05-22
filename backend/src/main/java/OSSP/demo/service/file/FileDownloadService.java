@@ -21,7 +21,7 @@ public class FileDownloadService {
     private final FileVersionRepository fileVersionRepository;
 
     @Transactional
-    public ResponseEntity downloadImage(Long fileId, Long fileVersionId) {
+    public ResponseEntity downloadImage(String studentId, Long fileId, Long fileVersionId) {
         //findby조건을 달때, 해당 레포지토리의 pk부터 달아야함.
         try {
             FileVersion findFile = fileVersionRepository.findByFileVersionIdAndFile_FileId(fileVersionId, fileId);

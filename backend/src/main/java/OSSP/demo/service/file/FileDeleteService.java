@@ -30,7 +30,7 @@ public class FileDeleteService {
 
     @Transactional
     // 파일 전체 삭제(하위 버전도 같이 삭제)
-    public ResponseEntity deleteAll(Long fileId) {
+    public ResponseEntity deleteAll(String studentId, Long fileId) {
         try {
             String keyName = fileRepository.findById(fileId).get().getTransFileName(); //keyName이 파일 이름
             String deleteUrl = fileRepository.findById(fileId).get().getS3FileUrl();
@@ -45,7 +45,7 @@ public class FileDeleteService {
 
     @Transactional
     // 파일 버전 하나 삭제
-    public ResponseEntity deleteOne(Long fileVersionId){
+    public ResponseEntity deleteOne(String studentId, Long fileVersionId){
         try {
             String keyName = fileVersionRepository.findById(fileVersionId).get().getFile().getTransFileName();
             String deleteUrl = fileVersionRepository.findById(fileVersionId).get().getS3FileVersionUrl();
