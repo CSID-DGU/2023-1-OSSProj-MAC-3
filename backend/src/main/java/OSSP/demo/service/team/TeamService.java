@@ -1,11 +1,10 @@
 package OSSP.demo.service.team;
 
-import OSSP.demo.entity.Member;
-import OSSP.demo.entity.Role;
-import OSSP.demo.entity.Team;
-import OSSP.demo.entity.User;
+import OSSP.demo.entity.*;
 import OSSP.demo.model.ResponseDto;
 import OSSP.demo.model.TeamDto;
+import OSSP.demo.model.UserDto;
+import OSSP.demo.repository.InvitationRepository;
 import OSSP.demo.repository.MemberRepository;
 import OSSP.demo.repository.TeamRepository;
 import OSSP.demo.repository.UserRepository;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -26,6 +26,8 @@ public class TeamService {
     private TeamRepository teamRepository;
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private InvitationRepository invitationRepository;
 
     public ResponseEntity getTeam(String studentId, Long teamId) {
         try {
@@ -148,6 +150,38 @@ public class TeamService {
         } catch (Exception e) {
             log.error(e.getMessage());
             ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("delete_team", "팀 삭제에 실패했습니다.")).build();
+            return ResponseEntity.badRequest().body(responseErrorDto);
+        }
+    }
+
+    public ResponseEntity getUserListFilteredByTeam(String studentId, Long teamId) {
+        try {
+            if (!userRepository.existsByStudentId(studentId)) {
+                return ResponseEntity.badRequest().body(ResponseDto.builder().error(Collections.singletonMap("create_team", "존재하지 않는 학번입니다.")).build());
+            }
+            List<User> users = userRepository.findAll();
+            List<User> memberUsers = memberRepository.findByTeamId(teamId).stream().map(Member::getUser).collect(Collectors.toList());
+            List<User> invitedUsers = invitationRepository.findByTeamId(teamId).stream().map(Invitation::getFellow).collect(Collectors.toList());
+            log.info("memberUsers : " + memberUsers);
+            log.info("invitedUsers : " + invitedUsers);
+            users = users.stream()
+                    .filter(user -> !memberUsers.contains(user))
+                    .filter(user -> !invitedUsers.contains(user))
+                    .collect(Collectors.toList());
+            List<UserDto> userDtoList = new ArrayList<>();
+            for (User user : users) {
+                UserDto userDto = UserDto.builder()
+                        .id(user.getId())
+                        .studentId(user.getStudentId())
+                        .name(user.getName())
+                        .dept(user.getDept())
+                        .build();
+                userDtoList.add(userDto);
+            }
+            return ResponseEntity.ok().body(Collections.singletonMap("get_user_list", userDtoList));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("get_user_list", "유저 리스트를 가져오는데 실패했습니다.")).build();
             return ResponseEntity.badRequest().body(responseErrorDto);
         }
     }

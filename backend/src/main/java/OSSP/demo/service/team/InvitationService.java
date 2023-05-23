@@ -30,14 +30,14 @@ public class InvitationService {
     @Autowired
     MemberRepository memberRepository;
 
-    public ResponseEntity sendInvitations(String studentId, InvitationDto.InvitationRequestDto invitationDto) {
+    public ResponseEntity sendInvitations(String studentId, long teamId, InvitationDto.InvitationRequestDto invitationDto) {
         try {
             if (!userRepository.existsByStudentId(studentId)) {
                 ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("send_invitation", "사용자 정보가 존재하지 않습니다.")).build();
                 return ResponseEntity.badRequest().body(responseErrorDto);
             }
             Long leaderId = userRepository.findByStudentId(studentId).get().getId();
-            if (!memberRepository.existsByUserIdAndTeamId(leaderId, invitationDto.getTeamId())) {
+            if (!memberRepository.existsByUserIdAndTeamId(leaderId, teamId) || memberRepository.findByUserIdAndTeamId(leaderId, teamId).get().getRole() != Role.Leader) {
                 ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("send_invitation", "팀장이 아닙니다.")).build();
                 return ResponseEntity.badRequest().body(responseErrorDto);
             }
@@ -47,18 +47,18 @@ public class InvitationService {
             }
             List<InvitationDto> invitationDtoList = new ArrayList<>();
             for (Long fellowId : invitationDto.getFellowIds()) {
-                if (memberRepository.existsByUserIdAndTeamId(fellowId, invitationDto.getTeamId())) {
+                if (memberRepository.existsByUserIdAndTeamId(fellowId, teamId)) {
                     ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("send_invitation", "이미 팀에 가입된 사용자가 포함되어 있습니다.")).build();
                     return ResponseEntity.badRequest().body(responseErrorDto);
                 }
-                if (invitationRepository.existsByLeaderIdAndFellowIdAndTeamId(leaderId, fellowId, invitationDto.getTeamId())) {
+                if (invitationRepository.existsByLeaderIdAndFellowIdAndTeamId(leaderId, fellowId, teamId)) {
                     ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("send_invitation", "이미 초대된 사용자가 포함되어 있습니다.")).build();
                     return ResponseEntity.badRequest().body(responseErrorDto);
                 }
                 Invitation invitation = Invitation.builder()
                         .leader(userRepository.findById(leaderId).get())
                         .fellow(userRepository.findById(fellowId).get())
-                        .team(teamRepository.findById(invitationDto.getTeamId()).get())
+                        .team(teamRepository.findById(teamId).get())
                         .build();
                 invitationRepository.save(invitation);
                 InvitationDto invitationResponseDto = InvitationDto.builder()
@@ -95,8 +95,11 @@ public class InvitationService {
             InvitationDto invitationResponseDto = InvitationDto.builder()
                     .invitationId(invitation.getId())
                     .leaderId(invitation.getLeader().getId())
+                    .leaderName(invitation.getLeader().getName())
                     .fellowId(invitation.getFellow().getId())
                     .teamId(invitation.getTeam().getId())
+                    .teamName(invitation.getTeam().getTeamName())
+                    .isAccepted(invitation.getIsAccepted())
                     .build();
             invitationDtoList.add(invitationResponseDto);
         }
@@ -161,8 +164,8 @@ public class InvitationService {
                 .leaderId(invitation.getLeader().getId())
                 .fellowId(invitation.getFellow().getId())
                 .teamId(invitation.getTeam().getId())
-                .isAccepted(invitation.getIsAccepted())
                 .build();
+        invitationRepository.delete(invitation);
         return ResponseEntity.ok().body(invitationResponseDto);
     }
 
@@ -171,14 +174,14 @@ public class InvitationService {
             ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("delete_invitation", "사용자 정보가 존재하지 않습니다.")).build();
             return ResponseEntity.badRequest().body(responseErrorDto);
         }
-        Long leaderId = userRepository.findByStudentId(studentId).get().getId();
+        Long fellowId = userRepository.findByStudentId(studentId).get().getId();
         if (!invitationRepository.existsById(invitationId)) {
             ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("delete_invitation", "초대 정보가 존재하지 않습니다.")).build();
             return ResponseEntity.badRequest().body(responseErrorDto);
         }
         Invitation invitation = invitationRepository.findById(invitationId).get();
-        if (invitation.getLeader().getId() != leaderId) {
-            ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("delete_invitation", "초대한 사용자가 아닙니다.")).build();
+        if (invitation.getFellow().getId() != fellowId) {
+            ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("delete_invitation", "초대된 사용자가 아닙니다.")).build();
             return ResponseEntity.badRequest().body(responseErrorDto);
         }
         invitationRepository.deleteById(invitationId);

@@ -11,7 +11,11 @@ import java.util.List;
 public class InvitationDto {
     private Long invitationId;
     private Long teamId;
+
+    private String teamName;
     private Long leaderId;
+
+    private String leaderName;
     private Long fellowId;
     private Boolean isAccepted;
 
