@@ -13,6 +13,7 @@ function AppRouter() {
     <div>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
           <Route path="/select" element={<Select />} />

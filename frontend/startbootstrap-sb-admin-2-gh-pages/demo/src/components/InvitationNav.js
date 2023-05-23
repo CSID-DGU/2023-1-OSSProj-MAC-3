@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage } from "@fortawesome/free-solid-svg-icons";
-import InviteMsg from "./InvitationMsg";
+import InvitationMsg from "./InvitationMsg";
 import DropdownButton from "./DropdownButton";
+import { redirect } from "react-router-dom";
 
 const InvitationNav = () => {
   const [alertCount, setAlertCount] = useState(0);
+  const [invitationList, setInvitationList] = useState([]);
 
   const fetchInvitation = () => {
     const token = sessionStorage.getItem("token");
@@ -17,7 +19,16 @@ const InvitationNav = () => {
       .then((response) => response.json())
       .then((data) => {
         if (data && Array.isArray(data.get_invitations)) {
-          setAlertCount(data.get_invitations.length);
+          const invitationList = data.get_invitations;
+          setInvitationList(invitationList);
+          const filteredInvitationList = invitationList.filter(
+            (invitation) => invitation.isAccepted === false
+          );
+          setAlertCount(filteredInvitationList.length);
+        } else if (data && data.error && data.error.get_invitations) {
+          console.error(data.error.get_invitations);
+          setAlertCount(0);
+          setInvitationList([]);
         }
       })
       .catch((error) => console.log(error));
@@ -28,7 +39,7 @@ const InvitationNav = () => {
   }, []);
 
   return (
-    <li className="nav-item dropdown no-arrow mx-1">
+    <li className="nav-item dropdown no-arrow mx-1 " role="button">
       <DropdownButton
         label={
           <div>
@@ -39,7 +50,12 @@ const InvitationNav = () => {
             </span>
           </div>
         }
-        content={<InviteMsg />}
+        content={
+          <InvitationMsg
+            invitationList={invitationList}
+            fetchInvitation={fetchInvitation}
+          />
+        }
         style="nav-link dropdown-toggle"
       />
     </li>

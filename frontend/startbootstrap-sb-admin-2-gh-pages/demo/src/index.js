@@ -5,7 +5,7 @@ import AppRouter from "./AppRouter";
 import reportWebVitals from "./reportWebVitals";
 
 const root = createRoot(document.getElementById("root"));
-root.render(<AppRouter tab="home" />);
+root.render(<AppRouter tab="/Login" />);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
