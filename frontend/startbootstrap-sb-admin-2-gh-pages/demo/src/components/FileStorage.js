@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlus,
   faEdit,
   faTrash,
   faDownload,
-  faBars
+  faBars,
 } from "@fortawesome/free-solid-svg-icons";
 
-const FileStorage = () => {
+const FileStorage = ({ teamId, handleUploadModalShow }) => {
+  const [fileList, setFileList] = useState(null);
+
   return (
     <div className="col-xl-8">
       <div className="card shadow mb-4">
@@ -17,12 +19,14 @@ const FileStorage = () => {
           <div className="dropdown no-arrow">
             <a
               className="dropdown-toggle"
-              href="#"
               role="button"
-              id="dropdownMenuLink"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
+              onClick={() => {
+                if (teamId.id > 0) {
+                  handleUploadModalShow(true);
+                } else {
+                  window.alert("팀을 선택해주세요.");
+                }
+              }}
             >
               <FontAwesomeIcon icon={faPlus} />
             </a>
@@ -95,7 +99,7 @@ const FileStorage = () => {
                                 className="dropdown no-arrow btn"
                                 style={{
                                   display: "inline",
-                                  padding: "0.1rem 0.5rem"
+                                  padding: "0.1rem 0.5rem",
                                 }}
                               >
                                 <a
@@ -159,7 +163,7 @@ const FileStorage = () => {
                                 className="dropdown no-arrow btn"
                                 style={{
                                   display: "inline",
-                                  padding: "0.1rem 0.5rem"
+                                  padding: "0.1rem 0.5rem",
                                 }}
                               >
                                 <a

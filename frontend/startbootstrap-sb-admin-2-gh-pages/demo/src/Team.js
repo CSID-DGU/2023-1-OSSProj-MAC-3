@@ -7,6 +7,7 @@ import TeamInfo from "./components/TeamInfo";
 import Notice from "./components/Notice";
 import FileStorage from "./components/FileStorage";
 import InviteModal from "./components/InviteModal";
+import FileUploadModal from "./components/FileUploadModal.js";
 import InvitationNav from "./components/InvitationNav";
 import DropdownButton from "./components/DropdownButton";
 
@@ -14,6 +15,7 @@ const Team = () => {
   const [userInfo, setUserInfo] = useState({});
   const [teamId, setTeamId] = useState(0);
   const [inviteModalShow, setInviteModalShow] = useState(false);
+  const [uploadModalShow, setUploadModalShow] = useState(false);
 
   const navigate = useNavigate();
 
@@ -29,8 +31,16 @@ const Team = () => {
     console.log(inviteModalShow);
   }, [inviteModalShow]);
 
+  useEffect(() => {
+    console.log(uploadModalShow);
+  }, [uploadModalShow]);
+
   const handleInviteModalShow = (data) => {
     setInviteModalShow(data);
+  };
+
+  const handleUploadModalShow = (data) => {
+    setUploadModalShow(data);
   };
 
   useEffect(() => {
@@ -38,8 +48,8 @@ const Team = () => {
     console.log(token);
     fetch("http://localhost:8080/user", {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => response.json())
       .then((data) => {
@@ -171,7 +181,10 @@ const Team = () => {
 
             <div className="row">
               {/*<!-- 파일 스토리지 섹션 -->*/}
-              <FileStorage />
+              <FileStorage
+                teamId={{ id: teamId }}
+                handleUploadModalShow={handleUploadModalShow}
+              />
               <div className="col-xl-4 mb-4">
                 {/*<!-- 팀 구성 정보 -->*/}
                 {/* {useEffect(() => {
@@ -209,6 +222,14 @@ const Team = () => {
           teamId={{ id: teamId }}
           inviteModalShow={inviteModalShow}
           handleInviteModalShow={handleInviteModalShow}
+        />
+      )}
+      {uploadModalShow && (
+        <FileUploadModal
+          userInfo={userInfo}
+          teamId={{ id: teamId }}
+          uploadModalShow={uploadModalShow}
+          handleUploadModalShow={handleUploadModalShow}
         />
       )}
     </div>
