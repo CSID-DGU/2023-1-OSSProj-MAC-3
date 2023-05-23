@@ -44,7 +44,6 @@ public class UserService {
     public ResponseEntity getUserList(String studentId) {
         try {
             List<User> users = userRepository.findAll();
-            users.remove(userRepository.findByStudentId(studentId).get());
             List<UserDto> userDtoList = new ArrayList<>();
             for (User user : users) {
                 UserDto userDto = UserDto.builder()
