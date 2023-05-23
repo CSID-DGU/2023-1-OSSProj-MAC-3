@@ -1,42 +1,20 @@
-import "./bootstrap.css";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBell,
-  faBars,
-  faSearch,
-  faPlus,
-  faEdit,
-  faTrash,
-  faDownload
-} from "@fortawesome/free-solid-svg-icons";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 import TeamList from "./components/TeamList.js";
-import InviteMsg from "./components/InviteMsg.js";
 import TeamInfo from "./components/TeamInfo";
 import Notice from "./components/Notice";
 import FileStorage from "./components/FileStorage";
+import InviteModal from "./components/InviteModal";
+import InvitationNav from "./components/InvitationNav";
+import DropdownButton from "./components/DropdownButton";
 
-function DropdownButton({ label, content, style }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
-
-  return (
-    <div className="dropdown">
-      <a className={`dropdown-button ${style}`} onClick={toggleDropdown}>
-        {label}
-      </a>
-      {isOpen && <div>{content}</div>}
-    </div>
-  );
-}
-
-function Team() {
+const Team = () => {
   const [userInfo, setUserInfo] = useState({});
   const [teamId, setTeamId] = useState(0);
+  const [inviteModalShow, setInviteModalShow] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +24,15 @@ function Team() {
   const handleTeamIdFromChild = (data) => {
     setTeamId(data);
   };
+
+  useEffect(() => {
+    console.log(inviteModalShow);
+  }, [inviteModalShow]);
+
+  const handleInviteModalShow = (data) => {
+    setInviteModalShow(data);
+  };
+
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     console.log(token);
@@ -64,11 +51,6 @@ function Team() {
   const handleLogout = () => {
     //localStorage.removeItem("token");
     navigate("/login");
-  };
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen); // 드롭다운 상태를 반전시킴
   };
 
   return (
@@ -131,6 +113,7 @@ function Team() {
         <hr className="sidebar-divider d-none d-md-block" />
       </ul>
       {/*<!-- End of Sidebar -->*/}
+
       {/*<!-- Content Wrapper -->*/}
       <div id="content-wrapper" className="d-flex flex-column">
         {/*<!-- Main Content -->*/}
@@ -157,35 +140,12 @@ function Team() {
             {/*<!-- Topbar Navbar -->*/}
             <ul className="navbar-nav ml-auto">
               {/*<!-- Nav Item - Alerts -->*/}
-
-              <li className="nav-item dropdown no-arrow mx-1">
-                <DropdownButton
-                  label={
-                    <div>
-                      <FontAwesomeIcon icon={faBell} />
-                      {/* Counter - Alerts */}
-                      <span className="badge badge-danger badge-counter">
-                        3+
-                      </span>
-                    </div>
-                  }
-                  content={<InviteMsg />}
-                  style="nav-link dropdown-toggle"
-                />
-              </li>
+              <InvitationNav />
               {/*<!-- Nav Item - User Information -->*/}
               <li className="nav-item dropdown no-arrow">
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#"
-                  id="userDropdown"
-                  role="button"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
+                <a className="nav-link dropdown-toggle">
                   <span className="mr-2 d-none d-lg-inline text-gray-600 small">
-                    김동국(2023000001)
+                    {userInfo.name} ({userInfo.studentId})
                   </span>
                   {/*<!-- <span style="padding-right: 5px"> -->*/}
                   <div className="btn btn-primary btn-user">My Page</div>
@@ -214,7 +174,13 @@ function Team() {
               <FileStorage />
               <div className="col-xl-4 mb-4">
                 {/*<!-- 팀 구성 정보 -->*/}
-                <TeamInfo />
+                {/* {useEffect(() => {
+              <TeamInfo teamId={teamId} />;
+            }, [teamId])} */}
+                <TeamInfo
+                  teamId={{ id: teamId }}
+                  handleInviteModalShow={handleInviteModalShow}
+                />
                 {/*<!--공지사항-->*/}
                 <Notice />
               </div>
@@ -232,11 +198,21 @@ function Team() {
             </footer>
             {/*<!-- End of Footer -->*/}
           </div>
+
           {/*<!-- End of Content Wrapper -->*/}
         </div>
       </div>
+      {/* 팀원 초대 모달 */}
+      {inviteModalShow && (
+        <InviteModal
+          userInfo={userInfo}
+          teamId={{ id: teamId }}
+          inviteModalShow={inviteModalShow}
+          handleInviteModalShow={handleInviteModalShow}
+        />
+      )}
     </div>
   );
-}
+};
 
 export default Team;
