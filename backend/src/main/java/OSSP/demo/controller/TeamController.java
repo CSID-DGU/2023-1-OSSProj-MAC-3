@@ -25,6 +25,11 @@ public class TeamController {
         return teamService.getTeams(studentId);
     }
 
+    @GetMapping("/{teamId}/user")
+    public ResponseEntity getUserListFilteredByTeam(@AuthenticationPrincipal String studentId, @PathVariable long teamId) {
+        return teamService.getUserListFilteredByTeam(studentId, teamId);
+    }
+
     @GetMapping("/{teamId}")
     public ResponseEntity getTeam(@AuthenticationPrincipal String studentId, @PathVariable Long teamId) {
         return teamService.getTeam(studentId, teamId);
@@ -40,9 +45,9 @@ public class TeamController {
         return teamService.deleteTeam(studentId, teamId);
     }
 
-    @PostMapping("/invitation")
-    public ResponseEntity sendInvitation(@AuthenticationPrincipal String studentId, @RequestBody InvitationDto.InvitationRequestDto invitationDto) {
-        return invitationService.sendInvitations(studentId, invitationDto);
+    @PostMapping("/{teamId}/invitation")
+    public ResponseEntity sendInvitation(@AuthenticationPrincipal String studentId, @PathVariable Long teamId, @RequestBody InvitationDto.InvitationRequestDto invitationDto) {
+        return invitationService.sendInvitations(studentId, teamId, invitationDto);
     }
 
     @GetMapping("/invitation")
