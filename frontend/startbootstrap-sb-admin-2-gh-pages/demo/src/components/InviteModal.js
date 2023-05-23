@@ -11,7 +11,7 @@ const InviteModal = ({
 
   const fetchUserList = () => {
     const token = sessionStorage.getItem("token");
-    fetch("http://localhost:8080/user/all", {
+    fetch(`http://localhost:8080/team/${teamId.id}/user`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -36,22 +36,27 @@ const InviteModal = ({
     checkedList.forEach((checked) => {
       checkedIdList.push(checked.value);
     });
-    fetch("http://localhost:8080/team/invitation", {
+    fetch(`http://localhost:8080/team/${teamId.id}/invitation`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        teamId: parseInt(teamId.id, 10),
         leaderId: userInfo.id,
         fellowIds: checkedIdList.map((id) => parseInt(id, 10))
       })
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        handleInviteModalShow(false);
+        if (data && data.error && data.error.send_invitation) {
+          console.error(data.error.send_invitation);
+          window.alert(data.error.send_invitation);
+          handleInviteModalShow(false);
+        } else {
+          console.log(data);
+          handleInviteModalShow(false);
+        }
       })
       .catch((error) => console.log(error));
   };
