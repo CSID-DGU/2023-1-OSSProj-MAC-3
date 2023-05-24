@@ -49,6 +49,10 @@ public class FileUploadService {
                 return ResponseEntity.badRequest().body(ResponseDto.builder().error(Collections.singletonMap("upload_file", "올바른 접근이 아닙니다.(사용자)")).build());
             }
 
+            if (uploadFile.isEmpty()){
+                return ResponseEntity.badRequest().body(ResponseDto.builder().error(Collections.singletonMap("upload_file", "파일이 존재하지 않습니다.")).build());
+            }
+
             // 파일 이름 추출
             String fileName = uploadFile.getOriginalFilename(); //원래 파일이름.확장자
             String fileFirstName = fileName.substring(0, fileName.lastIndexOf(".")); //파일 이름
@@ -67,7 +71,8 @@ public class FileUploadService {
                 PutObjectResult putObjectResult = s3Service.uploadFile(inputStream, objectMetadata, fileNamePlusTeam); // s3에 파일 업로드.
                 versionId = putObjectResult.getVersionId(); //버전id를 받아옴
             } catch (IOException e) {
-                throw new IllegalArgumentException(String.format("파일 변환 중 에러가 발생하였습니다. (%s)", fileNamePlusTeam));
+                log.error(e.getMessage());
+                return ResponseEntity.badRequest().body(ResponseDto.builder().error(Collections.singletonMap("upload_file", "파일 변환중 문제가 발생했습니다.")).build());
             }
 
             String url = s3Service.getFileUrl(fileNamePlusTeam); //업로드 파일 url 반환.
