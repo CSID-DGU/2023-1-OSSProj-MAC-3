@@ -16,7 +16,7 @@ public class FileUploadController {
 
     private final FileUploadService fileUploadService;
 
-    @PostMapping("/team/{teamId}/file/upload")
+    @PostMapping("/team/{teamId}/file/")
     public ResponseEntity uploadFile(@AuthenticationPrincipal String studentId, @PathVariable Long teamId, @RequestPart MultipartFile file,
                                      @RequestPart FileVersionDto fileVersionDto){
         return fileUploadService.uploadImage(studentId, teamId, file, fileVersionDto);
