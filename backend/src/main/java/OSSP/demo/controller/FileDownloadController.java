@@ -15,7 +15,7 @@ public class FileDownloadController {
     private final FileDownloadService fileDownloadService;
 
     @GetMapping("/team/{teamId}/file/{fileId}/{fileVersionId}")
-    public ResponseEntity downloadFile(@AuthenticationPrincipal String studentId, @PathVariable Long fileId, @PathVariable Long fileVersionId){
-        return fileDownloadService.downloadImage(studentId, fileId, fileVersionId);
+    public ResponseEntity downloadFile(@AuthenticationPrincipal String studentId, @PathVariable Long fileId, @PathVariable Long fileVersionId, @PathVariable Long teamId){
+        return fileDownloadService.downloadImage(studentId, fileId, fileVersionId, teamId);
     }
 }

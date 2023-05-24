@@ -15,12 +15,12 @@ public class FileDeleteController {
     private final FileDeleteService fileDeleteService;
 
     @DeleteMapping("/team/{teamId}/file/{fileId}")
-    public ResponseEntity deleteAll(@AuthenticationPrincipal String studentId, @PathVariable Long fileId){
-        return fileDeleteService.deleteAll(studentId, fileId);
+    public ResponseEntity deleteAll(@AuthenticationPrincipal String studentId, @PathVariable Long fileId, @PathVariable Long teamId){
+        return fileDeleteService.deleteAll(studentId, fileId, teamId);
     }
 
-    @DeleteMapping("/delete/file/{fileVersionId}")
-    public ResponseEntity deleteOne(@AuthenticationPrincipal String studentId, @PathVariable Long fileVersionId){
-        return fileDeleteService.deleteOne(studentId, fileVersionId);
+    @DeleteMapping("/team/{teamId}/file/fileVersion/{fileVersionId}")
+    public ResponseEntity deleteOne(@AuthenticationPrincipal String studentId, @PathVariable Long fileVersionId, @PathVariable Long teamId){
+        return fileDeleteService.deleteOne(studentId, fileVersionId, teamId);
     }
 }
