@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./Modal.css";
 
-const InviteModal = ({
+const HistoryModal = ({
   userInfo,
   teamId,
-  inviteModalShow,
-  handleInviteModalShow
+  historyModalShow,
+  handleHistoryModalShow,
 }) => {
   const [userList, setUserList] = useState([]);
 
@@ -13,8 +13,8 @@ const InviteModal = ({
     const token = sessionStorage.getItem("token");
     fetch(`http://localhost:8080/team/${teamId.id}/user`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => response.json())
       .then((data) => {
@@ -27,7 +27,7 @@ const InviteModal = ({
     fetchUserList();
   }, []);
 
-  const handleInvite = () => {
+  const handleHistory = () => {
     const token = sessionStorage.getItem("token");
     const checkedList = document.querySelectorAll(
       ".modal-wrapper input[type=checkbox]:checked"
@@ -40,29 +40,31 @@ const InviteModal = ({
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         leaderId: userInfo.id,
-        fellowIds: checkedIdList.map((id) => parseInt(id, 10))
-      })
+        fellowIds: checkedIdList.map((id) => parseInt(id, 10)),
+      }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data && data.error && data.error.send_invitation) {
           console.error(data.error.send_invitation);
           window.alert(data.error.send_invitation);
-          handleInviteModalShow(false);
+          handleHistoryModalShow(false);
         } else {
           console.log(data);
-          handleInviteModalShow(false);
+          handleHistoryModalShow(false);
         }
       })
       .catch((error) => console.log(error));
   };
 
   return (
-    <div className={inviteModalShow ? "modal-wrapper" : "modal-wrapper hidden"}>
+    <div
+      className={historyModalShow ? "modal-wrapper" : "modal-wrapper hidden"}
+    >
       <div className="modal-inner">
         <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
           <h6 className="m-0 font-weight-bold text-primary">학생 초대</h6>
@@ -77,10 +79,10 @@ const InviteModal = ({
                 <thead>
                   <tr>
                     <th scope="col">#</th>
-                    <th scope="col">학번</th>
-                    <th scope="col">이름</th>
-                    <th scope="col">학과</th>
-                    <th scope="col"></th>
+                    <th scope="col">파일명</th>
+                    <th scope="col">수정사항</th>
+                    <th scope="col">수정일</th>
+                    <th scope="col">작성자</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -106,14 +108,14 @@ const InviteModal = ({
           <button
             className="btn btn-primary col-5"
             onClick={() => {
-              handleInvite();
+              handleHistory();
             }}
           >
             초대
           </button>
           <button
             className="btn btn-secondary col-5"
-            onClick={() => handleInviteModalShow(false)}
+            onClick={() => handleHistoryModalShow(false)}
           >
             닫기
           </button>
@@ -123,4 +125,4 @@ const InviteModal = ({
   );
 };
 
-export default InviteModal;
+export default HistoryModal;

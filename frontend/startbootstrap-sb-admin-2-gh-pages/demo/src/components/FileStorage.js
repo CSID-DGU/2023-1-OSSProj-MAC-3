@@ -8,7 +8,11 @@ import {
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
 
-const FileStorage = ({ teamId, handleUploadModalShow }) => {
+const FileStorage = ({
+  teamId,
+  handleUploadModalShow,
+  handleHistoryModalShow,
+}) => {
   const [fileList, setFileList] = useState(null);
 
   return (
@@ -106,10 +110,13 @@ const FileStorage = ({ teamId, handleUploadModalShow }) => {
                                   className="dropdown-toggle"
                                   href="#"
                                   role="button"
-                                  id="dropdownMenuLink"
-                                  data-toggle="dropdown"
-                                  aria-haspopup="true"
-                                  aria-expanded="false"
+                                  onClick={() => {
+                                    if (teamId.id > 0) {
+                                      handleHistoryModalShow(true);
+                                    } else {
+                                      window.alert("팀을 선택해주세요.");
+                                    }
+                                  }}
                                 >
                                   <FontAwesomeIcon icon={faBars} />
                                 </a>

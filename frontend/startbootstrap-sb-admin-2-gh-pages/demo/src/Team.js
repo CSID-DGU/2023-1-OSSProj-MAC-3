@@ -8,6 +8,7 @@ import Notice from "./components/Notice";
 import FileStorage from "./components/FileStorage";
 import InviteModal from "./components/InviteModal";
 import FileUploadModal from "./components/FileUploadModal.js";
+import FileHistory from "./components/FileHistory.js";
 import InvitationNav from "./components/InvitationNav";
 import DropdownButton from "./components/DropdownButton";
 
@@ -16,6 +17,7 @@ const Team = () => {
   const [teamId, setTeamId] = useState(0);
   const [inviteModalShow, setInviteModalShow] = useState(false);
   const [uploadModalShow, setUploadModalShow] = useState(false);
+  const [historyModalShow, setHistoryModalShow] = useState(false);
 
   const navigate = useNavigate();
 
@@ -41,6 +43,9 @@ const Team = () => {
 
   const handleUploadModalShow = (data) => {
     setUploadModalShow(data);
+  };
+  const handleHistoryModalShow = (data) => {
+    setHistoryModalShow(data);
   };
 
   useEffect(() => {
@@ -230,6 +235,14 @@ const Team = () => {
           teamId={{ id: teamId }}
           uploadModalShow={uploadModalShow}
           handleUploadModalShow={handleUploadModalShow}
+        />
+      )}
+      {historyModalShow && (
+        <FileHistory
+          userInfo={userInfo}
+          teamId={{ id: teamId }}
+          histroyModalShow={historyModalShow}
+          handleHistoryModalShow={handleHistoryModalShow}
         />
       )}
     </div>
