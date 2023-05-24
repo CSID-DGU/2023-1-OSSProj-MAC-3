@@ -36,29 +36,44 @@ const UploadModal = ({
         </div>
         <div className="card-body">
           <form
+            className="form-group"
             id="form1"
             action="uploadFile"
             method="post"
             encType="multipart/form-data"
             target="repacatFrame"
           >
-            <div className="form-group">
-              <input
-                type="text"
-                className="form-control form-control-user"
-                id="loginInputID"
-                aria-describedby="idHelp"
-                placeholder="파일명"
-                autoComplete="off"
-                value={newFileName}
-                onChange={(event) => setFileName(event.target.value)}
-              />
-            </div>
-            <div className="mb-3">
+            <input
+              type="text"
+              className="form-control form-control-user"
+              id="loginInputID"
+              aria-describedby="idHelp"
+              placeholder="파일명"
+              autoComplete="off"
+              value={newFileName}
+              onChange={(event) => setFileName(event.target.value)}
+            />
+            {/* <label for="formComment" className="form-label">
+                수정 사항
+              </label> */}
+            <textarea
+              className="form-control"
+              id="forComment"
+              rows={2}
+              placeholder="수정사항"
+              style={{ marginTop: "10px" }}
+            ></textarea>
+
+            <div className="mb-3" style={{ marginTop: "10px" }}>
               <label for="formFile" className="form-label">
                 파일 업로드
               </label>
-              <input className="form-control" type="file" id="formFile"></input>
+              <input
+                className="form-control"
+                type="file"
+                id="formFile"
+                style={{ height: "auto", border: "none" }}
+              ></input>
             </div>
           </form>
         </div>
