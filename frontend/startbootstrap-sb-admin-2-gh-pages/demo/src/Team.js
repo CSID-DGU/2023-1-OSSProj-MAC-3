@@ -8,7 +8,7 @@ import Notice from "./components/Notice";
 import FileStorage from "./components/FileStorage";
 import InviteModal from "./components/InviteModal";
 import FileUploadModal from "./components/FileUploadModal.js";
-import FileHistory from "./components/FileHistory.js";
+import FileHistory from "./components/FileHistoryModal.js";
 import InvitationNav from "./components/InvitationNav";
 import DropdownButton from "./components/DropdownButton";
 
@@ -36,6 +36,10 @@ const Team = () => {
   useEffect(() => {
     console.log(uploadModalShow);
   }, [uploadModalShow]);
+
+  useEffect(() => {
+    console.log(historyModalShow);
+  }, [historyModalShow]);
 
   const handleInviteModalShow = (data) => {
     setInviteModalShow(data);
@@ -189,6 +193,7 @@ const Team = () => {
               <FileStorage
                 teamId={{ id: teamId }}
                 handleUploadModalShow={handleUploadModalShow}
+                handleHistoryModalShow={handleHistoryModalShow}
               />
               <div className="col-xl-4 mb-4">
                 {/*<!-- 팀 구성 정보 -->*/}
@@ -229,6 +234,7 @@ const Team = () => {
           handleInviteModalShow={handleInviteModalShow}
         />
       )}
+      {/* 파일 등록 모달 */}
       {uploadModalShow && (
         <FileUploadModal
           userInfo={userInfo}
@@ -237,11 +243,12 @@ const Team = () => {
           handleUploadModalShow={handleUploadModalShow}
         />
       )}
+      {/* 파일 이력 조회 모달 */}
       {historyModalShow && (
         <FileHistory
           userInfo={userInfo}
           teamId={{ id: teamId }}
-          histroyModalShow={historyModalShow}
+          historyModalShow={historyModalShow}
           handleHistoryModalShow={handleHistoryModalShow}
         />
       )}

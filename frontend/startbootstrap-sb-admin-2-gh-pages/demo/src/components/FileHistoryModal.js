@@ -8,8 +8,9 @@ const HistoryModal = ({
   handleHistoryModalShow,
 }) => {
   const [userList, setUserList] = useState([]);
-
-  const fetchUserList = () => {
+  const [newFileName, setFileName] = useState("");
+  console.log(historyModalShow);
+  const fetchFileList = () => {
     const token = sessionStorage.getItem("token");
     fetch(`http://localhost:8080/team/${teamId.id}/user`, {
       headers: {
@@ -24,42 +25,8 @@ const HistoryModal = ({
   };
 
   useEffect(() => {
-    fetchUserList();
+    fetchFileList();
   }, []);
-
-  const handleHistory = () => {
-    const token = sessionStorage.getItem("token");
-    const checkedList = document.querySelectorAll(
-      ".modal-wrapper input[type=checkbox]:checked"
-    );
-    const checkedIdList = [];
-    checkedList.forEach((checked) => {
-      checkedIdList.push(checked.value);
-    });
-    fetch(`http://localhost:8080/team/${teamId.id}/invitation`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        leaderId: userInfo.id,
-        fellowIds: checkedIdList.map((id) => parseInt(id, 10)),
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data && data.error && data.error.send_invitation) {
-          console.error(data.error.send_invitation);
-          window.alert(data.error.send_invitation);
-          handleHistoryModalShow(false);
-        } else {
-          console.log(data);
-          handleHistoryModalShow(false);
-        }
-      })
-      .catch((error) => console.log(error));
-  };
 
   return (
     <div
@@ -105,14 +72,7 @@ const HistoryModal = ({
           )}
         </div>
         <div className="modal-footer flex-row justify-content-around">
-          <button
-            className="btn btn-primary col-5"
-            onClick={() => {
-              handleHistory();
-            }}
-          >
-            초대
-          </button>
+          <button className="btn btn-primary col-5">초대</button>
           <button
             className="btn btn-secondary col-5"
             onClick={() => handleHistoryModalShow(false)}
