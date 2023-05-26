@@ -12,6 +12,7 @@ const FileStorage = ({
   teamId,
   handleHistoryModalShow,
   handleUploadModalShow,
+  handleFileIdFromStorage,
 }) => {
   const [fileList, setFileList] = useState(null);
   const [fileId, setFileId] = useState(0);
@@ -140,6 +141,7 @@ const FileStorage = ({
                                       onClick={() => {
                                         if (teamId.id > 0) {
                                           handleHistoryModalShow(true);
+                                          handleFileIdFromStorage(file.fileId);
                                         } else {
                                           window.alert("팀을 선택해주세요.");
                                         }
