@@ -15,6 +15,7 @@ import DropdownButton from "./components/DropdownButton";
 const Team = () => {
   const [userInfo, setUserInfo] = useState({});
   const [teamId, setTeamId] = useState(0);
+  const [fileId, setFileId] = useState(0);
   const [inviteModalShow, setInviteModalShow] = useState(false);
   const [uploadModalShow, setUploadModalShow] = useState(false);
   const [historyModalShow, setHistoryModalShow] = useState(false);
@@ -51,7 +52,9 @@ const Team = () => {
   const handleHistoryModalShow = (data) => {
     setHistoryModalShow(data);
   };
-
+  const handleFileIdFromStorage = (data) => {
+    setFileId(data);
+  };
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     console.log(token);
@@ -194,6 +197,7 @@ const Team = () => {
                 teamId={{ id: teamId }}
                 handleUploadModalShow={handleUploadModalShow}
                 handleHistoryModalShow={handleHistoryModalShow}
+                handleFileIdFromStorage={handleFileIdFromStorage}
               />
               <div className="col-xl-4 mb-4">
                 {/*<!-- 팀 구성 정보 -->*/}
@@ -248,6 +252,7 @@ const Team = () => {
         <FileHistory
           userInfo={userInfo}
           teamId={{ id: teamId }}
+          fileId={{ id: fileId }}
           historyModalShow={historyModalShow}
           handleHistoryModalShow={handleHistoryModalShow}
         />
