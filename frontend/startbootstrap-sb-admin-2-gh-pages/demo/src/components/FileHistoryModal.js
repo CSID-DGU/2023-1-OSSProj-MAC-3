@@ -1,25 +1,28 @@
 import React, { useState, useEffect } from "react";
 import "./Modal.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDownload } from "@fortawesome/free-solid-svg-icons";
 
 const HistoryModal = ({
   userInfo,
   teamId,
+  fileId,
   historyModalShow,
   handleHistoryModalShow,
 }) => {
-  const [userList, setUserList] = useState([]);
+  const [fileList, setFileList] = useState([]);
   const [newFileName, setFileName] = useState("");
   console.log(historyModalShow);
   const fetchFileList = () => {
     const token = sessionStorage.getItem("token");
-    fetch(`http://localhost:8080/team/${teamId.id}/user`, {
+    fetch(`http://localhost:8080/team/${teamId.id}/file/${fileId.id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then((response) => response.json())
       .then((data) => {
-        setUserList(data.get_user_list);
+        setFileList(data.get_fileVersions);
       })
       .catch((error) => console.log(error));
   };
@@ -37,7 +40,7 @@ const HistoryModal = ({
           <h6 className="m-0 font-weight-bold text-primary">학생 초대</h6>
         </div>
         <div className="card-body">
-          {userList ? (
+          {fileList ? (
             <div
               className="table-responsive project-list"
               style={{ maxHeight: "330px", overflowY: "auto" }}
@@ -53,14 +56,17 @@ const HistoryModal = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {userList.map((user, index) => (
+                  {fileList.map((file, index) => (
                     <tr key={index}>
                       <th scope="row">{index + 1}</th>
-                      <td>{user.studentId}</td>
-                      <td>{user.name}</td>
-                      <td>{user.dept}</td>
-                      <td className="td-checkbox">
-                        <input type="checkbox" value={user.id} />
+                      <td>{file.fileName}</td>
+                      <td>{file.commitMessage}</td>
+                      <td>{file.updateDate}</td>
+                      <td>{file.memberName}</td>
+                      <td style={{ textAlign: "center" }}>
+                        <a className="btn" style={{ padding: "0.1rem 0.5rem" }}>
+                          <FontAwesomeIcon icon={faDownload} />
+                        </a>
                       </td>
                     </tr>
                   ))}
