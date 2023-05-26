@@ -35,6 +35,27 @@ const FileStorage = ({
       .catch((error) => console.log(error));
   };
 
+  const handleDeleteTeam = (fileID) => {
+    const token = sessionStorage.getItem("token");
+    console.log(fileID);
+    fetch(`http://localhost:8080/team/${teamId.id}/file/${fileID}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        // 삭제된 팀 정보를 업데이트합니다.
+        setFileList((prevFileLists) =>
+          prevFileLists.filter((file) => file.fileID !== fileID)
+        );
+        fetchData();
+      })
+      .catch((error) => console.log(error));
+  };
   useEffect(() => {
     if (teamId.id === 0) return;
     fetchData();
@@ -119,6 +140,9 @@ const FileStorage = ({
                                   <a
                                     className="btn"
                                     style={{ padding: "0.1rem 0.5rem" }}
+                                    onClick={() =>
+                                      handleDeleteTeam(file.fileId)
+                                    }
                                   >
                                     <FontAwesomeIcon icon={faTrash} />
                                   </a>
