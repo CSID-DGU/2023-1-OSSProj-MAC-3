@@ -7,15 +7,27 @@ import TeamInfo from "./components/TeamInfo";
 import Notice from "./components/Notice";
 import FileStorage from "./components/FileStorage";
 import InviteModal from "./components/InviteModal";
+import FileUploadModal from "./components/FileUploadModal.js";
+import FileHistory from "./components/FileHistoryModal.js";
 import InvitationNav from "./components/InvitationNav";
 import DropdownButton from "./components/DropdownButton";
 
 const Team = () => {
   const [userInfo, setUserInfo] = useState({});
   const [teamId, setTeamId] = useState(0);
+  const [fileId, setFileId] = useState(0);
   const [inviteModalShow, setInviteModalShow] = useState(false);
+  const [uploadModalShow, setUploadModalShow] = useState(false);
+  const [historyModalShow, setHistoryModalShow] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      navigate("/"); // 토큰이 없을 경우 리디렉션할 경로
+    }
+  }, [navigate]);
 
   useEffect(() => {
     console.log(teamId);
@@ -29,17 +41,34 @@ const Team = () => {
     console.log(inviteModalShow);
   }, [inviteModalShow]);
 
+  useEffect(() => {
+    console.log(uploadModalShow);
+  }, [uploadModalShow]);
+
+  useEffect(() => {
+    console.log(historyModalShow);
+  }, [historyModalShow]);
+
   const handleInviteModalShow = (data) => {
     setInviteModalShow(data);
   };
 
+  const handleUploadModalShow = (data) => {
+    setUploadModalShow(data);
+  };
+  const handleHistoryModalShow = (data) => {
+    setHistoryModalShow(data);
+  };
+  const handleFileIdFromStorage = (data) => {
+    setFileId(data);
+  };
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     console.log(token);
     fetch("http://localhost:8080/user", {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => response.json())
       .then((data) => {
@@ -171,7 +200,12 @@ const Team = () => {
 
             <div className="row">
               {/*<!-- 파일 스토리지 섹션 -->*/}
-              <FileStorage />
+              <FileStorage
+                teamId={{ id: teamId }}
+                handleUploadModalShow={handleUploadModalShow}
+                handleHistoryModalShow={handleHistoryModalShow}
+                handleFileIdFromStorage={handleFileIdFromStorage}
+              />
               <div className="col-xl-4 mb-4">
                 {/*<!-- 팀 구성 정보 -->*/}
                 {/* {useEffect(() => {
@@ -209,6 +243,25 @@ const Team = () => {
           teamId={{ id: teamId }}
           inviteModalShow={inviteModalShow}
           handleInviteModalShow={handleInviteModalShow}
+        />
+      )}
+      {/* 파일 등록 모달 */}
+      {uploadModalShow && (
+        <FileUploadModal
+          userInfo={userInfo}
+          teamId={{ id: teamId }}
+          uploadModalShow={uploadModalShow}
+          handleUploadModalShow={handleUploadModalShow}
+        />
+      )}
+      {/* 파일 이력 조회 모달 */}
+      {historyModalShow && (
+        <FileHistory
+          userInfo={userInfo}
+          teamId={{ id: teamId }}
+          fileId={{ id: fileId }}
+          historyModalShow={historyModalShow}
+          handleHistoryModalShow={handleHistoryModalShow}
         />
       )}
     </div>
