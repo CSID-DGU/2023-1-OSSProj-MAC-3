@@ -7,7 +7,7 @@ const TeamInfo = ({ teamId, handleInviteModalShow }) => {
 
   const fetchTeam = () => {
     const token = sessionStorage.getItem("token");
-    fetch("http://localhost:8080/team/" + teamId.id, {
+    fetch(`http://localhost:8080/team/${teamId.id}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -33,6 +33,7 @@ const TeamInfo = ({ teamId, handleInviteModalShow }) => {
           <div className="dropdown no-arrow">
             <a
               className="dropdown-toggle mr-3"
+              role="button"
               onClick={() => {
                 if (teamId.id > 0) {
                   fetchTeam();
@@ -45,6 +46,7 @@ const TeamInfo = ({ teamId, handleInviteModalShow }) => {
             </a>
             <a
               className="dropdown-toggle"
+              role="button"
               onClick={() => {
                 if (teamId.id > 0) {
                   handleInviteModalShow(true);
@@ -57,11 +59,11 @@ const TeamInfo = ({ teamId, handleInviteModalShow }) => {
             </a>
           </div>
         </div>
-        <div className="card-body">
+        <div className="card-body" style={{ height: "260px" }}>
           {teamInfo ? (
             <div
               className="table-responsive project-list"
-              style={{ maxHeight: "150px", overflowY: "auto" }}
+              style={{ height: "220px", overflowY: "auto" }}
             >
               <table className="table project-table table-centered table-nowrap">
                 <thead>
