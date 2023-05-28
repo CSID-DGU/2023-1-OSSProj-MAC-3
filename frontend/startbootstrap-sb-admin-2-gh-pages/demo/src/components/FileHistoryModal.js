@@ -45,6 +45,9 @@ const HistoryModal = ({
               className="table-responsive project-list"
               style={{ maxHeight: "330px", overflowY: "auto" }}
             >
+              <h6 className="m-0 font-weight-bold text-primary">
+                {fileList.length > 0 && fileList[0].fileName}
+              </h6>
               <table className="table project-table table-centered table-nowrap">
                 <thead>
                   <tr>
