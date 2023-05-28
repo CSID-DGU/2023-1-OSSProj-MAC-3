@@ -37,6 +37,7 @@ public class FilePagingResponseDto {
         memberName = fileVersion.getMember().getUser().getName();
         s3url = fileVersion.getS3FileVersionUrl();
         commitMessage = fileVersion.getCommitMessage();
+        fileName = fileVersion.getFile().getRealFileName();
     }
 
 

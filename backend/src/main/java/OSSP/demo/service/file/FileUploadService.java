@@ -95,6 +95,7 @@ public class FileUploadService {
             }else{
                 findfile.setMember(member);
                 findfile.setS3FileUrl(url);
+                findfile.setCommitMessage(fileVersionDto.getCommitMessage());
             }
 
             // FileVersion에 업로드한 파일을 저장.
