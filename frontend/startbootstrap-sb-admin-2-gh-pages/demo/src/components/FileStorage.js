@@ -56,10 +56,12 @@ const FileStorage = ({
       })
       .catch((error) => console.log(error));
   };
+
   useEffect(() => {
     if (teamId.id === 0) return;
     fetchData();
   }, [teamId]);
+
   return (
     <div className="col-xl-8">
       <div className="card shadow mb-4">
@@ -149,6 +151,9 @@ const FileStorage = ({
                                   <a
                                     className="btn"
                                     style={{ padding: "0.1rem 0.5rem" }}
+                                    onClick={() => {
+                                      window.open(file.s3url, "_blank");
+                                    }}
                                   >
                                     <FontAwesomeIcon icon={faDownload} />
                                   </a>
