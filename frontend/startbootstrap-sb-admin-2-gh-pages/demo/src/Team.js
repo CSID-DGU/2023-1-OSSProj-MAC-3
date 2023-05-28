@@ -81,7 +81,10 @@ const Team = () => {
       .then((data) => {
         setUserInfo(data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        navigate("/");
+      });
   }, []);
 
   const handleLogout = () => {
