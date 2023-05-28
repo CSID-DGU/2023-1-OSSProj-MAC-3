@@ -8,6 +8,13 @@ function Select() {
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
+    if (!token) {
+      navigate("/"); // 토큰이 없을 경우 리디렉션할 경로
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
     console.log("after login token:\n" + token);
     fetch("http://localhost:8080/user", {
       headers: {

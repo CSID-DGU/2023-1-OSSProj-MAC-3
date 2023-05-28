@@ -1,5 +1,7 @@
 package OSSP.demo.model;
 
+
+import OSSP.demo.entity.Notice;
 import lombok.*;
 
 @Getter

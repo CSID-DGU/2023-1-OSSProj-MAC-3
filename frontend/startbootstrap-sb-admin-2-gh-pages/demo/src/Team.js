@@ -1,47 +1,74 @@
-import "./bootstrap.css";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBell,
-  faBars,
-  faSearch,
-  faPlus,
-  faEdit,
-  faTrash,
-  faDownload
-} from "@fortawesome/free-solid-svg-icons";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+import TeamList from "./components/TeamList.js";
 import TeamInfo from "./components/TeamInfo";
 import Notice from "./components/Notice";
 import FileStorage from "./components/FileStorage";
+import InviteModal from "./components/InviteModal";
+import FileUploadModal from "./components/FileUploadModal.js";
+import FileHistory from "./components/FileHistoryModal.js";
+import InvitationNav from "./components/InvitationNav";
+import DropdownButton from "./components/DropdownButton";
 
-function DropdownButton({ label, content, style }) {
-  const [isOpen, setIsOpen] = useState(false);
+const Team = () => {
+  const [userInfo, setUserInfo] = useState({});
+  const [teamId, setTeamId] = useState(0);
+  const [fileId, setFileId] = useState(0);
+  const [inviteModalShow, setInviteModalShow] = useState(false);
+  const [uploadModalShow, setUploadModalShow] = useState(false);
+  const [historyModalShow, setHistoryModalShow] = useState(false);
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      navigate("/"); // 토큰이 없을 경우 리디렉션할 경로
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    console.log(teamId);
+  }, [teamId]);
+
+  const handleTeamIdFromChild = (data) => {
+    setTeamId(data);
   };
 
-  return (
-    <div className="dropdown">
-      <a className={`dropdown-button ${style}`} onClick={toggleDropdown}>
-        {label}
-      </a>
-      {isOpen && <div>{content}</div>}
-    </div>
-  );
-}
-
-function Team() {
-  const [userInfo, setUserInfo] = useState({});
-  const navigate = useNavigate();
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    console.log(inviteModalShow);
+  }, [inviteModalShow]);
+
+  useEffect(() => {
+    console.log(uploadModalShow);
+  }, [uploadModalShow]);
+
+  useEffect(() => {
+    console.log(historyModalShow);
+  }, [historyModalShow]);
+
+  const handleInviteModalShow = (data) => {
+    setInviteModalShow(data);
+  };
+
+  const handleUploadModalShow = (data) => {
+    setUploadModalShow(data);
+  };
+  const handleHistoryModalShow = (data) => {
+    setHistoryModalShow(data);
+  };
+  const handleFileIdFromStorage = (data) => {
+    setFileId(data);
+  };
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
     console.log(token);
     fetch("http://localhost:8080/user", {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => response.json())
       .then((data) => {
@@ -54,11 +81,6 @@ function Team() {
     //localStorage.removeItem("token");
     navigate("/login");
   };
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen); // 드롭다운 상태를 반전시킴
-  };
 
   return (
     <div id="wrapper">
@@ -70,7 +92,7 @@ function Team() {
         {/*<!-- Sidebar - Brand -->*/}
         <a
           className="sidebar-brand d-flex align-items-center justify-content-center"
-          href="index.html"
+          href="/select"
         >
           <img
             className="login-dongguk-logo"
@@ -102,30 +124,13 @@ function Team() {
             <DropdownButton
               label={
                 <div style={{ textAlign: "center" }}>
-                  <i class="fas fa-fw fa-cog"></i>
+                  <i className="fas fa-fw fa-cog"></i>
                   <span>팀 활동 페이지</span>
                 </div>
               }
               content={
                 <div className="collapse" style={{ display: "block" }}>
-                  <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">팀 목록 :</h6>
-                    <a class="collapse-item">
-                      {/*href="buttons.html">*/}
-                      오픈소스
-                    </a>
-                    <a class="collapse-item">MAC</a>
-                    <div
-                      className="btn btn-secondary btn-sm"
-                      style={{
-                        width: "100%",
-                        border: "none",
-                        backgroundColor: "#ccd1d9"
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faPlus} />
-                    </div>
-                  </div>
+                  <TeamList handleTeamIdFromChild={handleTeamIdFromChild} />
                 </div>
               }
               style="nav-link collapsed"
@@ -137,6 +142,7 @@ function Team() {
         <hr className="sidebar-divider d-none d-md-block" />
       </ul>
       {/*<!-- End of Sidebar -->*/}
+
       {/*<!-- Content Wrapper -->*/}
       <div id="content-wrapper" className="d-flex flex-column">
         {/*<!-- Main Content -->*/}
@@ -163,75 +169,12 @@ function Team() {
             {/*<!-- Topbar Navbar -->*/}
             <ul className="navbar-nav ml-auto">
               {/*<!-- Nav Item - Alerts -->*/}
-
-              <li className="nav-item dropdown no-arrow mx-1">
-                <DropdownButton
-                  label={
-                    <div>
-                      <FontAwesomeIcon icon={faBell} />
-                      {/* Counter - Alerts */}
-                      <span className="badge badge-danger badge-counter">
-                        3+
-                      </span>
-                    </div>
-                  }
-                  content={
-                    <div
-                      className="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                      aria-labelledby="alertsDropdown"
-                      style={{ display: "block" }}
-                    >
-                      <h6 className="dropdown-header">
-                        <span>김동국(2023000002)</span>
-                        님이
-                        <span>MAC</span>
-                        팀에
-                        <span>홍길동</span>
-                        님을 초대하셨습니다.
-                      </h6>
-                      <a
-                        className="dropdown-item d-flex align-items-center"
-                        href="#"
-                      >
-                        <div
-                          className="btn btn-secondary btn-sm"
-                          style={{
-                            width: "100%",
-                            backgroundColor: "#fc9a9d",
-                            border: "none"
-                          }}
-                        >
-                          수락
-                        </div>
-                        <div
-                          className="btn btn-secondary btn-sm"
-                          style={{
-                            width: "100%",
-                            backgroundColor: "#9abbfc",
-                            border: "none"
-                          }}
-                        >
-                          거절
-                        </div>
-                      </a>
-                    </div>
-                  }
-                  style="nav-link dropdown-toggle"
-                />
-              </li>
+              <InvitationNav />
               {/*<!-- Nav Item - User Information -->*/}
               <li className="nav-item dropdown no-arrow">
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#"
-                  id="userDropdown"
-                  role="button"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
+                <a className="nav-link dropdown-toggle">
                   <span className="mr-2 d-none d-lg-inline text-gray-600 small">
-                    김동국(2023000001)
+                    {userInfo.name} ({userInfo.studentId})
                   </span>
                   {/*<!-- <span style="padding-right: 5px"> -->*/}
                   <div className="btn btn-primary btn-user">My Page</div>
@@ -257,12 +200,23 @@ function Team() {
 
             <div className="row">
               {/*<!-- 파일 스토리지 섹션 -->*/}
-              <FileStorage />
+              <FileStorage
+                teamId={{ id: teamId }}
+                handleUploadModalShow={handleUploadModalShow}
+                handleHistoryModalShow={handleHistoryModalShow}
+                handleFileIdFromStorage={handleFileIdFromStorage}
+              />
               <div className="col-xl-4 mb-4">
                 {/*<!-- 팀 구성 정보 -->*/}
-                <TeamInfo />
+                {/* {useEffect(() => {
+              <TeamInfo teamId={teamId} />;
+            }, [teamId])} */}
+                <TeamInfo
+                  teamId={{ id: teamId }}
+                  handleInviteModalShow={handleInviteModalShow}
+                />
                 {/*<!--공지사항-->*/}
-                <Notice />
+                <Notice teamId={{ id: teamId }} />
               </div>
               {/*<!-- /.container-fluid -->*/}
             </div>
@@ -278,11 +232,40 @@ function Team() {
             </footer>
             {/*<!-- End of Footer -->*/}
           </div>
+
           {/*<!-- End of Content Wrapper -->*/}
         </div>
       </div>
+      {/* 팀원 초대 모달 */}
+      {inviteModalShow && (
+        <InviteModal
+          userInfo={userInfo}
+          teamId={{ id: teamId }}
+          inviteModalShow={inviteModalShow}
+          handleInviteModalShow={handleInviteModalShow}
+        />
+      )}
+      {/* 파일 등록 모달 */}
+      {uploadModalShow && (
+        <FileUploadModal
+          userInfo={userInfo}
+          teamId={{ id: teamId }}
+          uploadModalShow={uploadModalShow}
+          handleUploadModalShow={handleUploadModalShow}
+        />
+      )}
+      {/* 파일 이력 조회 모달 */}
+      {historyModalShow && (
+        <FileHistory
+          userInfo={userInfo}
+          teamId={{ id: teamId }}
+          fileId={{ id: fileId }}
+          historyModalShow={historyModalShow}
+          handleHistoryModalShow={handleHistoryModalShow}
+        />
+      )}
     </div>
   );
-}
+};
 
 export default Team;
