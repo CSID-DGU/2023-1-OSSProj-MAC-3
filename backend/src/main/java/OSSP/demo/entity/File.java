@@ -61,6 +61,10 @@ public class File extends TimeEntity{
         this.s3FileUrl=s3FileUrl;
     }
 
+    public void setCommitMessage(String commitMessage) {
+        this.commitMessage = commitMessage;
+    }
+
     public void addFileVersion(FileVersion fileVersion){
         this.fileVersionList.add(fileVersion);
 
