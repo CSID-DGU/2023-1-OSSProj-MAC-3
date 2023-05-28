@@ -7,26 +7,61 @@ const UploadModal = ({
   uploadModalShow,
   handleUploadModalShow,
 }) => {
-  const [userList, setUserList] = useState([]);
-  const [newFileName, setFileName] = useState("");
+  // const [newFileName, setFileName] = useState("");
+  const [commitMessage, setCommitMessage] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  const fetchFileList = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (!commitMessage || !selectedFile) {
+      alert("모든 항목을 입력해주세요.");
+      return;
+    }
+
+    const data = {
+      commitMessage,
+      selectedFile,
+    };
+
+    // 파일을 FormData에 추가
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    formData.append(
+      "fileVersionDto",
+      new Blob(
+        [
+          JSON.stringify({
+            commitMessage: commitMessage,
+            combination: "false",
+          }),
+        ],
+        { type: "application/json" }
+      )
+    );
     const token = sessionStorage.getItem("token");
-    fetch(`http://localhost:8080/team/${teamId.id}/user`, {
+    fetch(`http://localhost:8080/team/${teamId.id}/file/`, {
+      method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      body: formData,
     })
       .then((response) => response.json())
       .then((data) => {
-        setUserList(data.get_user_list); /*수정*/
+        // 성공적으로 업로드된 후에 수행할 작업
+        console.log(data);
       })
       .catch((error) => console.log(error));
   };
 
-  useEffect(() => {
-    fetchFileList();
-  }, []);
+  const showErrorMessages = (jsonData) => {
+    const errorMessages = Object.values(jsonData.error).join("\n");
+
+    // 메시지들을 결합하여 alert 창에 보여줍니다.
+    return errorMessages;
+  };
 
   return (
     <div className={uploadModalShow ? "modal-wrapper" : "modal-wrapper hidden"}>
@@ -43,42 +78,30 @@ const UploadModal = ({
             encType="multipart/form-data"
             target="repacatFrame"
           >
-            <input
-              type="text"
-              className="form-control form-control-user"
-              id="loginInputID"
-              aria-describedby="idHelp"
-              placeholder="파일명"
-              autoComplete="off"
-              value={newFileName}
-              onChange={(event) => setFileName(event.target.value)}
-            />
-            {/* <label for="formComment" className="form-label">
-                수정 사항
-              </label> */}
-            <textarea
-              className="form-control"
-              id="forComment"
-              rows={2}
-              placeholder="수정사항"
-              style={{ marginTop: "10px" }}
-            ></textarea>
-
             <div className="mb-3" style={{ marginTop: "10px" }}>
-              <label for="formFile" className="form-label">
-                파일 업로드
-              </label>
               <input
                 className="form-control"
                 type="file"
                 id="formFile"
                 style={{ height: "auto", border: "none" }}
+                onChange={(event) => setSelectedFile(event.target.files[0])}
               ></input>
             </div>
           </form>
+          <textarea
+            className="form-control"
+            id="forComment"
+            rows={2}
+            placeholder="수정사항"
+            style={{ marginTop: "10px" }}
+            value={commitMessage}
+            onChange={(event) => setCommitMessage(event.target.value)}
+          ></textarea>
         </div>
         <div className="modal-footer flex-row justify-content-around">
-          <button className="btn btn-primary col-5">등록</button>
+          <button className="btn btn-primary col-5" onClick={handleSubmit}>
+            등록
+          </button>
           <button
             className="btn btn-secondary col-5"
             onClick={() => handleUploadModalShow(false)}
