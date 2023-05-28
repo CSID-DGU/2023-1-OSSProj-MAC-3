@@ -1,8 +1,117 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faRefresh } from "@fortawesome/free-solid-svg-icons";
 
-const Notice = () => {
+const Notice = ({ teamId }) => {
+  const [showInput, setShowInput] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [editMode, setEditMode] = useState(false);
+  const [editNoticeId, setEditNoticeId] = useState(0);
+  const [editNoticeContent, setEditNoticeContent] = useState("");
+  const [noticeList, setNoticeList] = useState([]);
+
+  useEffect(() => {
+    if (teamId.id === 0) return;
+    fetchNotice();
+  }, [teamId]);
+
+  const fetchNotice = () => {
+    const token = sessionStorage.getItem("token");
+    fetch(`http://localhost:8080/team/${teamId.id}/notice`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setNoticeList(data.get_notices.reverse());
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleAddNotice = () => {
+    const token = sessionStorage.getItem("token");
+    fetch(`http://localhost:8080/team/${teamId.id}/notice`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ content: inputValue })
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        fetchNotice();
+        setInputValue("");
+        setShowInput(false);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const handleDeleteNotice = (noticeId) => {
+    const token = sessionStorage.getItem("token");
+    fetch(`http://localhost:8080/team/${teamId.id}/notice/${noticeId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        fetchNotice();
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const handleEditNotice = (noticeId, content) => {
+    const token = sessionStorage.getItem("token");
+    fetch(`http://localhost:8080/team/${teamId.id}/notice/${noticeId}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ content: content })
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        fetchNotice();
+        setEditMode(false);
+        setEditNoticeId(0);
+        setEditNoticeContent("");
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const handleEditMode = (noticeId, content) => {
+    setEditMode(true);
+    setEditNoticeId(noticeId);
+    setEditNoticeContent(content);
+  };
+
+  const handleOnKeyPressAdd = (e) => {
+    if (e.key === "Enter") {
+      handleAddNotice();
+    }
+  };
+
+  const handleOnKeyPressEdit = (e) => {
+    if (e.key === "Enter") {
+      handleEditNotice(editNoticeId, editNoticeContent);
+    }
+  };
+
   return (
     <div>
       <div className="card shadow mb-4">
@@ -10,37 +119,130 @@ const Notice = () => {
           <h6 className="m-0 font-weight-bold text-primary">공지 사항</h6>
           <div className="dropdown no-arrow">
             <a
-              className="dropdown-toggle"
-              href="#"
+              className="dropdown-toggle mr-3"
               role="button"
-              id="dropdownMenuLink"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
+              onClick={() => {
+                if (teamId.id > 0) {
+                  fetchNotice();
+                } else {
+                  window.alert("팀을 선택해주세요.");
+                }
+              }}
+            >
+              <FontAwesomeIcon icon={faRefresh} />
+            </a>
+            <a
+              className="dropdown-toggle"
+              role="button"
+              onClick={() => setShowInput(true)}
             >
               <FontAwesomeIcon icon={faPlus} />
             </a>
-            <div
-              className="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-              aria-labelledby="dropdownMenuLink"
-            >
-              <div className="dropdown-header">Dropdown Header:</div>
-              <a className="dropdown-item" href="#">
-                Action
-              </a>
-              <a className="dropdown-item" href="#">
-                Another action
-              </a>
-              <div className="dropdown-divider"></div>
-              <a className="dropdown-item" href="#">
-                Something else here
-              </a>
-            </div>
           </div>
         </div>
         <div className="card-body">
-          <ul className="list-group">
-            <li className="list-group-item">착수 보고 데드라인</li>
+          <ul
+            className="list-group"
+            style={{ height: "120px", overflowY: "auto" }}
+          >
+            {showInput && (
+              <li className="list-group-item p-0 border-0 d-flex align-items-center">
+                <span className="flex-grow-1 p-1 border-bottom">
+                  <input
+                    type="text"
+                    className="form-control bg-light border-0 small flex-grow-1"
+                    placeholder="공지사항"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    onKeyDown={handleOnKeyPressAdd}
+                  />
+                </span>
+                <span className="btn-group p-1">
+                  <button
+                    className="btn btn-sm bg-primary text-white"
+                    onClick={handleAddNotice}
+                  >
+                    등록
+                  </button>
+                  <button
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => setShowInput(false)}
+                  >
+                    취소
+                  </button>
+                </span>
+              </li>
+            )}
+            {noticeList.map((notice, index) => (
+              <li
+                key={index}
+                className="list-group-item p-0 border-0 d-flex align-items-center"
+              >
+                {editMode && editNoticeId === notice.noticeId ? (
+                  <>
+                    <span className="flex-grow-1 p-1 border-bottom">
+                      <input
+                        type="text"
+                        className="form-control bg-light border-0 small flex-grow-1"
+                        value={editNoticeContent}
+                        onKeyDown={(e) =>
+                          handleOnKeyPressEdit(
+                            e,
+                            notice.noticeId,
+                            editNoticeContent
+                          )
+                        }
+                        onChange={(event) =>
+                          setEditNoticeContent(event.target.value)
+                        }
+                      />
+                    </span>
+                    <span className="btn-group p-1">
+                      <button
+                        className="btn btn-sm bg-primary text-white"
+                        onClick={() =>
+                          handleEditNotice(notice.noticeId, editNoticeContent)
+                        }
+                      >
+                        등록
+                      </button>
+                      <button
+                        className="btn btn-secondary btn-sm"
+                        onClick={() => {
+                          setEditMode(false);
+                          setEditNoticeId(0);
+                          setEditNoticeContent("");
+                        }}
+                      >
+                        취소
+                      </button>
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="flex-grow-1 p-1 border-bottom">
+                      {notice.noticeContent}
+                    </span>
+                    <span className="btn-group p-1">
+                      <button
+                        className="btn btn-sm bg-primary text-white"
+                        onClick={() =>
+                          handleEditMode(notice.noticeId, notice.noticeContent)
+                        }
+                      >
+                        수정
+                      </button>
+                      <button
+                        className="btn btn-secondary btn-sm"
+                        onClick={() => handleDeleteNotice(notice.noticeId)}
+                      >
+                        삭제
+                      </button>
+                    </span>
+                  </>
+                )}
+              </li>
+            ))}
           </ul>
         </div>
       </div>
