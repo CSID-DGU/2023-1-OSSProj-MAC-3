@@ -52,7 +52,6 @@ const HistoryModal = ({
                 <thead>
                   <tr>
                     <th scope="col">#</th>
-                    <th scope="col">파일명</th>
                     <th scope="col">수정사항</th>
                     <th scope="col">수정일</th>
                     <th scope="col">작성자</th>
@@ -62,7 +61,6 @@ const HistoryModal = ({
                   {fileList.map((file, index) => (
                     <tr key={index}>
                       <th scope="row">{index + 1}</th>
-                      <td>{file.fileName}</td>
                       <td>{file.commitMessage}</td>
                       <td>{file.updateDate}</td>
                       <td>{file.memberName}</td>
