@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 @Slf4j
@@ -34,23 +34,19 @@ public class NoticeService {
     //각 메서드마다 올바르지 않은 사용자(팀이 아닌 사람이 생성한)에 대해 예외처리
     @Transactional(readOnly = true)
     public ResponseEntity findAll(String studentId, Long teamId) {
+        User user = userRepository.findByStudentId(studentId).get();
         try {
-            User user = userRepository.findByStudentId(studentId).get();
-            Member member = memberRepository.findByUserIdAndTeamId(user.getId(), teamId).orElse(null);
-            if (member==null){
-                return ResponseEntity.badRequest().body(ResponseDto.builder().error(Collections.singletonMap("get_notice", "올바른 사용자가 아닙니다.")).build());
-            }
+            Member member = memberRepository.findByUserIdAndTeamId(user.getId(), teamId).get();
             List<Notice> notices = noticeRepository.findByTeamId(teamId);
-            List<NoticeResponse> responseDto = notices.stream()
-                    .map(n -> new NoticeResponse(n))
-                    .collect(Collectors.toList());
-//            for (Notice notice : notices) {
-//                NoticeResponse dto = NoticeResponse.builder()
-//                        .id(notice.getNoticeId())
-//                        .content(notice.getContent())
-//                        .build();
-//                responseDto.add(dto);
-//            }
+
+            List<NoticeResponse> responseDto = new ArrayList<>();
+            for (Notice notice : notices) {
+                NoticeResponse dto = NoticeResponse.builder()
+                        .noticeId(notice.getNoticeId())
+                        .noticeContent(notice.getContent())
+                        .build();
+                responseDto.add(dto);
+            }
             return ResponseEntity.ok().body(Collections.singletonMap("get_notices", responseDto));
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -75,10 +71,10 @@ public class NoticeService {
             notice.setMember(member);
             noticeRepository.save(notice);
             NoticeResponse dto = NoticeResponse.builder()
-                    .id(notice.getNoticeId())
-                    .content(notice.getContent())
+                    .noticeId(notice.getNoticeId())
+                    .noticeContent(notice.getContent())
                     .build();
-            return ResponseEntity.ok().body(dto);
+            return ResponseEntity.ok().body(Collections.singletonMap("write_notice", "공지사항을 생성했습니다."));
         }catch (Exception e){
             log.error(e.getMessage());
             ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("write_notice", "공지사항 생성에 실패했습니다.")).build();
@@ -103,14 +99,14 @@ public class NoticeService {
             findNotice.updateContent(notice.getContent(), member);
 
             NoticeResponse dto = NoticeResponse.builder()
-                    .id(findNotice.getNoticeId())
-                    .content(findNotice.getContent())
+                    .noticeId(findNotice.getNoticeId())
+                    .noticeContent(findNotice.getContent())
                     .build();
 
-            return ResponseEntity.ok().body(dto);
+            return ResponseEntity.ok().body(Collections.singletonMap("update_notice", "공지사항을 수정했습니다."));
         } catch (Exception e) {
             log.error(e.getMessage());
-            ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("update_notice", "공지사항 수정에 실패했습니다.")).build();
+           ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("update_notice", "공지사항 수정에 실패했습니다.")).build();
             return ResponseEntity.badRequest().body(responseErrorDto);
         }
     }
@@ -130,6 +126,7 @@ public class NoticeService {
             log.error(e.getMessage());
             ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("delete_notice", "공지사항 삭제에 실패했습니다.")).build();
             return ResponseEntity.badRequest().body(responseErrorDto);
-        }
+
+         }
     }
 }
