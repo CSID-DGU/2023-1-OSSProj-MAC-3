@@ -14,8 +14,15 @@ public class FileDownloadController {
 
     private final FileDownloadService fileDownloadService;
 
-    @GetMapping("/team/{teamId}/file/{fileId}/{fileVersionId}")
-    public ResponseEntity downloadFile(@AuthenticationPrincipal String studentId, @PathVariable Long fileId, @PathVariable Long fileVersionId, @PathVariable Long teamId){
-        return fileDownloadService.downloadImage(studentId, fileId, fileVersionId, teamId);
+    //파일 버전 다운로드
+    @GetMapping("/team/{teamId}/fileDownload/{fileId}/{fileVersionId}")
+    public ResponseEntity downloadFileVersion(@AuthenticationPrincipal String studentId, @PathVariable Long fileId, @PathVariable Long fileVersionId, @PathVariable Long teamId){
+        return fileDownloadService.downloadFileVersion(studentId, fileId, fileVersionId, teamId);
+    }
+
+    //파일 다운로드
+    @GetMapping("/team/{teamId}/fileDownload/{fileId}")
+    public ResponseEntity downloadFile(@AuthenticationPrincipal String studentId, @PathVariable Long fileId, @PathVariable Long teamId){
+        return fileDownloadService.downloadFile(studentId, fileId, teamId);
     }
 }

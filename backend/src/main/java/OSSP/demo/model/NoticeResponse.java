@@ -1,5 +1,6 @@
 package OSSP.demo.model;
 
+
 import OSSP.demo.entity.Notice;
 import lombok.*;
 
@@ -9,11 +10,6 @@ import lombok.*;
 @Builder
 public class NoticeResponse {
 
-    private Long id;
-    private String content;
-
-    public NoticeResponse(Notice notice){
-        id = notice.getNoticeId();
-        content = notice.getContent();
-    }
+    private Long noticeId;
+    private String noticeContent;
 }

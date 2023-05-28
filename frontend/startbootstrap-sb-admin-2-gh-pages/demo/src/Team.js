@@ -102,7 +102,7 @@ const Team = () => {
         {/*<!-- Sidebar - Brand -->*/}
         <a
           className="sidebar-brand d-flex align-items-center justify-content-center"
-          href="index.html"
+          href="/select"
         >
           <img
             className="login-dongguk-logo"
@@ -227,7 +227,7 @@ const Team = () => {
                   handleInviteModalShow={handleInviteModalShow}
                 />
                 {/*<!--공지사항-->*/}
-                <Notice />
+                <Notice teamId={{ id: teamId }} />
               </div>
               {/*<!-- /.container-fluid -->*/}
             </div>
