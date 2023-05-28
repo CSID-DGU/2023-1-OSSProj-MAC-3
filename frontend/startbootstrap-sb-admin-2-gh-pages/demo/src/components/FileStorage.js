@@ -45,14 +45,17 @@ const FileStorage = () => {
           </div>
         </div>
         {/*<!-- Card Body -->*/}
-        <div className="card-body">
+        <div className="card-body" style={{ height: "500px" }}>
           <div className="chart-area">
             {/*<!--<canvas id="myAreaChart"></canvas>-->*/}
             <div className="row">
               <div className="col-lg-12">
                 <div className="card">
                   <div className="card-body">
-                    <div className="table-responsive project-list">
+                    <div
+                      className="table-responsive project-list "
+                      style={{ height: "400px", overflowY: "auto" }}
+                    >
                       <table className="table project-table table-centered table-nowrap">
                         <thead>
                           <tr>
