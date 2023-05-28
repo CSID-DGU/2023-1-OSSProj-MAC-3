@@ -2,12 +2,15 @@ package OSSP.demo.service.security;
 
 import OSSP.demo.entity.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 
 // JWT 토큰 생성 및 검증을 위한 클래스
@@ -31,22 +34,25 @@ public class TokenProvider {
                 .compact();
     }
 
-    // 토큰 검증, studentId 반환, 검증 실패 시 null 반환
-    public String validateAndGetStudentId(String token) {
-        Claims claims = Jwts.parser() // secretKey로 토큰을 파싱
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)// 파싱된 토큰에서 claims를 얻음
-                .getBody();
-        return claims.getSubject();
-    }
+    public String validateAndGetStudentId(String token, HttpServletResponse response) throws IOException {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody();
 
-    // 토큰 만료 검증
-    public boolean validateTimeToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .getBody();
-        Date expirationDate = claims.getExpiration(); // 토큰 만료 시간
-        return expirationDate.after(new Date()); // 토큰 만료 시간이 현재 시간보다 뒤인지 검증
+            Date expirationDate = claims.getExpiration();
+            Date currentDate = new Date();
+
+            if (expirationDate.before(currentDate)) {
+                throw new ExpiredJwtException(null, null, "Token has expired");
+            }
+
+            return claims.getSubject();
+        } catch (ExpiredJwtException e) {
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

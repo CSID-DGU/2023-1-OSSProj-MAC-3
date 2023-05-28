@@ -30,8 +30,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String token = parseBearerToken(request);
             log.info("필터가 동작합니다.");
-            if (token != null && !token.equalsIgnoreCase("null") && tokenProvider.validateTimeToken(token)) {
-                String studentId = tokenProvider.validateAndGetStudentId(token); // 토큰에서 학번 추출
+            if (token != null && !token.equalsIgnoreCase("null")) {
+                String studentId = tokenProvider.validateAndGetStudentId(token, response); // 토큰에서 학번 추출
                 log.info("학번: {}", studentId);
                 AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         studentId,
