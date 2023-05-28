@@ -37,7 +37,7 @@ const HistoryModal = ({
     >
       <div className="modal-inner">
         <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-          <h6 className="m-0 font-weight-bold text-primary">학생 초대</h6>
+          <h6 className="m-0 font-weight-bold text-primary">파일 버전 관리</h6>
         </div>
         <div className="card-body">
           {fileList ? (
@@ -64,7 +64,13 @@ const HistoryModal = ({
                       <td>{file.updateDate}</td>
                       <td>{file.memberName}</td>
                       <td style={{ textAlign: "center" }}>
-                        <a className="btn" style={{ padding: "0.1rem 0.5rem" }}>
+                        <a
+                          className="btn"
+                          style={{ padding: "0.1rem 0.5rem" }}
+                          onClick={() => {
+                            window.open(file.s3url, "_blank");
+                          }}
+                        >
                           <FontAwesomeIcon icon={faDownload} />
                         </a>
                       </td>
@@ -78,7 +84,6 @@ const HistoryModal = ({
           )}
         </div>
         <div className="modal-footer flex-row justify-content-around">
-          <button className="btn btn-primary col-5">초대</button>
           <button
             className="btn btn-secondary col-5"
             onClick={() => handleHistoryModalShow(false)}
