@@ -13,6 +13,7 @@ const FileStorage = ({
   handleHistoryModalShow,
   handleUploadModalShow,
   handleFileIdFromStorage,
+  handleVersionUploadModalShow,
 }) => {
   const [fileList, setFileList] = useState(null);
   const [fileId, setFileId] = useState(0);
@@ -123,8 +124,8 @@ const FileStorage = ({
                         <tbody>
                           {fileList &&
                             fileList.map((file, index) => (
-                              <tr key={file.fileId}>
-                                <th scope="row">{file.fileId}</th>
+                              <tr key={index}>
+                                <th scope="row">{index + 1}</th>
                                 <td>{file.fileName}</td>
                                 <td>{file.commitMessage}</td>
                                 <td>{file.updateDate}</td>
@@ -136,6 +137,13 @@ const FileStorage = ({
                                   <a
                                     className="btn"
                                     style={{ padding: "0.1rem 0.5rem" }}
+                                    onClick={() => {
+                                      if (teamId.id > 0) {
+                                        handleVersionUploadModalShow(true);
+                                      } else {
+                                        window.alert("팀을 선택해주세요.");
+                                      }
+                                    }}
                                   >
                                     <FontAwesomeIcon icon={faEdit} />
                                   </a>
