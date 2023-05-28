@@ -23,6 +23,13 @@ const Team = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      navigate("/"); // 토큰이 없을 경우 리디렉션할 경로
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     console.log(teamId);
   }, [teamId]);
 
