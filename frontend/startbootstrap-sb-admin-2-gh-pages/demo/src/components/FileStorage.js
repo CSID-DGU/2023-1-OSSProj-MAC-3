@@ -16,6 +16,7 @@ const FileStorage = ({
   handleVersionUploadModalShow,
 }) => {
   const [fileList, setFileList] = useState(null);
+  const [fileDownload, setFileDownload] = useState(null);
   const [fileId, setFileId] = useState(0);
 
   useEffect(() => {
@@ -29,11 +30,24 @@ const FileStorage = ({
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         setFileList(data.get_files);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+      });
   };
 
   const handleDeleteTeam = (fileID) => {
@@ -46,7 +60,17 @@ const FileStorage = ({
         "Content-Type": "application/json",
       },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         console.log(data);
         // 삭제된 팀 정보를 업데이트합니다.
@@ -55,7 +79,10 @@ const FileStorage = ({
         );
         fetchData();
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+      });
   };
 
   useEffect(() => {
@@ -63,6 +90,24 @@ const FileStorage = ({
     fetchData();
   }, [teamId]);
 
+  const handleDownloadFile = async (s3Url, fileName) => {
+    console.log(s3Url);
+    const response = await fetch(s3Url);
+
+    const blob = await response.blob();
+    const downloadUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = fileName;
+    link.click();
+  };
+
+  const showErrorMessages = (jsonData) => {
+    const errorMessages = Object.values(jsonData.error).join("\n");
+
+    // 메시지들을 결합하여 alert 창에 보여줍니다.
+    return errorMessages;
+  };
   return (
     <div className="col-xl-8">
       <div className="card shadow mb-4">
@@ -143,6 +188,7 @@ const FileStorage = ({
                                     onClick={() => {
                                       if (teamId.id > 0) {
                                         handleVersionUploadModalShow(true);
+                                        handleFileIdFromStorage(file.fileId);
                                       } else {
                                         window.alert("팀을 선택해주세요.");
                                       }
@@ -162,9 +208,12 @@ const FileStorage = ({
                                   <a
                                     className="btn"
                                     style={{ padding: "0.1rem 0.5rem" }}
-                                    onClick={() => {
-                                      window.open(file.s3url, "_blank");
-                                    }}
+                                    onClick={() =>
+                                      handleDownloadFile(
+                                        file.s3url,
+                                        file.fileName
+                                      )
+                                    }
                                   >
                                     <FontAwesomeIcon icon={faDownload} />
                                   </a>
