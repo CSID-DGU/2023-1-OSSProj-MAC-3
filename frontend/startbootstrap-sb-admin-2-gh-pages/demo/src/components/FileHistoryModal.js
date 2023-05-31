@@ -20,16 +20,80 @@ const HistoryModal = ({
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         setFileList(data.get_fileVersions);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+      });
+  };
+
+  const showErrorMessages = (jsonData) => {
+    const errorMessages = Object.values(jsonData.error).join("\n");
+
+    // 메시지들을 결합하여 alert 창에 보여줍니다.
+    return errorMessages;
   };
 
   useEffect(() => {
     fetchFileList();
   }, []);
+
+  const handleDownloadFile3 = async (s3Url, fileName) => {
+    console.log(s3Url);
+    const response = await fetch(s3Url);
+
+    const blob = await response.blob();
+    const downloadUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = fileName;
+    link.click();
+  };
+
+  const handleDownloadFile = async (fileVersionId, fileName) => {
+    console.log(fileId);
+    const token = sessionStorage.getItem("token");
+    fetch(
+      `http://localhost:8080/team/${teamId.id}/fileDownload/${fileId.id}/${fileVersionId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
+      .then((data) => {
+        console.log(data.s3Url);
+        handleDownloadFile3(data.s3Url, fileName);
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+      });
+  };
 
   return (
     <div
@@ -68,9 +132,12 @@ const HistoryModal = ({
                         <a
                           className="btn"
                           style={{ padding: "0.1rem 0.5rem" }}
-                          onClick={() => {
-                            window.open(file.s3url, "_blank");
-                          }}
+                          onClick={() =>
+                            handleDownloadFile(
+                              file.fileVersionId,
+                              file.fileName
+                            )
+                          }
                         >
                           <FontAwesomeIcon icon={faDownload} />
                         </a>
