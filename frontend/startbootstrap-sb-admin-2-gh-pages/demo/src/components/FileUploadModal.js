@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Modal.css";
 
 const UploadModal = ({
@@ -10,6 +11,8 @@ const UploadModal = ({
   // const [newFileName, setFileName] = useState("");
   const [commitMessage, setCommitMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -48,12 +51,27 @@ const UploadModal = ({
       },
       body: formData,
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         // 성공적으로 업로드된 후에 수행할 작업
         console.log(data);
+        handleUploadModalShow(false);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+        navigate("/");
+      });
   };
 
   const showErrorMessages = (jsonData) => {
@@ -65,11 +83,11 @@ const UploadModal = ({
 
   return (
     <div className={uploadModalShow ? "modal-wrapper" : "modal-wrapper hidden"}>
-      <div className="modal-inner">
+      <div className="modal-inner" style={{ height: "370px" }}>
         <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
           <h6 className="m-0 font-weight-bold text-primary">파일 등록</h6>
         </div>
-        <div className="card-body">
+        <div className="card-body" style={{ marginBottom: "50px" }}>
           <form
             className="form-group"
             id="form1"
