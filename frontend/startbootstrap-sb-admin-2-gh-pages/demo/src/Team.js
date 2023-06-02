@@ -8,6 +8,7 @@ import Notice from "./components/Notice";
 import FileStorage from "./components/FileStorage";
 import InviteModal from "./components/InviteModal";
 import FileUploadModal from "./components/FileUploadModal.js";
+import VersionUploadModal from "./components/VersionUploadModal.js";
 import FileHistory from "./components/FileHistoryModal.js";
 import InvitationNav from "./components/InvitationNav";
 import DropdownButton from "./components/DropdownButton";
@@ -18,6 +19,7 @@ const Team = () => {
   const [fileId, setFileId] = useState(0);
   const [inviteModalShow, setInviteModalShow] = useState(false);
   const [uploadModalShow, setUploadModalShow] = useState(false);
+  const [versionUploadModalShow, setVersionUploadModalShow] = useState(false);
   const [historyModalShow, setHistoryModalShow] = useState(false);
 
   const navigate = useNavigate();
@@ -56,6 +58,11 @@ const Team = () => {
   const handleUploadModalShow = (data) => {
     setUploadModalShow(data);
   };
+
+  const handleVersionUploadModalShow = (data) => {
+    setVersionUploadModalShow(data);
+  };
+
   const handleHistoryModalShow = (data) => {
     setHistoryModalShow(data);
   };
@@ -70,13 +77,32 @@ const Team = () => {
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         setUserInfo(data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        navigate("/");
+      });
   }, []);
 
+  const showErrorMessages = (jsonData) => {
+    const errorMessages = Object.values(jsonData.error).join("\n");
+
+    // 메시지들을 결합하여 alert 창에 보여줍니다.
+    return errorMessages;
+  };
   const handleLogout = () => {
     //localStorage.removeItem("token");
     navigate("/login");
@@ -205,6 +231,7 @@ const Team = () => {
                 handleUploadModalShow={handleUploadModalShow}
                 handleHistoryModalShow={handleHistoryModalShow}
                 handleFileIdFromStorage={handleFileIdFromStorage}
+                handleVersionUploadModalShow={handleVersionUploadModalShow}
               />
               <div className="col-xl-4 mb-4">
                 {/*<!-- 팀 구성 정보 -->*/}
@@ -252,6 +279,16 @@ const Team = () => {
           teamId={{ id: teamId }}
           uploadModalShow={uploadModalShow}
           handleUploadModalShow={handleUploadModalShow}
+        />
+      )}
+      {/* 파일 버전별 등록 모달 */}
+      {versionUploadModalShow && (
+        <VersionUploadModal
+          userInfo={userInfo}
+          teamId={{ id: teamId }}
+          fileId={{ id: fileId }}
+          versionUploadModalShow={versionUploadModalShow}
+          handleVersionUploadModalShow={handleVersionUploadModalShow}
         />
       )}
       {/* 파일 이력 조회 모달 */}

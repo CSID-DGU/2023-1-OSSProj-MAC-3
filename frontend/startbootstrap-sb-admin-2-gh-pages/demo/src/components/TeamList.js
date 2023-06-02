@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 
@@ -7,6 +8,9 @@ const TeamList = ({ handleTeamIdFromChild }) => {
   const [teams, setTeams] = useState([]);
   const [newTeamName, setNewTeamName] = useState("");
   const [showInput, setShowInput] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleInputChange = (event) => {
     setNewTeamName(event.target.value);
@@ -23,14 +27,28 @@ const TeamList = ({ handleTeamIdFromChild }) => {
       },
       body: JSON.stringify({ teamName: newTeamName }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         console.log(data);
         fetchTeams();
         setNewTeamName("");
         setShowInput(false);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+        navigate("/");
+      });
   };
 
   const handleDeleteTeam = (teamID) => {
@@ -43,7 +61,17 @@ const TeamList = ({ handleTeamIdFromChild }) => {
         "Content-Type": "application/json",
       },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         console.log(data);
         // 삭제된 팀 정보를 업데이트합니다.
@@ -52,7 +80,11 @@ const TeamList = ({ handleTeamIdFromChild }) => {
         );
         fetchTeams();
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+        navigate("/");
+      });
   };
 
   const fetchTeams = () => {
@@ -63,14 +95,41 @@ const TeamList = ({ handleTeamIdFromChild }) => {
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         if (data && Array.isArray(data.get_teams)) {
           console.log(data.get_teams);
           setTeams(data.get_teams);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const showErrorMessages = (jsonData) => {
+    const errorMessages = Object.values(jsonData.error).join("\n");
+
+    // 메시지들을 결합하여 alert 창에 보여줍니다.
+    return errorMessages;
+  };
+
+  const handleClick = (index) => {
+    setTeams((prevState) => {
+      const updatedTeams = [...prevState];
+      updatedTeams[index] = { ...updatedTeams[index], isActive: true };
+      return updatedTeams;
+    });
   };
 
   useEffect(() => {
@@ -91,12 +150,21 @@ const TeamList = ({ handleTeamIdFromChild }) => {
             return (
               <div
                 key={index}
-                style={{ display: "flex", alignItems: "center" }}
+                style={
+                  team.isActive
+                    ? {
+                        display: "flex",
+                        alignItems: "center",
+                        backgroundColor: "#eaecf4",
+                      }
+                    : { display: "flex", alignItems: "center" }
+                }
               >
                 <a
                   className="collapse-item"
                   onClick={() => {
                     handleTeamIdFromChild(team.teamId);
+                    handleClick(index);
                   }}
                   style={{ flex: 1 }}
                 >

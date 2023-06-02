@@ -25,7 +25,11 @@ function Select() {
       .then((data) => {
         setUserInfo(data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+        navigate("/");
+      });
   }, []);
 
   const handleLogout = () => {
