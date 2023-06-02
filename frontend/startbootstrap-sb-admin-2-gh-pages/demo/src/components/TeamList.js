@@ -114,8 +114,6 @@ const TeamList = ({ handleTeamIdFromChild }) => {
       })
       .catch((error) => {
         console.log(error);
-        alert(error);
-        navigate("/");
       });
   };
 
@@ -126,8 +124,12 @@ const TeamList = ({ handleTeamIdFromChild }) => {
     return errorMessages;
   };
 
-  const handleClick = () => {
-    setIsActive(!isActive);
+  const handleClick = (index) => {
+    setTeams((prevState) => {
+      const updatedTeams = [...prevState];
+      updatedTeams[index] = { ...updatedTeams[index], isActive: true };
+      return updatedTeams;
+    });
   };
 
   useEffect(() => {
@@ -147,14 +149,22 @@ const TeamList = ({ handleTeamIdFromChild }) => {
         ? teams.map((team, index) => {
             return (
               <div
-                className={isActive ? "btn btn-secondary active" : ""}
                 key={index}
-                style={{ display: "flex", alignItems: "center" }}
+                style={
+                  team.isActive
+                    ? {
+                        display: "flex",
+                        alignItems: "center",
+                        backgroundColor: "#eaecf4",
+                      }
+                    : { display: "flex", alignItems: "center" }
+                }
               >
                 <a
                   className="collapse-item"
                   onClick={() => {
                     handleTeamIdFromChild(team.teamId);
+                    handleClick(index);
                   }}
                   style={{ flex: 1 }}
                 >
