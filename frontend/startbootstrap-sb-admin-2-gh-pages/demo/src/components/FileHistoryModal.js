@@ -103,7 +103,10 @@ const HistoryModal = ({
         <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
           <h6 className="m-0 font-weight-bold text-primary">파일 버전 관리</h6>
         </div>
-        <div className="card-body">
+        <div
+          className="card-body"
+          style={{ height: "350px", overflowY: "auto" }}
+        >
           {fileList ? (
             <div
               className="table-responsive project-list"
