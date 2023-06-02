@@ -16,6 +16,53 @@ const VersionUploadModal = ({
 
   const navigate = useNavigate();
 
+  const fetchFileName = () => {
+    const token = sessionStorage.getItem("token");
+    fetch(`http://localhost:8080/team/${teamId.id}/file`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
+      .then((data) => {
+        const fileIdToFind = fileId.id; // 찾고자 하는 fileId
+        const fileIndex = data.get_files.findIndex(
+          (file) => file.fileId === fileIdToFind
+        );
+
+        if (fileIndex !== -1) {
+          const fileName = data.get_files[fileIndex].fileName;
+          setFileName(fileName);
+          console.log(fileName);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+        navigate("/");
+      });
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    console.log(file);
+    if (file) {
+      const renamedFile = new File([file], fileName, { type: file.type });
+      setSelectedFile(renamedFile);
+      console.log(renamedFile);
+    }
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -83,6 +130,10 @@ const VersionUploadModal = ({
     return errorMessages;
   };
 
+  useEffect(() => {
+    fetchFileName();
+  }, []);
+
   return (
     <div
       className={
@@ -108,6 +159,7 @@ const VersionUploadModal = ({
                 type="file"
                 id="formFile"
                 style={{ height: "auto", border: "none" }}
+                onChange={handleFileChange}
               ></input>
             </div>
           </form>
