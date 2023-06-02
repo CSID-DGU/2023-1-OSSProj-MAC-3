@@ -77,7 +77,17 @@ const Team = () => {
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         setUserInfo(data);
       })
@@ -87,6 +97,12 @@ const Team = () => {
       });
   }, []);
 
+  const showErrorMessages = (jsonData) => {
+    const errorMessages = Object.values(jsonData.error).join("\n");
+
+    // 메시지들을 결합하여 alert 창에 보여줍니다.
+    return errorMessages;
+  };
   const handleLogout = () => {
     //localStorage.removeItem("token");
     navigate("/login");
@@ -270,6 +286,7 @@ const Team = () => {
         <VersionUploadModal
           userInfo={userInfo}
           teamId={{ id: teamId }}
+          fileId={{ id: fileId }}
           versionUploadModalShow={versionUploadModalShow}
           handleVersionUploadModalShow={handleVersionUploadModalShow}
         />

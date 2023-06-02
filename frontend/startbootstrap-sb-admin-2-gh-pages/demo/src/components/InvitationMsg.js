@@ -1,20 +1,36 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const InvitationMsg = ({ invitationList, fetchInvitation }) => {
+  const navigate = useNavigate();
   const handleAcceptInvitation = (invitationId) => {
     const token = sessionStorage.getItem("token");
     fetch(`http://localhost:8080/team/invitation/${invitationId}/accept`, {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         console.log(data);
         fetchInvitation();
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+        navigate("/");
+      });
   };
 
   const handleRejectInvitation = (invitationId) => {
@@ -22,15 +38,29 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
     fetch(`http://localhost:8080/team/invitation/${invitationId}/reject`, {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         console.log(data);
         fetchInvitation();
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+        navigate("/");
+      });
   };
 
   const handleDeleteInvitation = (invitationId) => {
@@ -38,17 +68,37 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
     fetch(`http://localhost:8080/team/invitation/${invitationId}`, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         console.log(data);
         fetchInvitation();
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+        navigate("/");
+      });
   };
 
+  const showErrorMessages = (jsonData) => {
+    const errorMessages = Object.values(jsonData.error).join("\n");
+
+    // 메시지들을 결합하여 alert 창에 보여줍니다.
+    return errorMessages;
+  };
   return (
     <div
       className="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -75,7 +125,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
                         style={{
                           width: "50%",
                           backgroundColor: "#fc9a9d",
-                          border: "none"
+                          border: "none",
                         }}
                         role="button"
                         onClick={() => {
@@ -89,7 +139,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
                         style={{
                           width: "50%",
                           backgroundColor: "#9abbfc",
-                          border: "none"
+                          border: "none",
                         }}
                         role="button"
                         onClick={() => {
@@ -108,7 +158,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
                           width: "50%",
                           backgroundColor: "#969696",
                           border: "none",
-                          pointerEvents: "none"
+                          pointerEvents: "none",
                         }}
                         disabled
                       >
@@ -119,7 +169,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
                         style={{
                           width: "50%",
                           backgroundColor: "#9abbfc",
-                          border: "none"
+                          border: "none",
                         }}
                         role="button"
                         onClick={() => {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Modal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +13,9 @@ const HistoryModal = ({
 }) => {
   const [fileList, setFileList] = useState([]);
   const [newFileName, setFileName] = useState("");
+
+  const navigate = useNavigate();
+
   console.log(historyModalShow);
   const fetchFileList = () => {
     const token = sessionStorage.getItem("token");
@@ -37,6 +41,7 @@ const HistoryModal = ({
       .catch((error) => {
         console.log(error);
         alert(error);
+        navigate("/");
       });
   };
 
@@ -92,6 +97,7 @@ const HistoryModal = ({
       .catch((error) => {
         console.log(error);
         alert(error);
+        navigate("/");
       });
   };
 
