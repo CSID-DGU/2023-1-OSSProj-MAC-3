@@ -47,7 +47,6 @@ const Notice = ({ teamId }) => {
       .catch((error) => {
         {
           console.log(error);
-          alert(error.message);
         }
       });
   };

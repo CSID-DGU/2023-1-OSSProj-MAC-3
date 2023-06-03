@@ -84,9 +84,9 @@ const TeamList = ({ handleTeamIdFromChild }) => {
       .then((data) => {
         console.log(data);
         // 삭제된 팀 정보를 업데이트합니다.
-        setTeams((prevTeams) =>
-          prevTeams.filter((team) => team.teamID !== teamID)
-        );
+        // setTeams((prevTeams) =>
+        //   prevTeams.filter((team) => team.teamID !== teamID)
+        // );
         fetchTeams();
       })
       .catch((error) => {
@@ -126,8 +126,8 @@ const TeamList = ({ handleTeamIdFromChild }) => {
         }
       })
       .catch((error) => {
+        setTeams([]);
         console.log(error);
-        alert(error.message);
       });
   };
 
