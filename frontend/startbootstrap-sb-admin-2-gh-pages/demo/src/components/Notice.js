@@ -22,18 +22,23 @@ const Notice = ({ teamId }) => {
     const token = sessionStorage.getItem("token");
     fetch(`http://localhost:8080/team/${teamId.id}/notice`, {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           return response.json();
-        } else {
+        }
+        if (response.status === 400) {
           return response.json().then((jsonData) => {
             // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
             // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
             throw new Error(showErrorMessages(jsonData));
           });
+        }
+        if (response.status === 403) {
+          alert("로그인이 만료되었습니다.");
+          navigate("/");
         }
       })
       .then((data) => {
@@ -42,8 +47,7 @@ const Notice = ({ teamId }) => {
       .catch((error) => {
         {
           console.log(error);
-          alert(error);
-          navigate("/");
+          alert(error.message);
         }
       });
   };
@@ -59,24 +63,33 @@ const Notice = ({ teamId }) => {
   };
 
   const handleAddNotice = () => {
+    if (inputValue === "") {
+      alert("공지사항을 입력해주세요.");
+      return;
+    }
     const token = sessionStorage.getItem("token");
     fetch(`http://localhost:8080/team/${teamId.id}/notice`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({ content: inputValue }),
+      body: JSON.stringify({ content: inputValue })
     })
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           return response.json();
-        } else {
+        }
+        if (response.status === 400) {
           return response.json().then((jsonData) => {
             // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
             // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
             throw new Error(showErrorMessages(jsonData));
           });
+        }
+        if (response.status === 403) {
+          alert("로그인이 만료되었습니다.");
+          navigate("/");
         }
       })
       .then((data) => {
@@ -87,8 +100,7 @@ const Notice = ({ teamId }) => {
       })
       .catch((error) => {
         console.log(error);
-        alert(error);
-        navigate("/");
+        alert(error.message);
       });
   };
 
@@ -97,18 +109,23 @@ const Notice = ({ teamId }) => {
     fetch(`http://localhost:8080/team/${teamId.id}/notice/${noticeId}`, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           return response.json();
-        } else {
+        }
+        if (response.status === 400) {
           return response.json().then((jsonData) => {
             // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
             // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
             throw new Error(showErrorMessages(jsonData));
           });
+        }
+        if (response.status === 403) {
+          alert("로그인이 만료되었습니다.");
+          navigate("/");
         }
       })
       .then((data) => {
@@ -117,30 +134,38 @@ const Notice = ({ teamId }) => {
       })
       .catch((error) => {
         console.log(error);
-        alert(error);
-        navigate("/");
+        alert(error.message);
       });
   };
 
   const handleEditNotice = (noticeId, content) => {
+    if (content === "") {
+      alert("수정사항을 입력해주세요.");
+      return;
+    }
     const token = sessionStorage.getItem("token");
     fetch(`http://localhost:8080/team/${teamId.id}/notice/${noticeId}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({ content: content }),
+      body: JSON.stringify({ content: content })
     })
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           return response.json();
-        } else {
+        }
+        if (response.status === 400) {
           return response.json().then((jsonData) => {
             // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
             // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
             throw new Error(showErrorMessages(jsonData));
           });
+        }
+        if (response.status === 403) {
+          alert("로그인이 만료되었습니다.");
+          navigate("/");
         }
       })
       .then((data) => {
@@ -152,8 +177,7 @@ const Notice = ({ teamId }) => {
       })
       .catch((error) => {
         console.log(error);
-        alert(error);
-        navigate("/");
+        alert(error.message);
       });
   };
 
