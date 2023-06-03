@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faRefresh } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 const Notice = ({ teamId }) => {
   const [showInput, setShowInput] = useState(false);
@@ -9,6 +10,8 @@ const Notice = ({ teamId }) => {
   const [editNoticeId, setEditNoticeId] = useState(0);
   const [editNoticeContent, setEditNoticeContent] = useState("");
   const [noticeList, setNoticeList] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (teamId.id === 0) return;
@@ -19,20 +22,38 @@ const Notice = ({ teamId }) => {
     const token = sessionStorage.getItem("token");
     fetch(`http://localhost:8080/team/${teamId.id}/notice`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => {
-        return response.json();
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
       })
       .then((data) => {
         setNoticeList(data.get_notices.reverse());
       })
       .catch((error) => {
-        console.log(error);
+        {
+          console.log(error);
+          alert(error);
+          navigate("/");
+        }
       });
   };
 
+  const showErrorMessages = (jsonData) => {
+    const errorMessages = Object.values(jsonData.error).join("\n");
+
+    // 메시지들을 결합하여 alert 창에 보여줍니다.
+    return errorMessages;
+  };
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };
@@ -43,18 +64,32 @@ const Notice = ({ teamId }) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ content: inputValue })
+      body: JSON.stringify({ content: inputValue }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         console.log(data);
         fetchNotice();
         setInputValue("");
         setShowInput(false);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+        navigate("/");
+      });
   };
 
   const handleDeleteNotice = (noticeId) => {
@@ -62,15 +97,29 @@ const Notice = ({ teamId }) => {
     fetch(`http://localhost:8080/team/${teamId.id}/notice/${noticeId}`, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         console.log(data);
         fetchNotice();
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+        navigate("/");
+      });
   };
 
   const handleEditNotice = (noticeId, content) => {
@@ -79,11 +128,21 @@ const Notice = ({ teamId }) => {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ content: content })
+      body: JSON.stringify({ content: content }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         console.log(data);
         fetchNotice();
@@ -91,7 +150,11 @@ const Notice = ({ teamId }) => {
         setEditNoticeId(0);
         setEditNoticeContent("");
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+        navigate("/");
+      });
   };
 
   const handleEditMode = (noticeId, content) => {

@@ -1,26 +1,41 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Modal.css";
 
 const InviteModal = ({
   userInfo,
   teamId,
   inviteModalShow,
-  handleInviteModalShow
+  handleInviteModalShow,
 }) => {
   const [userList, setUserList] = useState([]);
-
+  const navigate = useNavigate();
   const fetchUserList = () => {
     const token = sessionStorage.getItem("token");
     fetch(`http://localhost:8080/team/${teamId.id}/user`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         setUserList(data.get_user_list);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+        navigate("/");
+      });
   };
 
   useEffect(() => {
@@ -40,14 +55,24 @@ const InviteModal = ({
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         leaderId: userInfo.id,
-        fellowIds: checkedIdList.map((id) => parseInt(id, 10))
-      })
+        fellowIds: checkedIdList.map((id) => parseInt(id, 10)),
+      }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         if (data && data.error && data.error.send_invitation) {
           console.error(data.error.send_invitation);
@@ -58,7 +83,18 @@ const InviteModal = ({
           handleInviteModalShow(false);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+        navigate("/");
+      });
+  };
+
+  const showErrorMessages = (jsonData) => {
+    const errorMessages = Object.values(jsonData.error).join("\n");
+
+    // 메시지들을 결합하여 alert 창에 보여줍니다.
+    return errorMessages;
   };
 
   return (

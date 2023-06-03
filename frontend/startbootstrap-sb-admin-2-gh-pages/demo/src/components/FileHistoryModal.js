@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Modal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +13,9 @@ const HistoryModal = ({
 }) => {
   const [fileList, setFileList] = useState([]);
   const [newFileName, setFileName] = useState("");
+
+  const navigate = useNavigate();
+
   console.log(historyModalShow);
   const fetchFileList = () => {
     const token = sessionStorage.getItem("token");
@@ -20,16 +24,82 @@ const HistoryModal = ({
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
       .then((data) => {
         setFileList(data.get_fileVersions);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+        navigate("/");
+      });
+  };
+
+  const showErrorMessages = (jsonData) => {
+    const errorMessages = Object.values(jsonData.error).join("\n");
+
+    // 메시지들을 결합하여 alert 창에 보여줍니다.
+    return errorMessages;
   };
 
   useEffect(() => {
     fetchFileList();
   }, []);
+
+  const handleDownloadFile3 = async (s3Url, fileName) => {
+    console.log(s3Url);
+    const response = await fetch(s3Url);
+
+    const blob = await response.blob();
+    const downloadUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = fileName;
+    link.click();
+  };
+
+  const handleDownloadFile = async (fileVersionId, fileName) => {
+    console.log(fileId);
+    const token = sessionStorage.getItem("token");
+    fetch(
+      `http://localhost:8080/team/${teamId.id}/fileDownload/${fileId.id}/${fileVersionId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
+      .then((data) => {
+        console.log(data.s3Url);
+        handleDownloadFile3(data.s3Url, fileName);
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+        navigate("/");
+      });
+  };
 
   return (
     <div
@@ -39,20 +109,25 @@ const HistoryModal = ({
         <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
           <h6 className="m-0 font-weight-bold text-primary">파일 버전 관리</h6>
         </div>
-        <div className="card-body">
+        <div
+          className="card-body"
+          style={{ height: "350px", overflowY: "auto" }}
+        >
           {fileList ? (
             <div
               className="table-responsive project-list"
               style={{ maxHeight: "330px", overflowY: "auto" }}
             >
-              <h6 className="m-0 font-weight-bold text-primary">
+              <h6
+                className="m-0 font-weight-bold"
+                style={{ paddingBottom: "10px" }}
+              >
                 {fileList.length > 0 && fileList[0].fileName}
               </h6>
               <table className="table project-table table-centered table-nowrap">
                 <thead>
                   <tr>
                     <th scope="col">#</th>
-                    <th scope="col">파일명</th>
                     <th scope="col">수정사항</th>
                     <th scope="col">수정일</th>
                     <th scope="col">작성자</th>
@@ -62,7 +137,6 @@ const HistoryModal = ({
                   {fileList.map((file, index) => (
                     <tr key={index}>
                       <th scope="row">{index + 1}</th>
-                      <td>{file.fileName}</td>
                       <td>{file.commitMessage}</td>
                       <td>{file.updateDate}</td>
                       <td>{file.memberName}</td>
@@ -70,9 +144,12 @@ const HistoryModal = ({
                         <a
                           className="btn"
                           style={{ padding: "0.1rem 0.5rem" }}
-                          onClick={() => {
-                            window.open(file.s3url, "_blank");
-                          }}
+                          onClick={() =>
+                            handleDownloadFile(
+                              file.fileVersionId,
+                              file.fileName
+                            )
+                          }
                         >
                           <FontAwesomeIcon icon={faDownload} />
                         </a>
