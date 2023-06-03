@@ -59,7 +59,7 @@ public class FileUploadService {
             String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1); //파일 확장자
 
             //여러 팀에서 같은 이름으로 파일을 올릴 수 있기 때문에 유니크한 이름으로 s3에 저장하고, db에는 file원래 이름으로 저장.
-            String fileNamePlusTeam = fileFirstName+"!@#!temaId_"+teamId+"."+fileExtension;
+            String fileNamePlusTeam = fileFirstName+"temaId_"+teamId+"."+fileExtension;
 
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(uploadFile.getSize()); //파일 크기
