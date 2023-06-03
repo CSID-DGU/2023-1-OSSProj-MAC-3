@@ -106,7 +106,7 @@ public class NoticeService {
             return ResponseEntity.ok().body(Collections.singletonMap("update_notice", "공지사항을 수정했습니다."));
         } catch (Exception e) {
             log.error(e.getMessage());
-           ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("update_notice", "공지사항 수정에 실패했습니다.")).build();
+            ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("update_notice", "공지사항 수정에 실패했습니다.")).build();
             return ResponseEntity.badRequest().body(responseErrorDto);
         }
     }
@@ -127,6 +127,6 @@ public class NoticeService {
             ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("delete_notice", "공지사항 삭제에 실패했습니다.")).build();
             return ResponseEntity.badRequest().body(responseErrorDto);
 
-         }
+        }
     }
 }
