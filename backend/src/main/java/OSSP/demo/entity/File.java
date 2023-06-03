@@ -1,5 +1,6 @@
 package OSSP.demo.entity;
 
+import OSSP.demo.service.security.AesEncryptor;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,14 +19,18 @@ public class File extends TimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long fileId;
 
+    @Convert(converter = AesEncryptor.class)
     private String s3FileUrl;
-
+    @Convert(converter = AesEncryptor.class)
     private String realFileName;
+    @Convert(converter = AesEncryptor.class)
     private String transFileName;
+    @Convert(converter = AesEncryptor.class)
     private String commitMessage;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamId")
+    @Convert(converter = AesEncryptor.class)
     private Team team;
 
     @OneToMany(mappedBy = "file", cascade = CascadeType.ALL)
@@ -33,6 +38,7 @@ public class File extends TimeEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")
+    @Convert(converter = AesEncryptor.class)
     private Member member;
 
 

@@ -1,5 +1,6 @@
 package OSSP.demo.entity;
 
+import OSSP.demo.service.security.AesEncryptor;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,14 +17,17 @@ public class Invitation {
 
     @JoinColumn(name = "teamId")
     @ManyToOne(optional = false)
+    @Convert(converter = AesEncryptor.class)
     private Team team;
 
     @JoinColumn(name = "leaderId")
     @ManyToOne(optional = false)
+    @Convert(converter = AesEncryptor.class)
     private User leader;
 
     @JoinColumn(name = "fellowId")
     @ManyToOne(optional = false)
+    @Convert(converter = AesEncryptor.class)
     private User fellow;
 
     @Column(nullable = true)
