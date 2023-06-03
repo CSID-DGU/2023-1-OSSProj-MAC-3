@@ -8,18 +8,23 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
     fetch(`http://localhost:8080/team/invitation/${invitationId}/accept`, {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           return response.json();
-        } else {
+        }
+        if (response.status === 400) {
           return response.json().then((jsonData) => {
             // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
             // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
             throw new Error(showErrorMessages(jsonData));
           });
+        }
+        if (response.status === 403) {
+          alert("로그인이 만료되었습니다.");
+          navigate("/");
         }
       })
       .then((data) => {
@@ -28,8 +33,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
       })
       .catch((error) => {
         console.log(error);
-        alert(error);
-        navigate("/");
+        alert(error.message);
       });
   };
 
@@ -38,18 +42,23 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
     fetch(`http://localhost:8080/team/invitation/${invitationId}/reject`, {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           return response.json();
-        } else {
+        }
+        if (response.status === 400) {
           return response.json().then((jsonData) => {
             // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
             // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
             throw new Error(showErrorMessages(jsonData));
           });
+        }
+        if (response.status === 403) {
+          alert("로그인이 만료되었습니다.");
+          navigate("/");
         }
       })
       .then((data) => {
@@ -58,8 +67,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
       })
       .catch((error) => {
         console.log(error);
-        alert(error);
-        navigate("/");
+        alert(error.message);
       });
   };
 
@@ -68,18 +76,23 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
     fetch(`http://localhost:8080/team/invitation/${invitationId}`, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           return response.json();
-        } else {
+        }
+        if (response.status === 400) {
           return response.json().then((jsonData) => {
             // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
             // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
             throw new Error(showErrorMessages(jsonData));
           });
+        }
+        if (response.status === 403) {
+          alert("로그인이 만료되었습니다.");
+          navigate("/");
         }
       })
       .then((data) => {
@@ -88,8 +101,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
       })
       .catch((error) => {
         console.log(error);
-        alert(error);
-        navigate("/");
+        alert(error.message);
       });
   };
 
@@ -125,7 +137,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
                         style={{
                           width: "50%",
                           backgroundColor: "#fc9a9d",
-                          border: "none",
+                          border: "none"
                         }}
                         role="button"
                         onClick={() => {
@@ -139,7 +151,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
                         style={{
                           width: "50%",
                           backgroundColor: "#9abbfc",
-                          border: "none",
+                          border: "none"
                         }}
                         role="button"
                         onClick={() => {
@@ -158,7 +170,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
                           width: "50%",
                           backgroundColor: "#969696",
                           border: "none",
-                          pointerEvents: "none",
+                          pointerEvents: "none"
                         }}
                         disabled
                       >
@@ -169,7 +181,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
                         style={{
                           width: "50%",
                           backgroundColor: "#9abbfc",
-                          border: "none",
+                          border: "none"
                         }}
                         role="button"
                         onClick={() => {
