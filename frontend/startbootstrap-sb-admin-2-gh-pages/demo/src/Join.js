@@ -20,15 +20,15 @@ const Join = () => {
       name,
       studentId,
       dept,
-      password,
+      password
     };
 
     fetch("http://localhost:8080/user/signup", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     })
       .then((response) => {
         if (response.ok) {
@@ -42,6 +42,7 @@ const Join = () => {
         }
       })
       .then((data) => {
+        alert("회원가입이 완료되었습니다.");
         goLogin();
       })
       .catch((error) => {
