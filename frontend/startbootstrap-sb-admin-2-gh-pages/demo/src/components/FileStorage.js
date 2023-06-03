@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlus,
   faEdit,
   faTrash,
   faDownload,
-  faBars,
+  faBars
 } from "@fortawesome/free-solid-svg-icons";
 
 const FileStorage = ({
@@ -13,11 +14,13 @@ const FileStorage = ({
   handleHistoryModalShow,
   handleUploadModalShow,
   handleFileIdFromStorage,
-  handleVersionUploadModalShow,
+  handleVersionUploadModalShow
 }) => {
   const [fileList, setFileList] = useState(null);
   const [fileDownload, setFileDownload] = useState(null);
   const [fileId, setFileId] = useState(0);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log(fileId);
@@ -27,18 +30,23 @@ const FileStorage = ({
     const token = sessionStorage.getItem("token");
     fetch(`http://localhost:8080/team/${teamId.id}/file`, {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           return response.json();
-        } else {
+        }
+        if (response.status === 400) {
           return response.json().then((jsonData) => {
             // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
             // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
             throw new Error(showErrorMessages(jsonData));
           });
+        }
+        if (response.status === 403) {
+          alert("로그인이 만료되었습니다.");
+          navigate("/");
         }
       })
       .then((data) => {
@@ -46,7 +54,7 @@ const FileStorage = ({
       })
       .catch((error) => {
         console.log(error);
-        alert(error);
+        alert(error.message);
       });
   };
 
@@ -57,18 +65,23 @@ const FileStorage = ({
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json"
+      }
     })
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           return response.json();
-        } else {
+        }
+        if (response.status === 400) {
           return response.json().then((jsonData) => {
             // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
             // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
             throw new Error(showErrorMessages(jsonData));
           });
+        }
+        if (response.status === 403) {
+          alert("로그인이 만료되었습니다.");
+          navigate("/");
         }
       })
       .then((data) => {
@@ -81,7 +94,7 @@ const FileStorage = ({
       })
       .catch((error) => {
         console.log(error);
-        alert(error);
+        alert(error.message);
       });
   };
 
@@ -221,7 +234,7 @@ const FileStorage = ({
                                     className="dropdown no-arrow btn"
                                     style={{
                                       display: "inline",
-                                      padding: "0.1rem 0.5rem",
+                                      padding: "0.1rem 0.5rem"
                                     }}
                                   >
                                     <a

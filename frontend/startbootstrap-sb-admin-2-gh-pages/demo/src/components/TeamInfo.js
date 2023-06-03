@@ -10,26 +10,31 @@ const TeamInfo = ({ teamId, handleInviteModalShow }) => {
     const token = sessionStorage.getItem("token");
     fetch(`http://localhost:8080/team/${teamId.id}`, {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           return response.json();
-        } else {
+        }
+        if (response.status === 400) {
           return response.json().then((jsonData) => {
             // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
             // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
             throw new Error(showErrorMessages(jsonData));
           });
         }
+        if (response.status === 403) {
+          alert("로그인이 만료되었습니다.");
+          navigate("/");
+        }
       })
       .then((data) => {
         setTeamInfo(data);
       })
       .catch((error) => {
-        alert(error);
-        navigate("/");
+        console.log(error);
+        alert(error.message);
       });
   };
 

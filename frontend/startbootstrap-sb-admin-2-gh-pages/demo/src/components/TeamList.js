@@ -23,19 +23,24 @@ const TeamList = ({ handleTeamIdFromChild }) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({ teamName: newTeamName }),
+      body: JSON.stringify({ teamName: newTeamName })
     })
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           return response.json();
-        } else {
+        }
+        if (response.status === 400) {
           return response.json().then((jsonData) => {
             // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
             // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
             throw new Error(showErrorMessages(jsonData));
           });
+        }
+        if (response.status === 403) {
+          alert("로그인이 만료되었습니다.");
+          navigate("/");
         }
       })
       .then((data) => {
@@ -46,8 +51,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
       })
       .catch((error) => {
         console.log(error);
-        alert(error);
-        navigate("/");
+        alert(error.message);
       });
   };
 
@@ -58,18 +62,23 @@ const TeamList = ({ handleTeamIdFromChild }) => {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json"
+      }
     })
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           return response.json();
-        } else {
+        }
+        if (response.status === 400) {
           return response.json().then((jsonData) => {
             // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
             // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
             throw new Error(showErrorMessages(jsonData));
           });
+        }
+        if (response.status === 403) {
+          alert("로그인이 만료되었습니다.");
+          navigate("/");
         }
       })
       .then((data) => {
@@ -82,8 +91,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
       })
       .catch((error) => {
         console.log(error);
-        alert(error);
-        navigate("/");
+        alert(error.message);
       });
   };
 
@@ -92,18 +100,23 @@ const TeamList = ({ handleTeamIdFromChild }) => {
     console.log(token);
     fetch("http://localhost:8080/team", {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           return response.json();
-        } else {
+        }
+        if (response.status === 400) {
           return response.json().then((jsonData) => {
             // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
             // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
             throw new Error(showErrorMessages(jsonData));
           });
+        }
+        if (response.status === 403) {
+          alert("로그인이 만료되었습니다.");
+          navigate("/");
         }
       })
       .then((data) => {
@@ -114,6 +127,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
       })
       .catch((error) => {
         console.log(error);
+        alert(error.message);
       });
   };
 
@@ -155,7 +169,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
                     ? {
                         display: "flex",
                         alignItems: "center",
-                        backgroundColor: "#eaecf4",
+                        backgroundColor: "#eaecf4"
                       }
                     : { display: "flex", alignItems: "center" }
                 }
@@ -209,7 +223,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
             style={{
               width: "100%",
               border: "none",
-              backgroundColor: "#ccd1d9",
+              backgroundColor: "#ccd1d9"
             }}
             onClick={() => setShowInput(true)}
           >
@@ -222,7 +236,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
           style={{
             width: "100%",
             border: "none",
-            backgroundColor: "#ccd1d9",
+            backgroundColor: "#ccd1d9"
           }}
           onClick={() => setShowInput(true)}
         >
