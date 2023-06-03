@@ -6,7 +6,7 @@ const InviteModal = ({
   userInfo,
   teamId,
   inviteModalShow,
-  handleInviteModalShow,
+  handleInviteModalShow
 }) => {
   const [userList, setUserList] = useState([]);
   const navigate = useNavigate();
@@ -14,18 +14,23 @@ const InviteModal = ({
     const token = sessionStorage.getItem("token");
     fetch(`http://localhost:8080/team/${teamId.id}/user`, {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           return response.json();
-        } else {
+        }
+        if (response.status === 400) {
           return response.json().then((jsonData) => {
             // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
             // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
             throw new Error(showErrorMessages(jsonData));
           });
+        }
+        if (response.status === 403) {
+          alert("로그인이 만료되었습니다.");
+          navigate("/");
         }
       })
       .then((data) => {
@@ -34,7 +39,6 @@ const InviteModal = ({
       .catch((error) => {
         console.log(error);
         alert(error);
-        navigate("/");
       });
   };
 
@@ -55,38 +59,37 @@ const InviteModal = ({
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         leaderId: userInfo.id,
-        fellowIds: checkedIdList.map((id) => parseInt(id, 10)),
-      }),
+        fellowIds: checkedIdList.map((id) => parseInt(id, 10))
+      })
     })
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           return response.json();
-        } else {
+        }
+        if (response.status === 400) {
           return response.json().then((jsonData) => {
             // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
             // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            handleInviteModalShow(false);
             throw new Error(showErrorMessages(jsonData));
           });
         }
+        if (response.status === 403) {
+          alert("로그인이 만료되었습니다.");
+          navigate("/");
+        }
       })
       .then((data) => {
-        if (data && data.error && data.error.send_invitation) {
-          console.error(data.error.send_invitation);
-          window.alert(data.error.send_invitation);
-          handleInviteModalShow(false);
-        } else {
-          console.log(data);
-          handleInviteModalShow(false);
-        }
+        console.log(data);
+        handleInviteModalShow(false);
       })
       .catch((error) => {
         console.log(error);
-        alert(error);
-        navigate("/");
+        alert(error.message);
       });
   };
 

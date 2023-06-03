@@ -9,7 +9,7 @@ const HistoryModal = ({
   teamId,
   fileId,
   historyModalShow,
-  handleHistoryModalShow,
+  handleHistoryModalShow
 }) => {
   const [fileList, setFileList] = useState([]);
   const [newFileName, setFileName] = useState("");
@@ -19,29 +19,36 @@ const HistoryModal = ({
   console.log(historyModalShow);
   const fetchFileList = () => {
     const token = sessionStorage.getItem("token");
+    if (token === null) {
+      alert("로그인이 필요합니다.");
+      navigate("/");
+    }
     fetch(`http://localhost:8080/team/${teamId.id}/file/${fileId.id}`, {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           return response.json();
-        } else {
+        }
+        if (response.status === 400) {
           return response.json().then((jsonData) => {
             // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
             // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
             throw new Error(showErrorMessages(jsonData));
           });
         }
+        if (response.status === 403) {
+          alert("로그인이 만료되었습니다.");
+          navigate("/");
+        }
       })
       .then((data) => {
         setFileList(data.get_fileVersions);
       })
       .catch((error) => {
-        console.log(error);
-        alert(error);
-        navigate("/");
+        console.log(error.message);
       });
   };
 
@@ -75,19 +82,24 @@ const HistoryModal = ({
       `http://localhost:8080/team/${teamId.id}/fileDownload/${fileId.id}/${fileVersionId}`,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       }
     )
       .then((response) => {
-        if (response.ok) {
+        if (response.status === 200) {
           return response.json();
-        } else {
+        }
+        if (response.status === 400) {
           return response.json().then((jsonData) => {
             // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
             // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
             throw new Error(showErrorMessages(jsonData));
           });
+        }
+        if (response.status === 403) {
+          alert("로그인이 만료되었습니다.");
+          navigate("/");
         }
       })
       .then((data) => {
@@ -96,8 +108,7 @@ const HistoryModal = ({
       })
       .catch((error) => {
         console.log(error);
-        alert(error);
-        navigate("/");
+        alert(error.message);
       });
   };
 
