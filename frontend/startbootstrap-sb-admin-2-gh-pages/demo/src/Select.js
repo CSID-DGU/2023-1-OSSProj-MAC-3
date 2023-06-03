@@ -13,21 +13,37 @@ function Select() {
     }
   }, [navigate]);
 
+  const errorMessages = (jsonData) => {
+    const errorMessages = Object.values(jsonData.error).join("\n");
+    return errorMessages;
+  };
+
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     console.log("after login token:\n" + token);
     fetch("http://localhost:8080/user", {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        }
+        if (response.status === 400) {
+          return response.json().then((jsonData) => {
+            throw new Error(errorMessages(jsonData));
+          });
+        } else {
+          navigate("/");
+        }
+      })
       .then((data) => {
         setUserInfo(data);
       })
       .catch((error) => {
         console.log(error);
-        alert(error);
+        alert(error.message);
         navigate("/");
       });
   }, []);
@@ -107,12 +123,12 @@ function Select() {
                             className="btn btn-primary btn-user btn-block"
                             onClick={goTeam}
                           >
-                            오픈소스소프트웨어실습
+                            오픈소스소프트웨어프로젝트
                           </a>
                         </div>
                         <div className="form-group">
                           <a className="btn btn-primary btn-user btn-block">
-                            오픈소스소프트웨어프로젝트
+                            오픈소스소프트웨어실습
                           </a>
                         </div>
                         <div className="form-group">
