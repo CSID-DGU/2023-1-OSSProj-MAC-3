@@ -19,14 +19,14 @@ import java.util.Date;
 public class TokenProvider {
     // application.yml에 설정한 jwt.secretKey를 가져옴
     @Value("${jwt.secret}")
-    private String secretKey;
+    private String SECRET_KEY;
 
     // 토큰 생성
     public String create(User user) {
         Date now = new Date(); // 현재 시간
         Date validity = new Date(now.getTime() + 1000 * 60 * 30); // 30분 뒤 만료
         return Jwts.builder()
-                .signWith(SignatureAlgorithm.HS256, secretKey) // HS256 알고리즘, secretKey로 서명
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY) // HS256 알고리즘, secretKey로 서명
                 .setSubject(user.getStudentId())
                 .setIssuer("demo app")
                 .setIssuedAt(now)
@@ -37,7 +37,7 @@ public class TokenProvider {
     public String validateAndGetStudentId(String token, HttpServletResponse response) throws IOException {
         try {
             Claims claims = Jwts.parser()
-                    .setSigningKey(secretKey)
+                    .setSigningKey(SECRET_KEY)
                     .parseClaimsJws(token)
                     .getBody();
 

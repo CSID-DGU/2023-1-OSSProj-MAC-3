@@ -1,5 +1,6 @@
 package OSSP.demo.entity;
 
+import OSSP.demo.service.security.AesEncryptor;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,10 +20,12 @@ public class Member {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
+    @Convert(converter = AesEncryptor.class)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamId")
+    @Convert(converter = AesEncryptor.class)
     private Team team;
 
     @OneToMany(mappedBy = "member")
@@ -33,6 +36,7 @@ public class Member {
     private List<FileVersion> fileVersions = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
+    @Convert(converter = AesEncryptor.class)
     private Role role;
 
 

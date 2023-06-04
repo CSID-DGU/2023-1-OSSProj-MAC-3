@@ -1,6 +1,7 @@
 package OSSP.demo.entity;
 
 import OSSP.demo.model.FileVersionDto;
+import OSSP.demo.service.security.AesEncryptor;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,9 +18,11 @@ public class FileVersion extends TimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long fileVersionId;
 
+    @Convert(converter = AesEncryptor.class)
     private String commitMessage;
 
-    @Column(length = 1000)
+    @Column(length = 2000)
+    @Convert(converter = AesEncryptor.class)
     private String s3FileVersionUrl;
 
     //파일 합본 여부
@@ -27,10 +30,12 @@ public class FileVersion extends TimeEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fileId")
+    @Convert(converter = AesEncryptor.class)
     private File file;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")
+    @Convert(converter = AesEncryptor.class)
     private Member member;
 
     @Builder
