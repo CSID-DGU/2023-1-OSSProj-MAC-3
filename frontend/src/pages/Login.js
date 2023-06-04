@@ -9,6 +9,8 @@ const Login = () => {
 
   sessionStorage.removeItem("token");
 
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -20,16 +22,16 @@ const Login = () => {
     const data = {
       studentId,
       password,
-      rememberMe
+      rememberMe,
     };
     const token = sessionStorage.getItem("token");
     console.log("before login token:\n" + token);
-    fetch("http://localhost:8080/user/signin", {
+    fetch(`${BASE_URL}/user/signin`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     })
       .then((response) => {
         if (response.ok) {

@@ -8,6 +8,8 @@ const Join = () => {
   const [dept, setDept] = useState("");
   const [password, setPassword] = useState("");
 
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -20,15 +22,15 @@ const Join = () => {
       name,
       studentId,
       dept,
-      password
+      password,
     };
 
-    fetch("http://localhost:8080/user/signup", {
+    fetch(`${BASE_URL}/user/signup`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     })
       .then((response) => {
         if (response.ok) {

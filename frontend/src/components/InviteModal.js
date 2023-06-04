@@ -6,16 +6,18 @@ const InviteModal = ({
   userInfo,
   teamId,
   inviteModalShow,
-  handleInviteModalShow
+  handleInviteModalShow,
 }) => {
   const [userList, setUserList] = useState([]);
   const navigate = useNavigate();
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   const fetchUserList = () => {
     const token = sessionStorage.getItem("token");
-    fetch(`http://localhost:8080/team/${teamId.id}/user`, {
+    fetch(`${BASE_URL}/team/${teamId.id}/user`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => {
         if (response.status === 200) {
@@ -55,16 +57,16 @@ const InviteModal = ({
     checkedList.forEach((checked) => {
       checkedIdList.push(checked.value);
     });
-    fetch(`http://localhost:8080/team/${teamId.id}/invitation`, {
+    fetch(`${BASE_URL}/team/${teamId.id}/invitation`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         leaderId: userInfo.id,
-        fellowIds: checkedIdList.map((id) => parseInt(id, 10))
-      })
+        fellowIds: checkedIdList.map((id) => parseInt(id, 10)),
+      }),
     })
       .then((response) => {
         if (response.status === 200) {

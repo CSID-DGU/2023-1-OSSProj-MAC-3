@@ -9,12 +9,14 @@ const HistoryModal = ({
   teamId,
   fileId,
   historyModalShow,
-  handleHistoryModalShow
+  handleHistoryModalShow,
 }) => {
   const [fileList, setFileList] = useState([]);
   const [newFileName, setFileName] = useState("");
 
   const navigate = useNavigate();
+
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   console.log(historyModalShow);
   const fetchFileList = () => {
@@ -23,10 +25,10 @@ const HistoryModal = ({
       alert("로그인이 필요합니다.");
       navigate("/");
     }
-    fetch(`http://localhost:8080/team/${teamId.id}/file/${fileId.id}`, {
+    fetch(`${BASE_URL}/team/${teamId.id}/file/${fileId.id}`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => {
         if (response.status === 200) {
@@ -79,11 +81,11 @@ const HistoryModal = ({
     console.log(fileId);
     const token = sessionStorage.getItem("token");
     fetch(
-      `http://localhost:8080/team/${teamId.id}/fileDownload/${fileId.id}/${fileVersionId}`,
+      `${BASE_URL}/team/${teamId.id}/fileDownload/${fileId.id}/${fileVersionId}`,
       {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       }
     )
       .then((response) => {

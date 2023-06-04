@@ -6,12 +6,14 @@ import { useNavigate } from "react-router-dom";
 const TeamInfo = ({ teamId, handleInviteModalShow }) => {
   const [teamInfo, setTeamInfo] = useState(null);
   const navigate = useNavigate("/");
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   const fetchTeam = () => {
     const token = sessionStorage.getItem("token");
-    fetch(`http://localhost:8080/team/${teamId.id}`, {
+    fetch(`${BASE_URL}/team/${teamId.id}`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => {
         if (response.status === 200) {
