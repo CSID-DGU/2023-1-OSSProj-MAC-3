@@ -9,4 +9,6 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     //해당 팀의 Notice 조회
     List<Notice> findByTeamId(Long teamId);
+
+    boolean existsByTeamId(Long teamId);
 }

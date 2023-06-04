@@ -8,6 +8,7 @@ import {
   faDownload,
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
+import handleRefreshToken from "./HandleRefreshToken";
 
 const FileStorage = ({
   teamId,
@@ -29,11 +30,11 @@ const FileStorage = ({
   }, [fileId]);
 
   const fetchData = () => {
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch(`${BASE_URL}/team/${teamId.id}/file`, {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${accessToken}`
+      }
     })
       .then((response) => {
         if (response.status === 200) {
@@ -46,9 +47,14 @@ const FileStorage = ({
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              fetchData();
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {
@@ -61,14 +67,14 @@ const FileStorage = ({
   };
 
   const handleDeleteTeam = (fileID) => {
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     console.log(fileID);
     fetch(`${BASE_URL}/team/${teamId.id}/file/${fileID}`, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      }
     })
       .then((response) => {
         if (response.status === 200) {
@@ -81,9 +87,14 @@ const FileStorage = ({
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              handleDeleteTeam();
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {

@@ -13,4 +13,6 @@ public interface FileRepository extends JpaRepository<File, Long> {
     File findFileByTransFileName(String fileName);
 
     List<File> findByTeamIdOrderByUpdateDateDesc(Long teamId);
+
+    boolean existsByTeamId(Long teamId);
 }

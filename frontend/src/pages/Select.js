@@ -1,31 +1,39 @@
 import "../bootstrap.css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import handleRefreshToken from "../components/HandleRefreshToken";
 
 function Select() {
-  const [userInfo, setUserInfo] = useState({});
+  const [username, setUsername] = useState("");
+  const [studentId, setStudentId] = useState("");
+  const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    if (!token) {
+    if (!isLogin) {
+      navigate("/");
+    }
+  }, [isLogin]);
+
+  useEffect(() => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (!refreshToken) {
       navigate("/"); // 토큰이 없을 경우 리디렉션할 경로
     }
-  }, [navigate]);
+  }, []);
 
   const errorMessages = (jsonData) => {
     const errorMessages = Object.values(jsonData.error).join("\n");
     return errorMessages;
   };
 
-  useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    console.log("after login token:\n" + token);
+  const fetchUserInfo = () => {
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch(`${BASE_URL}/user`, {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${accessToken}`
+      }
     })
       .then((response) => {
         if (response.status === 200) {
@@ -35,23 +43,66 @@ function Select() {
           return response.json().then((jsonData) => {
             throw new Error(errorMessages(jsonData));
           });
-        } else {
-          navigate("/");
+        } else if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              fetchUserInfo();
+            } else {
+              setIsLogin(false);
+              sessionStorage.removeItem("accessToken");
+              localStorage.removeItem("refreshToken");
+            }
+          });
         }
       })
       .then((data) => {
-        setUserInfo(data);
+        setUsername(data.name);
+        setStudentId(data.studentId);
       })
       .catch((error) => {
         console.log(error);
-        alert(error.message);
-        navigate("/");
       });
+  };
+
+  useEffect(() => {
+    fetchUserInfo();
   }, []);
 
   const handleLogout = () => {
-    sessionStorage.removeItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
+    fetch("http://localhost:8080/user/signout", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          sessionStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          alert("로그아웃 되었습니다.");
+          return;
+        }
+        if (response.status === 400 || response.status === 403) {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLogin(false);
+      });
     navigate("/login");
+  };
+
+  const showErrorMessages = (jsonData) => {
+    const errorMessages = Object.values(jsonData.error).join("\n");
+    // 메시지들을 결합하여 alert 창에 보여줍니다.
+    return errorMessages;
   };
 
   const goTeam = () => {
@@ -86,7 +137,7 @@ function Select() {
                     <div className="p-1">
                       {/* <!--사용자 이름, 학번 정보--> */}
                       <span className="mr-2 d-none d-lg-inline text-gray-800 small border-right-0">
-                        {`${userInfo.name}(${userInfo.studentId})`}님
+                        {`${username}(${studentId})`}님
                       </span>
                       {/* <!--마이페이지 버튼--> */}
                       <a

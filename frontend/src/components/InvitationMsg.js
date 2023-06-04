@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import handleRefreshToken from "./HandleRefreshToken";
 
 const InvitationMsg = ({ invitationList, fetchInvitation }) => {
   const navigate = useNavigate();
@@ -7,12 +8,12 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const handleAcceptInvitation = (invitationId) => {
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch(`${BASE_URL}/team/invitation/${invitationId}/accept`, {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${accessToken}`
+      }
     })
       .then((response) => {
         if (response.status === 200) {
@@ -25,9 +26,14 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              handleAcceptInvitation(invitationId);
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {
@@ -41,12 +47,12 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
   };
 
   const handleRejectInvitation = (invitationId) => {
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch(`${BASE_URL}/team/invitation/${invitationId}/reject`, {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${accessToken}`
+      }
     })
       .then((response) => {
         if (response.status === 200) {
@@ -59,9 +65,14 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              handleRejectInvitation(invitationId);
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {
@@ -75,12 +86,12 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
   };
 
   const handleDeleteInvitation = (invitationId) => {
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch(`${BASE_URL}/team/invitation/${invitationId}`, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${accessToken}`
+      }
     })
       .then((response) => {
         if (response.status === 200) {
@@ -93,9 +104,14 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              handleDeleteInvitation(invitationId);
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {

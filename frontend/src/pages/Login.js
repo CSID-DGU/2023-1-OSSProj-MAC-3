@@ -1,13 +1,19 @@
 import "../bootstrap.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [studentId, setStudentId] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const navigate = useNavigate();
 
-  sessionStorage.removeItem("token");
+  useEffect(() => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (refreshToken) {
+      navigate("/select"); // 토큰이 없을 경우 리디렉션할 경로
+    }
+  }, []);
 
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -24,8 +30,9 @@ const Login = () => {
       password,
       rememberMe,
     };
-    const token = sessionStorage.getItem("token");
-    console.log("before login token:\n" + token);
+    
+    // const accessToken = sessionStorage.getItem("accessToken");
+    // console.log("before login token:\n" + accessToken);
     fetch(`${BASE_URL}/user/signin`, {
       method: "POST",
       headers: {
@@ -45,7 +52,9 @@ const Login = () => {
         }
       })
       .then((data) => {
-        sessionStorage.setItem("token", data.token);
+        console.log(data);
+        sessionStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
         goSelect();
       })
       .catch((error) => {

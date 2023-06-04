@@ -20,4 +20,6 @@ public interface InvitationRepository extends JpaRepository<Invitation, Long> {
     List<Invitation> findAllByFellowId(Long fellowId);
 
     List<Invitation> findByTeamId(Long teamId);
+
+    boolean existsByTeamId(Long teamId);
 }

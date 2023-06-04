@@ -4,10 +4,7 @@ import OSSP.demo.entity.*;
 import OSSP.demo.model.ResponseDto;
 import OSSP.demo.model.TeamDto;
 import OSSP.demo.model.UserDto;
-import OSSP.demo.repository.InvitationRepository;
-import OSSP.demo.repository.MemberRepository;
-import OSSP.demo.repository.TeamRepository;
-import OSSP.demo.repository.UserRepository;
+import OSSP.demo.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +25,11 @@ public class TeamService {
     private MemberRepository memberRepository;
     @Autowired
     private InvitationRepository invitationRepository;
+    @Autowired
+    private NoticeRepository noticeRepository;
+    @Autowired
+    private FileRepository fileRepository;
+
 
     public ResponseEntity getTeam(String studentId, Long teamId) {
         try {
@@ -129,6 +131,18 @@ public class TeamService {
                     ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("delete_team", "해당 팀에 가입한 멤버가 없습니다.")).build();
                     return ResponseEntity.badRequest().body(responseErrorDto);
                 }
+                if (noticeRepository.existsByTeamId(teamId)) {
+                    ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("delete_team", "해당 팀에 등록된 공지사항이 존재합니다.")).build();
+                    return ResponseEntity.badRequest().body(responseErrorDto);
+                }
+                if (fileRepository.existsByTeamId(teamId)) {
+                    ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("delete_team", "해당 팀에 등록된 파일이 존재합니다.")).build();
+                    return ResponseEntity.badRequest().body(responseErrorDto);
+                }
+                if (invitationRepository.existsByTeamId(teamId)) {
+                    ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("delete_team", "해당 팀에 등록된 초대장이 존재합니다.")).build();
+                    return ResponseEntity.badRequest().body(responseErrorDto);
+                }
                 List<User> users = new ArrayList<>();
                 for (Member member : members) {
                     users.add(member.getUser());
@@ -147,7 +161,8 @@ public class TeamService {
                 ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("delete_team", "해당 팀이 존재하지 않습니다.")).build();
                 return ResponseEntity.badRequest().body(responseErrorDto);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             log.error(e.getMessage());
             ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("delete_team", "팀 삭제에 실패했습니다.")).build();
             return ResponseEntity.badRequest().body(responseErrorDto);

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import handleRefreshToken from "./HandleRefreshToken";
 
 const Notice = ({ teamId }) => {
   const [showInput, setShowInput] = useState(false);
@@ -21,11 +22,11 @@ const Notice = ({ teamId }) => {
   }, [teamId]);
 
   const fetchNotice = () => {
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch(`${BASE_URL}/team/${teamId.id}/notice`, {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${accessToken}`
+      }
     })
       .then((response) => {
         if (response.status === 200) {
@@ -38,9 +39,14 @@ const Notice = ({ teamId }) => {
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              fetchNotice();
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {
@@ -68,12 +74,13 @@ const Notice = ({ teamId }) => {
       alert("공지사항을 입력해주세요.");
       return;
     }
-    const token = sessionStorage.getItem("token");
+
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch(`${BASE_URL}/team/${teamId.id}/notice`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ content: inputValue }),
     })
@@ -88,9 +95,14 @@ const Notice = ({ teamId }) => {
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              handleAddNotice();
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {
@@ -106,12 +118,12 @@ const Notice = ({ teamId }) => {
   };
 
   const handleDeleteNotice = (noticeId) => {
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch(`${BASE_URL}/team/${teamId.id}/notice/${noticeId}`, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${accessToken}`
+      }
     })
       .then((response) => {
         if (response.status === 200) {
@@ -124,9 +136,14 @@ const Notice = ({ teamId }) => {
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              handleDeleteNotice(noticeId);
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {
@@ -144,12 +161,12 @@ const Notice = ({ teamId }) => {
       alert("수정사항을 입력해주세요.");
       return;
     }
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch(`${BASE_URL}/team/${teamId.id}/notice/${noticeId}`, {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ content: content }),
     })
@@ -164,9 +181,14 @@ const Notice = ({ teamId }) => {
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              handleEditNotice(noticeId, content);
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {

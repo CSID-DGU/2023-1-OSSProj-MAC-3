@@ -12,6 +12,7 @@ import VersionUploadModal from "../components/VersionUploadModal.js";
 import FileHistory from "../components/FileHistoryModal.js";
 import InvitationNav from "../components/InvitationNav.js";
 import DropdownButton from "../components/DropdownButton.js";
+import handleRefreshToken from "../components/HandleRefreshToken.js";
 
 const Team = () => {
   const [userInfo, setUserInfo] = useState({});
@@ -21,17 +22,24 @@ const Team = () => {
   const [uploadModalShow, setUploadModalShow] = useState(false);
   const [versionUploadModalShow, setVersionUploadModalShow] = useState(false);
   const [historyModalShow, setHistoryModalShow] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
 
   const navigate = useNavigate();
 
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    if (!token) {
+    if (!isLogin) {
+      navigate("/");
+    }
+  }, [isLogin]);
+
+  useEffect(() => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (!refreshToken) {
       navigate("/"); // 토큰이 없을 경우 리디렉션할 경로
     }
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     console.log(teamId);
@@ -71,13 +79,14 @@ const Team = () => {
   const handleFileIdFromStorage = (data) => {
     setFileId(data);
   };
-  useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    console.log(token);
+
+
+  const getUserInfo = () => {
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch(`${BASE_URL}/user`, {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${accessToken}`
+      }
     })
       .then((response) => {
         if (response.status === 200) {
@@ -90,9 +99,16 @@ const Team = () => {
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              getUserInfo();
+            } else {
+              sessionStorage.removeItem("accessToken");
+              localStorage.removeItem("refreshToken");
+              setIsLogin(false);
+            }
+          });
         }
       })
       .then((data) => {
@@ -102,16 +118,45 @@ const Team = () => {
         console.log(error);
         alert(error.message);
       });
+  };
+
+  useEffect(() => {
+    getUserInfo();
   }, []);
 
   const showErrorMessages = (jsonData) => {
     const errorMessages = Object.values(jsonData.error).join("\n");
-
     // 메시지들을 결합하여 alert 창에 보여줍니다.
     return errorMessages;
   };
   const handleLogout = () => {
-    //localStorage.removeItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
+    fetch("http://localhost:8080/user/signout", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          sessionStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          alert("로그아웃 되었습니다.");
+          return;
+        }
+        if (response.status === 400 || response.status === 403) {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLogin(false);
+      });
     navigate("/login");
   };
 
@@ -207,7 +252,7 @@ const Team = () => {
               <li className="nav-item dropdown no-arrow">
                 <a className="nav-link dropdown-toggle">
                   <span className="mr-2 d-none d-lg-inline text-gray-600 small">
-                    {userInfo.name} ({userInfo.studentId})
+                    {userInfo ? `${userInfo.name} (${userInfo.studentId})` : ""}
                   </span>
                   {/*<!-- <span style="padding-right: 5px"> -->*/}
                   <div className="btn btn-primary btn-user">My Page</div>
