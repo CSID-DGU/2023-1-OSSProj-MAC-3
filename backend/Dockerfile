@@ -29,7 +29,6 @@ ENTRYPOINT ["java","-jar","/app.jar"]
 #RUN mkdir -p target && (cd build/libs && cp earthquake-alert-spring-0.0.1-SNAPSHOT.jar ../../target/earthquake-alert-spring.jar)
 #
 #CMD java -jar target/earthquake-alert-spring.jar
-=======
 # FROM openjdk:11-jdk
 
 # # 작업 디렉토리 설정
