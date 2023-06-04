@@ -22,8 +22,8 @@ const Login = () => {
       password,
       rememberMe
     };
-    const token = sessionStorage.getItem("token");
-    console.log("before login token:\n" + token);
+    // const accessToken = sessionStorage.getItem("accessToken");
+    // console.log("before login token:\n" + accessToken);
     fetch("http://localhost:8080/user/signin", {
       method: "POST",
       headers: {
@@ -43,7 +43,9 @@ const Login = () => {
         }
       })
       .then((data) => {
-        sessionStorage.setItem("token", data.token);
+        console.log(data);
+        sessionStorage.setItem("accessToken", data.accessToken);
+        sessionStorage.setItem("refreshToken", data.refreshToken);
         goSelect();
       })
       .catch((error) => {
