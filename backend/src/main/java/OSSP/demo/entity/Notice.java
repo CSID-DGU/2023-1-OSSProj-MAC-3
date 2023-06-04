@@ -1,5 +1,6 @@
 package OSSP.demo.entity;
 
+import OSSP.demo.service.security.AesEncryptor;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +17,7 @@ public class Notice extends TimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long noticeId;
 
+    @Convert(converter = AesEncryptor.class)
     private String content;
 
 

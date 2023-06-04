@@ -1,0 +1,40 @@
+version: '3'
+services:
+  server:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    networks:
+      - lms-demo-net
+    restart: always
+
+  lms-demo:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - lms-demo-net
+    restart: always
+
+  db:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: eclass
+    networks:
+      - lms-demo-net
+    restart: always
+
+networks:
+  lms-demo-net:
+    driver: bridge
