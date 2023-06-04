@@ -24,6 +24,8 @@ const Team = () => {
 
   const navigate = useNavigate();
 
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     if (!token) {
@@ -72,10 +74,10 @@ const Team = () => {
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     console.log(token);
-    fetch("http://localhost:8080/user", {
+    fetch(`${BASE_URL}/user`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => {
         if (response.status === 200) {
