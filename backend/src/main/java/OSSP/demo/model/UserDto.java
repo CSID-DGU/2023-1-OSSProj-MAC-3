@@ -15,7 +15,8 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-    private String token;
+    private String accessToken;
+    private String refreshToken;
     private Long id;
     private String studentId;
     private String password;
