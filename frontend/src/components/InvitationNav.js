@@ -23,13 +23,13 @@ const InvitationNav = () => {
           return response.json();
         }
         if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              fetchInvitation();
-            } else {
-              navigate("/");
-            }
-          });
+          // handleRefreshToken().then((result) => {
+          //   if (result) {
+          //     fetchInvitation();
+          //   } else {
+          //     navigate("/");
+          //   }
+          // });
         }
       })
       .then((data) => {
@@ -51,6 +51,13 @@ const InvitationNav = () => {
 
   useEffect(() => {
     fetchInvitation();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchInvitation();
+    }, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
