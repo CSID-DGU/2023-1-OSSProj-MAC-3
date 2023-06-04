@@ -32,7 +32,7 @@ public class TokenProvider {
     // 토큰 생성
     public Map<String, String> create(User user) {
         Date now = new Date(); // 현재 시간
-        Date accessTokenValidity = new Date(now.getTime() + 1000 * 60 * 5); // 30분 뒤 만료
+        Date accessTokenValidity = new Date(now.getTime() + 1000 * 60 * 5); // 5분 뒤 만료
         Date refreshTokenValidity = new Date(now.getTime() + 1000 * 60 * 60 * 24 * 7); // 7일 뒤 만료
         String refreshToken = Jwts.builder()
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY) // HS256 알고리즘, secretKey로 서명
