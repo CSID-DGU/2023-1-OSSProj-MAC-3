@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import handleRefreshToken from "./HandleRefreshToken";
 
 const TeamList = ({ handleTeamIdFromChild }) => {
   const [userInfo, setUserInfo] = useState({});
@@ -18,11 +19,11 @@ const TeamList = ({ handleTeamIdFromChild }) => {
 
   const handleAddTeam = () => {
     console.log(newTeamName);
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch("http://localhost:8080/team", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ teamName: newTeamName })
@@ -38,9 +39,14 @@ const TeamList = ({ handleTeamIdFromChild }) => {
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              handleAddTeam();
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {
@@ -56,12 +62,12 @@ const TeamList = ({ handleTeamIdFromChild }) => {
   };
 
   const handleDeleteTeam = (teamID) => {
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     console.log(teamID);
     fetch(`http://localhost:8080/team/${teamID}`, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json"
       }
     })
@@ -76,9 +82,14 @@ const TeamList = ({ handleTeamIdFromChild }) => {
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              handleDeleteTeam(teamID);
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {
@@ -96,11 +107,11 @@ const TeamList = ({ handleTeamIdFromChild }) => {
   };
 
   const fetchTeams = () => {
-    const token = sessionStorage.getItem("token");
-    console.log(token);
+    const accessToken = sessionStorage.getItem("accessToken");
+    console.log(accessToken);
     fetch("http://localhost:8080/team", {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${accessToken}`
       }
     })
       .then((response) => {
@@ -114,9 +125,14 @@ const TeamList = ({ handleTeamIdFromChild }) => {
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              fetchTeams();
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {

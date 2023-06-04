@@ -7,11 +7,11 @@ function Select() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    if (!token) {
+    const accessToken = sessionStorage.getItem("accessToken");
+    if (!accessToken) {
       navigate("/"); // 토큰이 없을 경우 리디렉션할 경로
     }
-  }, [navigate]);
+  }, []);
 
   const errorMessages = (jsonData) => {
     const errorMessages = Object.values(jsonData.error).join("\n");
@@ -19,11 +19,11 @@ function Select() {
   };
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    console.log("after login token:\n" + token);
+    const accessToken = sessionStorage.getItem("accessToken");
+    console.log("after login token:\n" + accessToken);
     fetch("http://localhost:8080/user", {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${accessToken}`
       }
     })
       .then((response) => {
@@ -49,8 +49,40 @@ function Select() {
   }, []);
 
   const handleLogout = () => {
-    sessionStorage.removeItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
+    fetch("http://localhost:8080/user/signout", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          sessionStorage.removeItem("accessToken");
+          sessionStorage.removeItem("refreshToken");
+          alert("로그아웃 되었습니다.");
+          return;
+        }
+        if (response.status === 400 || response.status === 403) {
+          return response.json().then((jsonData) => {
+            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
+            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
+            throw new Error(showErrorMessages(jsonData));
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        navigate("/login");
+      });
     navigate("/login");
+  };
+
+  const showErrorMessages = (jsonData) => {
+    const errorMessages = Object.values(jsonData.error).join("\n");
+    // 메시지들을 결합하여 alert 창에 보여줍니다.
+    return errorMessages;
   };
 
   const goTeam = () => {

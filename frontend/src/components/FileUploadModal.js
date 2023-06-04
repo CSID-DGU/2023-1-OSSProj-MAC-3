@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Modal.css";
+import handleRefreshToken from "./HandleRefreshToken";
 
 const UploadModal = ({
   userInfo,
@@ -43,11 +44,11 @@ const UploadModal = ({
         { type: "application/json" }
       )
     );
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch(`http://localhost:8080/team/${teamId.id}/file/`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${accessToken}`
       },
       body: formData
     })
@@ -62,9 +63,14 @@ const UploadModal = ({
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              handleSubmit();
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {

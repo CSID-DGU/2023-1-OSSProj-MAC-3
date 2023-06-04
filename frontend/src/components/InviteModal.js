@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Modal.css";
+import handleRefreshToken from "./HandleRefreshToken";
 
 const InviteModal = ({
   userInfo,
@@ -11,10 +12,10 @@ const InviteModal = ({
   const [userList, setUserList] = useState([]);
   const navigate = useNavigate();
   const fetchUserList = () => {
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch(`http://localhost:8080/team/${teamId.id}/user`, {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${accessToken}`
       }
     })
       .then((response) => {
@@ -28,9 +29,14 @@ const InviteModal = ({
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              fetchUserList();
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {
@@ -47,7 +53,7 @@ const InviteModal = ({
   }, []);
 
   const handleInvite = () => {
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     const checkedList = document.querySelectorAll(
       ".modal-wrapper input[type=checkbox]:checked"
     );
@@ -58,7 +64,7 @@ const InviteModal = ({
     fetch(`http://localhost:8080/team/${teamId.id}/invitation`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -78,9 +84,14 @@ const InviteModal = ({
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              handleInvite();
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {

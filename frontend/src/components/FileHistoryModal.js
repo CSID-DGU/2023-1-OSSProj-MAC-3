@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Modal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
+import handleRefreshToken from "./HandleRefreshToken";
 
 const HistoryModal = ({
   userInfo,
@@ -18,14 +19,14 @@ const HistoryModal = ({
 
   console.log(historyModalShow);
   const fetchFileList = () => {
-    const token = sessionStorage.getItem("token");
-    if (token === null) {
+    const accessToken = sessionStorage.getItem("accessToken");
+    if (accessToken === null) {
       alert("로그인이 필요합니다.");
       navigate("/");
     }
     fetch(`http://localhost:8080/team/${teamId.id}/file/${fileId.id}`, {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${accessToken}`
       }
     })
       .then((response) => {
@@ -39,9 +40,14 @@ const HistoryModal = ({
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              fetchFileList();
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {
@@ -77,12 +83,12 @@ const HistoryModal = ({
 
   const handleDownloadFile = async (fileVersionId, fileName) => {
     console.log(fileId);
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch(
       `http://localhost:8080/team/${teamId.id}/fileDownload/${fileId.id}/${fileVersionId}`,
       {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${accessToken}`
         }
       }
     )
@@ -97,9 +103,14 @@ const HistoryModal = ({
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              handleDownloadFile(fileVersionId, fileName);
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {

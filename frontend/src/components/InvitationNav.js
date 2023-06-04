@@ -4,6 +4,7 @@ import { faMessage } from "@fortawesome/free-solid-svg-icons";
 import InvitationMsg from "./InvitationMsg";
 import DropdownButton from "./DropdownButton";
 import { useNavigate } from "react-router-dom";
+import handleRefreshToken from "./HandleRefreshToken";
 
 const InvitationNav = () => {
   const [alertCount, setAlertCount] = useState(0);
@@ -11,18 +12,24 @@ const InvitationNav = () => {
   const navigate = useNavigate();
 
   const fetchInvitation = () => {
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch("http://localhost:8080/team/invitation", {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${accessToken}`
       }
     })
       .then((response) => {
         if (response.status === 200 || response.status === 400) {
           return response.json();
         }
-        if (response.status === 403) {
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              fetchInvitation();
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {

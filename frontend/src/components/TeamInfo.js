@@ -2,15 +2,16 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import handleRefreshToken from "./HandleRefreshToken";
 
 const TeamInfo = ({ teamId, handleInviteModalShow }) => {
   const [teamInfo, setTeamInfo] = useState(null);
   const navigate = useNavigate("/");
   const fetchTeam = () => {
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch(`http://localhost:8080/team/${teamId.id}`, {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${accessToken}`
       }
     })
       .then((response) => {
@@ -24,9 +25,14 @@ const TeamInfo = ({ teamId, handleInviteModalShow }) => {
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              fetchTeam();
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {
