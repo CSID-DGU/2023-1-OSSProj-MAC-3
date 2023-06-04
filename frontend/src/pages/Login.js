@@ -1,13 +1,19 @@
 import "../bootstrap.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [studentId, setStudentId] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const navigate = useNavigate();
 
-  sessionStorage.removeItem("token");
+  useEffect(() => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (refreshToken) {
+      navigate("/select"); // 토큰이 없을 경우 리디렉션할 경로
+    }
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -45,7 +51,7 @@ const Login = () => {
       .then((data) => {
         console.log(data);
         sessionStorage.setItem("accessToken", data.accessToken);
-        sessionStorage.setItem("refreshToken", data.refreshToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
         goSelect();
       })
       .catch((error) => {

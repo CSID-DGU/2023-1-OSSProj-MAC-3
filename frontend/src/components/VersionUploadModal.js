@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Modal.css";
 import { useNavigate } from "react-router-dom";
+import handleRefreshToken from "./HandleRefreshToken";
 
 const VersionUploadModal = ({
   userInfo,
@@ -17,10 +18,10 @@ const VersionUploadModal = ({
   const navigate = useNavigate();
 
   const fetchFileName = () => {
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch(`http://localhost:8080/team/${teamId.id}/file`, {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${accessToken}`
       }
     })
       .then((response) => {
@@ -34,9 +35,14 @@ const VersionUploadModal = ({
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              fetchFileName();
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {
@@ -96,11 +102,11 @@ const VersionUploadModal = ({
         { type: "application/json" }
       )
     );
-    const token = sessionStorage.getItem("token");
+    const accessToken = sessionStorage.getItem("accessToken");
     fetch(`http://localhost:8080/team/${teamId.id}/file/`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${accessToken}`
       },
       body: formData
     })
@@ -115,9 +121,14 @@ const VersionUploadModal = ({
             throw new Error(showErrorMessages(jsonData));
           });
         }
-        if (response.status === 403) {
-          alert("로그인이 만료되었습니다.");
-          navigate("/");
+        if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              handleSubmit();
+            } else {
+              navigate("/");
+            }
+          });
         }
       })
       .then((data) => {

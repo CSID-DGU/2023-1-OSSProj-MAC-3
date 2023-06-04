@@ -5,7 +5,7 @@ const handleRefreshToken = () => {
       return errorMessages;
     };
 
-    const refreshToken = sessionStorage.getItem("refreshToken");
+    const refreshToken = localStorage.getItem("refreshToken");
 
     fetch(`http://localhost:8080/user/refresh-token`, {
       method: "POST",
@@ -27,13 +27,13 @@ const handleRefreshToken = () => {
       })
       .then((data) => {
         sessionStorage.setItem("accessToken", data.accessToken);
-        sessionStorage.setItem("refreshToken", data.refreshToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
         resolve(true); // Promise를 성공 상태로 처리하고 true 값을 전달
       })
       .catch((error) => {
         alert("로그인이 만료되었습니다.");
         sessionStorage.removeItem("accessToken");
-        sessionStorage.removeItem("refreshToken");
+        localStorage.removeItem("refreshToken");
         reject(error); // Promise를 실패 상태로 처리하고 오류를 전달
       });
   });

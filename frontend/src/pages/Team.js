@@ -22,12 +22,19 @@ const Team = () => {
   const [uploadModalShow, setUploadModalShow] = useState(false);
   const [versionUploadModalShow, setVersionUploadModalShow] = useState(false);
   const [historyModalShow, setHistoryModalShow] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    if (!accessToken) {
+    if (!isLogin) {
+      navigate("/");
+    }
+  }, [isLogin]);
+
+  useEffect(() => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (!refreshToken) {
       navigate("/"); // 토큰이 없을 경우 리디렉션할 경로
     }
   }, []);
@@ -94,7 +101,9 @@ const Team = () => {
             if (result) {
               getUserInfo();
             } else {
-              navigate("/");
+              sessionStorage.removeItem("accessToken");
+              localStorage.removeItem("refreshToken");
+              setIsLogin(false);
             }
           });
         }
@@ -129,7 +138,7 @@ const Team = () => {
       .then((response) => {
         if (response.status === 200) {
           sessionStorage.removeItem("accessToken");
-          sessionStorage.removeItem("refreshToken");
+          localStorage.removeItem("refreshToken");
           alert("로그아웃 되었습니다.");
           return;
         }
@@ -143,7 +152,7 @@ const Team = () => {
       })
       .catch((error) => {
         console.log(error);
-        navigate("/login");
+        setIsLogin(false);
       });
     navigate("/login");
   };

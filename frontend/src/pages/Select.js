@@ -1,14 +1,23 @@
 import "../bootstrap.css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import handleRefreshToken from "../components/HandleRefreshToken";
 
 function Select() {
-  const [userInfo, setUserInfo] = useState({});
+  const [username, setUsername] = useState("");
+  const [studentId, setStudentId] = useState("");
+  const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    if (!accessToken) {
+    if (!isLogin) {
+      navigate("/");
+    }
+  }, [isLogin]);
+
+  useEffect(() => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (!refreshToken) {
       navigate("/"); // 토큰이 없을 경우 리디렉션할 경로
     }
   }, []);
@@ -18,9 +27,8 @@ function Select() {
     return errorMessages;
   };
 
-  useEffect(() => {
+  const fetchUserInfo = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    console.log("after login token:\n" + accessToken);
     fetch("http://localhost:8080/user", {
       headers: {
         Authorization: `Bearer ${accessToken}`
@@ -34,18 +42,29 @@ function Select() {
           return response.json().then((jsonData) => {
             throw new Error(errorMessages(jsonData));
           });
-        } else {
-          navigate("/");
+        } else if (response.status === 401) {
+          handleRefreshToken().then((result) => {
+            if (result) {
+              fetchUserInfo();
+            } else {
+              setIsLogin(false);
+              sessionStorage.removeItem("accessToken");
+              localStorage.removeItem("refreshToken");
+            }
+          });
         }
       })
       .then((data) => {
-        setUserInfo(data);
+        setUsername(data.name);
+        setStudentId(data.studentId);
       })
       .catch((error) => {
         console.log(error);
-        alert(error.message);
-        navigate("/");
       });
+  };
+
+  useEffect(() => {
+    fetchUserInfo();
   }, []);
 
   const handleLogout = () => {
@@ -60,7 +79,7 @@ function Select() {
       .then((response) => {
         if (response.status === 200) {
           sessionStorage.removeItem("accessToken");
-          sessionStorage.removeItem("refreshToken");
+          localStorage.removeItem("refreshToken");
           alert("로그아웃 되었습니다.");
           return;
         }
@@ -74,7 +93,7 @@ function Select() {
       })
       .catch((error) => {
         console.log(error);
-        navigate("/login");
+        setIsLogin(false);
       });
     navigate("/login");
   };
@@ -117,7 +136,7 @@ function Select() {
                     <div className="p-1">
                       {/* <!--사용자 이름, 학번 정보--> */}
                       <span className="mr-2 d-none d-lg-inline text-gray-800 small border-right-0">
-                        {`${userInfo.name}(${userInfo.studentId})`}님
+                        {`${username}(${studentId})`}님
                       </span>
                       {/* <!--마이페이지 버튼--> */}
                       <a
