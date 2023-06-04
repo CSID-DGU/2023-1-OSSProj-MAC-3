@@ -13,6 +13,12 @@ const TeamList = ({ handleTeamIdFromChild }) => {
 
   const navigate = useNavigate();
 
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+  useEffect(() => {
+    console.log(BASE_URL);
+  }, [BASE_URL]);
+
   const handleInputChange = (event) => {
     setNewTeamName(event.target.value);
   };
@@ -20,13 +26,13 @@ const TeamList = ({ handleTeamIdFromChild }) => {
   const handleAddTeam = () => {
     console.log(newTeamName);
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch("http://localhost:8080/team", {
+    fetch(`${BASE_URL}/team`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ teamName: newTeamName })
+      body: JSON.stringify({ teamName: newTeamName }),
     })
       .then((response) => {
         if (response.status === 200) {
@@ -64,7 +70,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
   const handleDeleteTeam = (teamID) => {
     const accessToken = sessionStorage.getItem("accessToken");
     console.log(teamID);
-    fetch(`http://localhost:8080/team/${teamID}`, {
+    fetch(`${BASE_URL}/team/${teamID}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -109,7 +115,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
   const fetchTeams = () => {
     const accessToken = sessionStorage.getItem("accessToken");
     console.log(accessToken);
-    fetch("http://localhost:8080/team", {
+    fetch(`${BASE_URL}/team`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -156,8 +162,13 @@ const TeamList = ({ handleTeamIdFromChild }) => {
 
   const handleClick = (index) => {
     setTeams((prevState) => {
-      const updatedTeams = [...prevState];
-      updatedTeams[index] = { ...updatedTeams[index], isActive: true };
+      const updatedTeams = prevState.map((team, i) => {
+        if (i === index) {
+          return { ...team, isActive: true };
+        } else {
+          return { ...team, isActive: false };
+        }
+      });
       return updatedTeams;
     });
   };
@@ -185,7 +196,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
                     ? {
                         display: "flex",
                         alignItems: "center",
-                        backgroundColor: "#eaecf4"
+                        backgroundColor: "#eaecf4",
                       }
                     : { display: "flex", alignItems: "center" }
                 }
@@ -239,7 +250,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
             style={{
               width: "100%",
               border: "none",
-              backgroundColor: "#ccd1d9"
+              backgroundColor: "#ccd1d9",
             }}
             onClick={() => setShowInput(true)}
           >
@@ -252,7 +263,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
           style={{
             width: "100%",
             border: "none",
-            backgroundColor: "#ccd1d9"
+            backgroundColor: "#ccd1d9",
           }}
           onClick={() => setShowInput(true)}
         >

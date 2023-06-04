@@ -8,6 +8,7 @@ function Select() {
   const [studentId, setStudentId] = useState("");
   const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   useEffect(() => {
     if (!isLogin) {
@@ -29,7 +30,7 @@ function Select() {
 
   const fetchUserInfo = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch("http://localhost:8080/user", {
+    fetch(`${BASE_URL}/user`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }

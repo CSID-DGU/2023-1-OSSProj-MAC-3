@@ -26,6 +26,8 @@ const Team = () => {
 
   const navigate = useNavigate();
 
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   useEffect(() => {
     if (!isLogin) {
       navigate("/");
@@ -78,9 +80,10 @@ const Team = () => {
     setFileId(data);
   };
 
+
   const getUserInfo = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch("http://localhost:8080/user", {
+    fetch(`${BASE_URL}/user`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }

@@ -4,9 +4,12 @@ import handleRefreshToken from "./HandleRefreshToken";
 
 const InvitationMsg = ({ invitationList, fetchInvitation }) => {
   const navigate = useNavigate();
+
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   const handleAcceptInvitation = (invitationId) => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`http://localhost:8080/team/invitation/${invitationId}/accept`, {
+    fetch(`${BASE_URL}/team/invitation/${invitationId}/accept`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${accessToken}`
@@ -45,7 +48,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
 
   const handleRejectInvitation = (invitationId) => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`http://localhost:8080/team/invitation/${invitationId}/reject`, {
+    fetch(`${BASE_URL}/team/invitation/${invitationId}/reject`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${accessToken}`
@@ -84,7 +87,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
 
   const handleDeleteInvitation = (invitationId) => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`http://localhost:8080/team/invitation/${invitationId}`, {
+    fetch(`${BASE_URL}/team/invitation/${invitationId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${accessToken}`
@@ -153,7 +156,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
                         style={{
                           width: "50%",
                           backgroundColor: "#fc9a9d",
-                          border: "none"
+                          border: "none",
                         }}
                         role="button"
                         onClick={() => {
@@ -167,7 +170,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
                         style={{
                           width: "50%",
                           backgroundColor: "#9abbfc",
-                          border: "none"
+                          border: "none",
                         }}
                         role="button"
                         onClick={() => {
@@ -186,7 +189,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
                           width: "50%",
                           backgroundColor: "#969696",
                           border: "none",
-                          pointerEvents: "none"
+                          pointerEvents: "none",
                         }}
                         disabled
                       >
@@ -197,7 +200,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
                         style={{
                           width: "50%",
                           backgroundColor: "#9abbfc",
-                          border: "none"
+                          border: "none",
                         }}
                         role="button"
                         onClick={() => {

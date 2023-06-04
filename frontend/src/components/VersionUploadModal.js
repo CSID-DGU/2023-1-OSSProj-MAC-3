@@ -8,7 +8,7 @@ const VersionUploadModal = ({
   teamId,
   fileId,
   versionUploadModalShow,
-  handleVersionUploadModalShow
+  handleVersionUploadModalShow,
 }) => {
   // const [newFileName, setFileName] = useState("");
   const [commitMessage, setCommitMessage] = useState("");
@@ -17,9 +17,11 @@ const VersionUploadModal = ({
 
   const navigate = useNavigate();
 
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   const fetchFileName = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`http://localhost:8080/team/${teamId.id}/file`, {
+    fetch(`${BASE_URL}/team/${teamId.id}/file`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -83,7 +85,7 @@ const VersionUploadModal = ({
 
     const data = {
       commitMessage,
-      selectedFile
+      selectedFile,
     };
 
     // 파일을 FormData에 추가
@@ -96,19 +98,20 @@ const VersionUploadModal = ({
         [
           JSON.stringify({
             commitMessage: commitMessage,
-            combination: "false"
-          })
+            combination: "false",
+          }),
         ],
         { type: "application/json" }
       )
     );
+
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`http://localhost:8080/team/${teamId.id}/file/`, {
+    fetch(`${BASE_URL}/team/${teamId.id}/file/`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`
       },
-      body: formData
+      body: formData,
     })
       .then((response) => {
         if (response.ok) {

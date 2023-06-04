@@ -6,7 +6,7 @@ import {
   faEdit,
   faTrash,
   faDownload,
-  faBars
+  faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import handleRefreshToken from "./HandleRefreshToken";
 
@@ -15,7 +15,7 @@ const FileStorage = ({
   handleHistoryModalShow,
   handleUploadModalShow,
   handleFileIdFromStorage,
-  handleVersionUploadModalShow
+  handleVersionUploadModalShow,
 }) => {
   const [fileList, setFileList] = useState(null);
   const [fileDownload, setFileDownload] = useState(null);
@@ -23,13 +23,15 @@ const FileStorage = ({
 
   const navigate = useNavigate();
 
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   useEffect(() => {
     console.log(fileId);
   }, [fileId]);
 
   const fetchData = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`http://localhost:8080/team/${teamId.id}/file`, {
+    fetch(`${BASE_URL}/team/${teamId.id}/file`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -67,7 +69,7 @@ const FileStorage = ({
   const handleDeleteTeam = (fileID) => {
     const accessToken = sessionStorage.getItem("accessToken");
     console.log(fileID);
-    fetch(`http://localhost:8080/team/${teamId.id}/file/${fileID}`, {
+    fetch(`${BASE_URL}/team/${teamId.id}/file/${fileID}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -245,7 +247,7 @@ const FileStorage = ({
                                     className="dropdown no-arrow btn"
                                     style={{
                                       display: "inline",
-                                      padding: "0.1rem 0.5rem"
+                                      padding: "0.1rem 0.5rem",
                                     }}
                                   >
                                     <a

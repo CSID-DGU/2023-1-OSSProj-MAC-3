@@ -7,9 +7,11 @@ import handleRefreshToken from "./HandleRefreshToken";
 const TeamInfo = ({ teamId, handleInviteModalShow }) => {
   const [teamInfo, setTeamInfo] = useState(null);
   const navigate = useNavigate("/");
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   const fetchTeam = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`http://localhost:8080/team/${teamId.id}`, {
+    fetch(`${BASE_URL}/team/${teamId.id}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }

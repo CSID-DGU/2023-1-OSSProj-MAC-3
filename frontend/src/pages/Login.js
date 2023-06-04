@@ -15,6 +15,8 @@ const Login = () => {
     }
   }, []);
 
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -26,16 +28,17 @@ const Login = () => {
     const data = {
       studentId,
       password,
-      rememberMe
+      rememberMe,
     };
+    
     // const accessToken = sessionStorage.getItem("accessToken");
     // console.log("before login token:\n" + accessToken);
-    fetch("http://localhost:8080/user/signin", {
+    fetch(`${BASE_URL}/user/signin`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     })
       .then((response) => {
         if (response.ok) {
