@@ -12,6 +12,12 @@ const TeamList = ({ handleTeamIdFromChild }) => {
 
   const navigate = useNavigate();
 
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+  useEffect(() => {
+    console.log(BASE_URL);
+  }, [BASE_URL]);
+
   const handleInputChange = (event) => {
     setNewTeamName(event.target.value);
   };
@@ -19,13 +25,13 @@ const TeamList = ({ handleTeamIdFromChild }) => {
   const handleAddTeam = () => {
     console.log(newTeamName);
     const token = sessionStorage.getItem("token");
-    fetch("http://localhost:8080/team", {
+    fetch(`${BASE_URL}/team`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ teamName: newTeamName })
+      body: JSON.stringify({ teamName: newTeamName }),
     })
       .then((response) => {
         if (response.status === 200) {
@@ -58,12 +64,12 @@ const TeamList = ({ handleTeamIdFromChild }) => {
   const handleDeleteTeam = (teamID) => {
     const token = sessionStorage.getItem("token");
     console.log(teamID);
-    fetch(`http://localhost:8080/team/${teamID}`, {
+    fetch(`${BASE_URL}/team/${teamID}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     })
       .then((response) => {
         if (response.status === 200) {
@@ -98,10 +104,10 @@ const TeamList = ({ handleTeamIdFromChild }) => {
   const fetchTeams = () => {
     const token = sessionStorage.getItem("token");
     console.log(token);
-    fetch("http://localhost:8080/team", {
+    fetch(`${BASE_URL}/team`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => {
         if (response.status === 200) {
@@ -140,8 +146,13 @@ const TeamList = ({ handleTeamIdFromChild }) => {
 
   const handleClick = (index) => {
     setTeams((prevState) => {
-      const updatedTeams = [...prevState];
-      updatedTeams[index] = { ...updatedTeams[index], isActive: true };
+      const updatedTeams = prevState.map((team, i) => {
+        if (i === index) {
+          return { ...team, isActive: true };
+        } else {
+          return { ...team, isActive: false };
+        }
+      });
       return updatedTeams;
     });
   };
@@ -169,7 +180,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
                     ? {
                         display: "flex",
                         alignItems: "center",
-                        backgroundColor: "#eaecf4"
+                        backgroundColor: "#eaecf4",
                       }
                     : { display: "flex", alignItems: "center" }
                 }
@@ -223,7 +234,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
             style={{
               width: "100%",
               border: "none",
-              backgroundColor: "#ccd1d9"
+              backgroundColor: "#ccd1d9",
             }}
             onClick={() => setShowInput(true)}
           >
@@ -236,7 +247,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
           style={{
             width: "100%",
             border: "none",
-            backgroundColor: "#ccd1d9"
+            backgroundColor: "#ccd1d9",
           }}
           onClick={() => setShowInput(true)}
         >
