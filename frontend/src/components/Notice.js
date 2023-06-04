@@ -13,6 +13,8 @@ const Notice = ({ teamId }) => {
 
   const navigate = useNavigate();
 
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   useEffect(() => {
     if (teamId.id === 0) return;
     fetchNotice();
@@ -20,10 +22,10 @@ const Notice = ({ teamId }) => {
 
   const fetchNotice = () => {
     const token = sessionStorage.getItem("token");
-    fetch(`http://localhost:8080/team/${teamId.id}/notice`, {
+    fetch(`${BASE_URL}/team/${teamId.id}/notice`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => {
         if (response.status === 200) {
@@ -67,13 +69,13 @@ const Notice = ({ teamId }) => {
       return;
     }
     const token = sessionStorage.getItem("token");
-    fetch(`http://localhost:8080/team/${teamId.id}/notice`, {
+    fetch(`${BASE_URL}/team/${teamId.id}/notice`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ content: inputValue })
+      body: JSON.stringify({ content: inputValue }),
     })
       .then((response) => {
         if (response.status === 200) {
@@ -105,11 +107,11 @@ const Notice = ({ teamId }) => {
 
   const handleDeleteNotice = (noticeId) => {
     const token = sessionStorage.getItem("token");
-    fetch(`http://localhost:8080/team/${teamId.id}/notice/${noticeId}`, {
+    fetch(`${BASE_URL}/team/${teamId.id}/notice/${noticeId}`, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => {
         if (response.status === 200) {
@@ -143,13 +145,13 @@ const Notice = ({ teamId }) => {
       return;
     }
     const token = sessionStorage.getItem("token");
-    fetch(`http://localhost:8080/team/${teamId.id}/notice/${noticeId}`, {
+    fetch(`${BASE_URL}/team/${teamId.id}/notice/${noticeId}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ content: content })
+      body: JSON.stringify({ content: content }),
     })
       .then((response) => {
         if (response.status === 200) {

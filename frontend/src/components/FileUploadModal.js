@@ -6,13 +6,15 @@ const UploadModal = ({
   userInfo,
   teamId,
   uploadModalShow,
-  handleUploadModalShow
+  handleUploadModalShow,
 }) => {
   // const [newFileName, setFileName] = useState("");
   const [commitMessage, setCommitMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
 
   const navigate = useNavigate();
+
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -24,7 +26,7 @@ const UploadModal = ({
 
     const data = {
       commitMessage,
-      selectedFile
+      selectedFile,
     };
 
     // 파일을 FormData에 추가
@@ -37,19 +39,19 @@ const UploadModal = ({
         [
           JSON.stringify({
             commitMessage: commitMessage,
-            combination: "false"
-          })
+            combination: "false",
+          }),
         ],
         { type: "application/json" }
       )
     );
     const token = sessionStorage.getItem("token");
-    fetch(`http://localhost:8080/team/${teamId.id}/file/`, {
+    fetch(`${BASE_URL}/team/${teamId.id}/file/`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
-      body: formData
+      body: formData,
     })
       .then((response) => {
         if (response.status === 200) {

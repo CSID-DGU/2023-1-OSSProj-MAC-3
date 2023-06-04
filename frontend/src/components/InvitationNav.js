@@ -9,13 +9,14 @@ const InvitationNav = () => {
   const [alertCount, setAlertCount] = useState(0);
   const [invitationList, setInvitationList] = useState([]);
   const navigate = useNavigate();
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const fetchInvitation = () => {
     const token = sessionStorage.getItem("token");
-    fetch("http://localhost:8080/team/invitation", {
+    fetch(`${BASE_URL}/team/invitation`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => {
         if (response.status === 200 || response.status === 400) {
