@@ -35,7 +35,7 @@ public class UserJoinService {
                 .name(userDto.getName())
                 .dept(userDto.getDept())
                 .build(); // UserDto -> User
-        User registerdUser; // 회원가입 처리 후 결과를 받음
+        User registerdUser = null; // 회원가입 처리 후 결과를 받음
         // 회원가입 처리
         try {
             registerdUser = join(user);

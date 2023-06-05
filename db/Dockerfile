@@ -1,5 +1,5 @@
 # 베이스 이미지로 공식 MySQL 8.0 이미지 사용
-FROM mysql:8.0
+FROM mysql:5.7
 
 # 환경 변수 설정
 ENV MYSQL_ROOT_PASSWORD=root
