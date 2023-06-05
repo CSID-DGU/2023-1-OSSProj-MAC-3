@@ -19,7 +19,8 @@ public class File extends TimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long fileId;
 
-    @Convert(converter = AesEncryptor.class)
+//    @Convert(converter = AesEncryptor.class)
+    @Column(length = 65000)
     private String s3FileUrl;
     @Convert(converter = AesEncryptor.class)
     private String realFileName;
