@@ -61,6 +61,7 @@ public class UserAuthService {
                 .studentId(user.getStudentId())
                 .refreshToken(tokens.get("refreshToken"))
                 .accessToken(tokens.get("accessToken"))
+                .expiresAt(tokens.get("expiresAt"))
                 .name(user.getName())
                 .dept(user.getDept())
                 .build();
