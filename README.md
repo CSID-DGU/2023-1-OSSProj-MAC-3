@@ -164,41 +164,41 @@
 <img src="https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/ec28cd84-e325-4398-8790-3ace73b9b5c3" width="1200" height="500">
 -에러 발생 시 에러 원인을 경고창으로 알림.
 
-## 환경설정 및 실행
+## 환경설정 및 실행(Configuration and execution)
 <br>
 
-### 1. 우분투 환경에 도커 설치
+### 1. 우분투 환경에 도커 설치(Install docker in ubuntu environment)
 
 
-####     1. 우분투 시스템 패키지 업데이트
+####     1. 우분투 시스템 패키지 업데이트(Ubuntu system package update)
 
     sudo apt-get update
 
-#### 2. 필요한 패키지 설치
+#### 2. 필요한 패키지 설치(Install required packages)
 
     sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
 
-#### 3. Docker 공식 GPG키 추가
+#### 3. Docker 공식 GPG키 추가(Add Docker official GPG key)
 
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
-#### 4. Docker 공식 apt 저장소 추가
+#### 4. Docker 공식 apt 저장소 추가(Add docker official apt repository)
 
     sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
-#### 5. 시스템 패키지 업데이트
+#### 5. 시스템 패키지 업데이트(System package update)
 
     sudo apt-get update
 
-#### 6. Docker 설치
+#### 6. Docker 설치(Install Docker)
 
     sudo apt-get install docker-ce docker-ce-cli containerd.io
 
-#### 7. Docker 설치 확인
+#### 7. Docker 설치 확인(docker status check)
 
     sudo systemctl status docker
 
-### 2. Docker hub에서 필요한 이미지 pull
+### 2. Docker hub에서 필요한 이미지 pull(Pull the necessary images from Docker Hub)
 
 #### 1. mysql:5.7 pull
 
@@ -208,28 +208,28 @@
 
     docker pull roberniro/2023-1-ossproj-mac-3-redis:1.0
 
-#### 3. jar 이미지 pull
+#### 3. jar image pull
 
     docker pull pilhwan/dgulms:17.0
 
-#### 4. frontend 이미지 pull
+#### 4. frontend image pull
 
     docker pull roberniro/2023-1-ossproj-mac-3-view:2.0
 
-### 3. 멀티 컨테이너 환경 설정
-#### 1. mysql 컨테이너 실행
+### 3. 멀티 컨테이너 환경 설정(Setting up a multi-container environment)
+#### 1. run mysql container
 
     docker run --name {contatiner host name} -p 3306:3306 --network {network name} -e MYSQL_ROOT_PASSWORD={root pw} -e MYSQL_DATABASE={db name} -e MYSQL_USER={유저명} -e MYSQL_PASSWORD={user pw} -d mysql:5.7
 
-#### 2. redis 컨테이너 실행
+#### 2. run redis container
 
     
     
-#### 3. spring 컨테이너 실행
+#### 3. run spring container
 
     docker run -p 8080:8080 --name {container name} --network {network name} -d pilhwan/dgulms:17.0
 
-#### 4. react 컨테이너 실행
+#### 4. run react container
 
     docker run -p 3000:3000 --name {container name} --network {network name} -d roberniro/2023-1-ossproj-mac-3-view:2.0
     
