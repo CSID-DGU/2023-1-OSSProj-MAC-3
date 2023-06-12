@@ -14,17 +14,19 @@
 
 ### Front-End
 
-| 이름   | 전공           | 학번   |
-| ------ | -------------- | ------ |
-| 안상연 | 멀티미디어공학전공     | 19학번 |
+| 이름   | 전공           | 학번   | E-mail |
+| ------ | -------------- | ------ | ---------------|
+| 안상연 | 멀티미디어공학전공     | 19학번 | sy990607@naver.com |
 
 
 ### Back-end
 
-| 이름   | 전공           | 학번   |
-| ------ | -------------- | ------ |
-| 최필환 | 산업시스템공학전공     | 19학번 |
-| 민한결 | 건설환경공학전공     | 17학번 |
+| 이름   | 전공           | 학번   | E-mail |
+| ------ | -------------- | ------ | -------------------|
+| 최필환 | 산업시스템공학전공     | 19학번 | fill0006@naver.com |
+| 민한결 | 건설환경공학전공     | 17학번 | denirokr22@gmail.com |
+
+
 
 ## Tech Stack
 
@@ -80,7 +82,7 @@
   - ResponseEntity를 return값으로 하고 HTTP Body를 JSON 형태로 응답
   - RDBMS를 사용할 수 있도록 Invitation Table 생성
   - isAccepted(Boolean) 속성으로 초대장 상태 관리
-- 파일 스토리지: 블로그 프로젝트 https://github.com/tychejin1218/blog/tree/main/amazon-s3![image](https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/44fae83a-eab0-47b7-ba9d-6350c55324de)
+- 파일 스토리지: S3 파일 업로드 프로젝트 https://github.com/tychejin1218/blog/tree/main/amazon-s3![image](https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/44fae83a-eab0-47b7-ba9d-6350c55324de)
 
 ### 웹사이트 소개 
 **1. 회원가입**
@@ -165,7 +167,6 @@
 -에러 발생 시 에러 원인을 경고창으로 알림.
 
 ## 환경설정 및 실행(Configuration and execution)
-<br>
 
 ### 1. 우분투 환경에 도커 설치(Install docker in ubuntu environment)
 
@@ -198,9 +199,28 @@
 
     sudo systemctl status docker
 
-### 2. Docker hub에서 필요한 이미지 pull(Pull the necessary images from Docker Hub)
+### 2. Docker 컴포즈 설치(Install Docker-compose)
 
-#### 1. mysql:5.7 pull
+#### 1. Docker-compose 설치
+
+    sudo curl -L \ 
+"https://github.com/docker/compose/releases/download/1.28.5/dockercompose-$(uname -s)-$(uname -m)" \ 
+-o /usr/local/bin/docker-compose
+
+#### 2. 권한 설정(permission settings)
+
+    sudo chmod +x /usr/local/bin/docker-compose
+    
+#### 3. 버전확인(check version)
+
+    docker-compose -v
+    
+### 3. Docker-compose run
+
+    docker-compose up -d
+
+
+<!-- #### 1. mysql:5.7 pull
 
     docker pull mysql:5.7
     
@@ -232,6 +252,8 @@
 #### 4. run react container
 
     docker run -p 3000:3000 --name {container name} --network {network name} -d roberniro/2023-1-ossproj-mac-3-view:2.0
+
+-->
     
 
 
@@ -242,9 +264,3 @@
 - https://github.com/heli-os/member-invitation-java-springboot![image](https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/f043e647-38a6-45b9-ab71-9cc56117780d)
 - https://github.com/rgl-za/ToDo![image](https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/7994ff2c-ccfd-49dd-91f7-40443c50349b)
 - https://github.com/tychejin1218/blog/tree/main/amazon-s3![image](https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/9d803afc-dfed-4a62-b23f-2f8fa7488e73)
-
-
-## Contact
-[HANKYUL] : denirokr22@gmail.com <br>
-[PILHWAN] : fill0006@naver.com <br>
-[SANGYEON]: sy990607@naver.com <br>
