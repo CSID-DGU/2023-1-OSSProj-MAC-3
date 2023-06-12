@@ -32,8 +32,8 @@ public class TokenProvider {
     // 토큰 생성
     public Map<String, String> create(User user) {
         Date now = new Date(); // 현재 시간
-        Date accessTokenValidity = new Date(now.getTime() + 1000 * 60 * 5); // 5분 뒤 만료
-        Date refreshTokenValidity = new Date(now.getTime() + 1000 * 60 * 60 * 24 * 7); // 7일 뒤 만료
+        Date accessTokenValidity = new Date(now.getTime() + 1000 * 60 * 20); // 20분 뒤 만료
+        Date refreshTokenValidity = new Date(now.getTime() + 1000 * 60 * 60); // 1시간 뒤 만료
         String refreshToken = Jwts.builder()
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY) // HS256 알고리즘, secretKey로 서명
                 .setSubject(user.getStudentId())
@@ -52,6 +52,7 @@ public class TokenProvider {
         Map<String, String> tokens = new HashMap<>();
         tokens.put("accessToken", accessToken);
         tokens.put("refreshToken", refreshToken);
+        tokens.put("expiresAt", String.valueOf(accessTokenValidity.getTime()));
         return tokens;
     }
 

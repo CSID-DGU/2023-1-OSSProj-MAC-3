@@ -22,6 +22,7 @@ public class UserDto {
     private String password;
     private String name;
     private String dept;
+    private String expiresAt;
 
     //회원가입시 필요한 정보 검증
     @Getter

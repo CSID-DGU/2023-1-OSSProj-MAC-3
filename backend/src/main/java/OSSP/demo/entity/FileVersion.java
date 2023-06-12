@@ -21,8 +21,8 @@ public class FileVersion extends TimeEntity{
     @Convert(converter = AesEncryptor.class)
     private String commitMessage;
 
-    @Column(length = 2000)
-    @Convert(converter = AesEncryptor.class)
+    @Column(length = 65000)
+//    @Convert(converter = AesEncryptor.class)
     private String s3FileVersionUrl;
 
     //파일 합본 여부

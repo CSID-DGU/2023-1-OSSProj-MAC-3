@@ -1,6 +1,6 @@
 package OSSP.demo.entity;
 
-import OSSP.demo.service.security.AesEncryptor;
+//import OSSP.demo.service.security.AesEncryptor;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,15 +21,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false, unique = true)
-    @Convert(converter = AesEncryptor.class)
+//    @Convert(converter = AesEncryptor.class)
     private String studentId;
 
     @Column(nullable = false, unique = false)
-    @Convert(converter = AesEncryptor.class)
+//    @Convert(converter = AesEncryptor.class)
     private String dept;
 
     @Column(nullable = false, unique = false)
-    @Convert(converter = AesEncryptor.class)
+//    @Convert(converter = AesEncryptor.class)
     private String name;
 
     @OneToMany(mappedBy = "user")
