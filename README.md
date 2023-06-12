@@ -6,25 +6,35 @@
 <br><br>
 [시연영상] https://youtu.be/0JHX9DPPOrE
 
-## 프로젝트 제목
+## 프로젝트명
 
 동국대학교 LMS 내 협업 파일시스템 구축
 
 ## 팀원 소개
 
-### Front-End
+<!-- ### Front-End
 
 | 이름   | 전공           | 학번   | E-mail |
 | ------ | -------------- | ------ | ---------------|
 | 안상연 | 멀티미디어공학전공     | 19학번 | sy990607@naver.com |
+| 민한결 | 건설환경공학전공     | 17학번 | denirokr22@gmail.com |
+
 
 
 ### Back-end
 
 | 이름   | 전공           | 학번   | E-mail |
 | ------ | -------------- | ------ | -------------------|
-| 최필환 | 산업시스템공학전공     | 19학번 | fill0006@naver.com |
 | 민한결 | 건설환경공학전공     | 17학번 | denirokr22@gmail.com |
+| 최필환 | 산업시스템공학전공     | 19학번 | fill0006@naver.com | -->
+
+
+|<img src="https://avatars.githubusercontent.com/u/113920417?v=4" width="80">|<img src="https://avatars.githubusercontent.com/u/112103038?v=4" width="80">|<img src="https://avatars.githubusercontent.com/u/87561425?v=4" width="80">|
+|:---:|:---:|:---:|
+|[민한결](https://github.com/roberniro)|[최필환](https://github.com/thisishwan2)|[안상연](https://github.com/ahnup)|
+|건설환경공학전공|산업시스템공학전공|멀티미디어공학전공|
+|Backend, Frontend|Backend|Frontend|
+|BE: 로그인, 회원가입, 팀 구성 <br> FE: 팀원 초대, 공지사항, 에러처리|AWS ec2, S3 설정 및 배포 <br> 파일 업로드, 다운로드, 삭제, 버전관리, 공지사항 구현|회원가입, 로그인, 웰컴 페이지, 팀활동 페이지 UI <br> 팀선택, 파일스토리지 에러처리|
 
 
 
@@ -49,7 +59,7 @@
   <img src="https://img.shields.io/badge/amazon ec2-FF9900?style=for-the-badge&logo=amazon ec2&logoColor=white">
   <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
   <img src="https://img.shields.io/badge/VsCode-007ACC?style=for-the-badge&logo=Visual Studio Code&logoColor=white">
-  <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
+  <img src="https://img.shields.io/badge/intellijidea-000000?style=for-the-badge&logo=IntelliJ&logoColor=white">
   <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
   <img src="https://img.shields.io/badge/fontawesome-528DD7?style=for-the-badge&logo=fontawesome&logoColor=white">
 </div>
@@ -58,7 +68,7 @@
 
 ### Backend
 - Spring Boot
-- MySQL 8.0
+- MySQL 7.5
 
 ### Frontend
 - React 18.2.0
@@ -69,20 +79,23 @@
 동국대학교 LMS 내 팀 프로젝트 파일 스토리지 시스템 구축을 통해 파일 이력 관리를 가능하게 하여 협업 능률을 향상시킨다.
 
 ### 사용한 오픈소스 코드 및 개선 사항
-- UI: 대시보드 템플릿 https://github.com/startbootstrap/startbootstrap-sb-admin-2
+- [UI: 대시보드 템플릿](https://github.com/startbootstrap/startbootstrap-sb-admin-2)
   - 디자인 수정 및 리액트 도입
-- 인증 처리: 게시판 프로젝트 https://github.com/hojunnnnn/board![image](https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/3868262c-ad6b-4e3f-aed4-4066e2d9e8c2) 
+- [인증 처리: 게시판 프로젝트](https://github.com/hojunnnnn/board)
   - JWT 토큰 방식으로 변경
   - Refresh Token 도입
   - AES로 DB 접근 시 암복호화
   - ResponseEntity를 return값으로 하고 DTO를 HTTP Body를 JSON 형태로 응답
-- 팀 구성: 모임 관리 프로젝트 https://github.com/lcalmsky/spring-boot-app![image](https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/ba2e2578-9cb9-4bf7-b996-b409e7a729da)
-- 초대장: 초대 링크 생성 프로젝트 https://github.com/heli-os/member-invitation-java-springboot![image](https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/a390f772-d98c-42a0-ac57-26405b587c1f)
-- 공지사항: ToDo 리스트 프로젝트 https://github.com/rgl-za/ToDo![image](https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/ec46a308-e78c-4d0f-a880-be451415f759)
+- [팀 구성: 모임 관리 프로젝트](https://github.com/lcalmsky/spring-boot-app)
+- [초대장: 초대 링크 생성 프로젝트](https://github.com/heli-os/member-invitation-java-springboot)
+- [공지사항: ToDo 리스트 프로젝트](https://github.com/rgl-za/ToDo)
   - ResponseEntity를 return값으로 하고 HTTP Body를 JSON 형태로 응답
   - RDBMS를 사용할 수 있도록 Invitation Table 생성
   - isAccepted(Boolean) 속성으로 초대장 상태 관리
-- 파일 스토리지: S3 파일 업로드 프로젝트 https://github.com/tychejin1218/blog/tree/main/amazon-s3![image](https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/44fae83a-eab0-47b7-ba9d-6350c55324de)
+- [파일 스토리지: S3 파일 업로드 프로젝트](https://github.com/tychejin1218/blog/tree/main/amazon-s3)
+  - DB 연결화
+  - 다운로드와 각 버전별 이력관리 추가
+  - 수정메세지 추가
 
 ### 웹사이트 소개 
 **1. 회원가입**
@@ -203,9 +216,7 @@
 
 #### 1. Docker-compose 설치
 
-    sudo curl -L \ 
-"https://github.com/docker/compose/releases/download/1.28.5/dockercompose-$(uname -s)-$(uname -m)" \ 
--o /usr/local/bin/docker-compose
+    sudo curl -L \ "https://github.com/docker/compose/releases/download/1.28.5/dockercompose-$(uname -s)-$(uname -m)" \ -o /usr/local/bin/docker-compose
 
 #### 2. 권한 설정(permission settings)
 
