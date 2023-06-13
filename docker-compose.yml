@@ -7,12 +7,13 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - db
+      - mysql
+      - redis
     networks:
       - lms-demo-net
     restart: always
 
-  lms-demo:
+  view:
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -22,15 +23,25 @@ services:
       - lms-demo-net
     restart: always
 
-  db:
+  mysql:
     build:
-      context: ./db
+      context: ./db/mysql
       dockerfile: Dockerfile
     ports:
-      - 3306:3306
+      - 3307:3306
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: eclass
+    networks:
+      - lms-demo-net
+    restart: always
+
+  redis:
+    build:
+      context: ./db/redis
+      dockerfile: Dockerfile
+    ports:
+      - 6380:6379
     networks:
       - lms-demo-net
     restart: always
