@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,6 +60,7 @@ public class InvitationService {
                         .leader(userRepository.findById(leaderId).get())
                         .fellow(userRepository.findById(fellowId).get())
                         .team(teamRepository.findById(teamId).get())
+                        .isAccepted("null")
                         .build();
                 invitationRepository.save(invitation);
                 InvitationDto invitationResponseDto = InvitationDto.builder()
@@ -106,6 +108,7 @@ public class InvitationService {
         return ResponseEntity.ok().body(Collections.singletonMap("get_invitations", invitationDtoList));
     }
 
+    @Transactional
     public ResponseEntity acceptInvitation(String studentId, Long invitationId) {
         if (!userRepository.existsByStudentId(studentId)) {
             ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("accept_invitation", "사용자 정보가 존재하지 않습니다.")).build();
@@ -125,7 +128,8 @@ public class InvitationService {
             ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("accept_invitation", "이미 팀에 가입된 사용자입니다.")).build();
             return ResponseEntity.badRequest().body(responseErrorDto);
         }
-        invitation.setIsAccepted(true);
+        invitation.setIsAccepted("true");
+        invitationRepository.save(invitation);
         Member member = new Member(invitation.getFellow(), invitation.getTeam(), Role.Member);
         memberRepository.save(member);
         InvitationDto invitationResponseDto = InvitationDto.builder()
@@ -138,7 +142,7 @@ public class InvitationService {
         return ResponseEntity.ok().body(invitationResponseDto);
     }
 
-
+    @Transactional
     public ResponseEntity rejectInvitation(String studentId, Long invitationId) {
         if (!userRepository.existsByStudentId(studentId)) {
             ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("reject_invitation", "사용자 정보가 존재하지 않습니다.")).build();
@@ -154,18 +158,18 @@ public class InvitationService {
             ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("reject_invitation", "초대된 사용자가 아닙니다.")).build();
             return ResponseEntity.badRequest().body(responseErrorDto);
         }
-        if (invitation.getIsAccepted()) {
+        if (invitation.getIsAccepted().equals("true")) {
             ResponseDto responseErrorDto = ResponseDto.builder().error(Collections.singletonMap("reject_invitation", "이미 수락된 초대입니다.")).build();
             return ResponseEntity.badRequest().body(responseErrorDto);
         }
-        invitation.setIsAccepted(false);
+        invitation.setIsAccepted("false");
+        invitationRepository.save(invitation);
         InvitationDto invitationResponseDto = InvitationDto.builder()
                 .invitationId(invitation.getId())
                 .leaderId(invitation.getLeader().getId())
                 .fellowId(invitation.getFellow().getId())
                 .teamId(invitation.getTeam().getId())
                 .build();
-        invitationRepository.delete(invitation);
         return ResponseEntity.ok().body(invitationResponseDto);
     }
 
