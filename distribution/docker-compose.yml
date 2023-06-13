@@ -1,9 +1,7 @@
 version: '3'
 services:
   server:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: roberniro/ossproj-server:6.0
     ports:
       - 8080:8080
     depends_on:
@@ -14,9 +12,7 @@ services:
     restart: always
 
   view:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: roberniro/ossproj-view:1.0
     ports:
       - 3000:3000
     networks:
@@ -24,9 +20,7 @@ services:
     restart: always
 
   mysql:
-    build:
-      context: ./db/mysql
-      dockerfile: Dockerfile
+    image: roberniro/ossproj-mysql:1.0
     ports:
       - 3307:3306
     environment:
@@ -37,9 +31,7 @@ services:
     restart: always
 
   redis:
-    build:
-      context: ./db/redis
-      dockerfile: Dockerfile
+    image: roberniro/ossproj-redis:1.0
     ports:
       - 6380:6379
     networks:

@@ -1,5 +1,5 @@
 # Base image
-FROM node:14-alpine
+FROM node:latest
 
 # 앱 디렉토리 생성
 WORKDIR /app

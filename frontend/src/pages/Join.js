@@ -1,6 +1,7 @@
 import "../bootstrap.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "../AxiosConfig";
 
 const Join = () => {
   const [name, setName] = useState("");
@@ -22,41 +23,28 @@ const Join = () => {
       name,
       studentId,
       dept,
-      password,
+      password
     };
 
-    fetch(`${BASE_URL}/user/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
+    axios
+      .post(`${BASE_URL}/user/signup`, data)
       .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
+        if (response.status === 200) {
+          return response.data;
+        }
+        if (response.status === 400) {
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
         }
       })
       .then((data) => {
         alert("회원가입이 완료되었습니다.");
         goLogin();
       })
-      .catch((error) => {
-        alert(error.message);
-      });
-  };
-
-  const showErrorMessages = (jsonData) => {
-    const errorMessages = Object.values(jsonData.error).join("\n");
-
-    // 메시지들을 결합하여 alert 창에 보여줍니다.
-    return errorMessages;
+      .catch((error) => {});
   };
 
   const movePage = useNavigate();

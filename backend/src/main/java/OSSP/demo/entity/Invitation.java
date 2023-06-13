@@ -31,13 +31,9 @@ public class Invitation {
     private User fellow;
 
     @Column(nullable = true)
-    private boolean isAccepted;
+    private String isAccepted;
 
-    public void setIsAccepted(boolean b) {
-        this.isAccepted = b;
-    }
-
-    public Boolean getIsAccepted() {
-        return this.isAccepted;
+    public void setIsAccepted(String status) {
+        this.isAccepted = status;
     }
 }

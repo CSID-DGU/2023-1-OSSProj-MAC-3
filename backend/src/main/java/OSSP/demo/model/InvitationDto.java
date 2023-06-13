@@ -17,7 +17,7 @@ public class InvitationDto {
 
     private String leaderName;
     private Long fellowId;
-    private Boolean isAccepted;
+    private String isAccepted;
 
     @Builder
     @NoArgsConstructor

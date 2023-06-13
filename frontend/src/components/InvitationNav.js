@@ -4,7 +4,7 @@ import { faMessage } from "@fortawesome/free-solid-svg-icons";
 import InvitationMsg from "./InvitationMsg";
 import DropdownButton from "./DropdownButton";
 import { useNavigate } from "react-router-dom";
-import handleRefreshToken from "./HandleRefreshToken";
+import axios from "../AxiosConfig";
 
 const InvitationNav = () => {
   const [alertCount, setAlertCount] = useState(0);
@@ -14,23 +14,15 @@ const InvitationNav = () => {
 
   const fetchInvitation = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`${BASE_URL}/team/invitation`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+    axios
+      .get(`${BASE_URL}/team/invitation`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
       .then((response) => {
         if (response.status === 200 || response.status === 400) {
-          return response.json();
-        }
-        if (response.status === 401) {
-          // handleRefreshToken().then((result) => {
-          //   if (result) {
-          //     fetchInvitation();
-          //   } else {
-          //     navigate("/");
-          //   }
-          // });
+          return response.data;
         }
       })
       .then((data) => {
@@ -38,7 +30,7 @@ const InvitationNav = () => {
           const invitationList = data.get_invitations;
           setInvitationList(invitationList);
           const filteredInvitationList = invitationList.filter(
-            (invitation) => invitation.isAccepted === false
+            (invitation) => invitation.isAccepted === "null"
           );
           setAlertCount(filteredInvitationList.length);
         } else if (data && data.error && data.error.get_invitations) {
@@ -47,7 +39,11 @@ const InvitationNav = () => {
           throw new Error(data.error.get_invitations);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setAlertCount(0);
+        setInvitationList([]);
+      });
   };
 
   useEffect(() => {

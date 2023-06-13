@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "./Modal.css";
 import { useNavigate } from "react-router-dom";
-import handleRefreshToken from "./HandleRefreshToken";
+import axios from "../AxiosConfig";
 
 const VersionUploadModal = ({
   userInfo,
   teamId,
   fileId,
   versionUploadModalShow,
-  handleVersionUploadModalShow,
+  handleVersionUploadModalShow
 }) => {
   // const [newFileName, setFileName] = useState("");
   const [commitMessage, setCommitMessage] = useState("");
@@ -21,30 +21,18 @@ const VersionUploadModal = ({
 
   const fetchFileName = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`${BASE_URL}/team/${teamId.id}/file`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+    axios
+      .get(`${BASE_URL}/team/${teamId.id}/file`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              fetchFileName();
-            } else {
-              navigate("/");
-            }
-          });
+          throw new Error(showErrorMessages(response.data));
         }
       })
       .then((data) => {
@@ -61,7 +49,7 @@ const VersionUploadModal = ({
       })
       .catch((error) => {
         console.log(error);
-        alert(error.message);
+        // alert(error.message);
       });
   };
 
@@ -83,11 +71,6 @@ const VersionUploadModal = ({
       return;
     }
 
-    const data = {
-      commitMessage,
-      selectedFile,
-    };
-
     // 파일을 FormData에 추가
     const formData = new FormData();
     formData.append("file", selectedFile);
@@ -98,40 +81,31 @@ const VersionUploadModal = ({
         [
           JSON.stringify({
             commitMessage: commitMessage,
-            combination: "false",
-          }),
+            combination: "false"
+          })
         ],
         { type: "application/json" }
       )
     );
 
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`${BASE_URL}/team/${teamId.id}/file/`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      },
-      body: formData,
-    })
+    axios
+      .post(`${BASE_URL}/team/${teamId.id}/file/`, formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "multipart/form-data"
+        }
+      })
       .then((response) => {
-        if (response.ok) {
-          return response.json();
+        if (response.status === 200) {
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              handleSubmit();
-            } else {
-              navigate("/");
-            }
-          });
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
         }
       })
       .then((data) => {
@@ -139,10 +113,7 @@ const VersionUploadModal = ({
         console.log(data);
         handleVersionUploadModalShow(false);
       })
-      .catch((error) => {
-        console.log(error);
-        alert(error.message);
-      });
+      .catch((error) => {});
   };
 
   const showErrorMessages = (jsonData) => {

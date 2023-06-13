@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Modal.css";
-import handleRefreshToken from "./HandleRefreshToken";
+import axios from "../AxiosConfig";
 
 const InviteModal = ({
   userInfo,
   teamId,
   inviteModalShow,
-  handleInviteModalShow,
+  handleInviteModalShow
 }) => {
   const [userList, setUserList] = useState([]);
   const navigate = useNavigate();
@@ -15,39 +15,28 @@ const InviteModal = ({
 
   const fetchUserList = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`${BASE_URL}/team/${teamId.id}/user`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+    axios
+      .get(`${BASE_URL}/team/${teamId.id}/user`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              fetchUserList();
-            } else {
-              navigate("/");
-            }
-          });
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
         }
       })
       .then((data) => {
         setUserList(data.get_user_list);
       })
-      .catch((error) => {
-        console.log(error);
-        alert(error);
-      });
+      .catch((error) => {});
   };
 
   useEffect(() => {
@@ -55,6 +44,9 @@ const InviteModal = ({
   }, []);
 
   const handleInvite = () => {
+    if (!window.confirm("팀원을 초대합니다.")) {
+      return;
+    }
     const accessToken = sessionStorage.getItem("accessToken");
     const checkedList = document.querySelectorAll(
       ".modal-wrapper input[type=checkbox]:checked"
@@ -63,37 +55,27 @@ const InviteModal = ({
     checkedList.forEach((checked) => {
       checkedIdList.push(checked.value);
     });
-    fetch(`${BASE_URL}/team/${teamId.id}/invitation`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        leaderId: userInfo.id,
-        fellowIds: checkedIdList.map((id) => parseInt(id, 10)),
-      }),
-    })
+    axios
+      .post(
+        `${BASE_URL}/team/${teamId.id}/invitation`,
+        {
+          leaderId: userInfo.id,
+          fellowIds: checkedIdList.map((id) => parseInt(id, 10))
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+          }
+        }
+      )
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            handleInviteModalShow(false);
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              handleInvite();
-            } else {
-              navigate("/");
-            }
-          });
+          handleInviteModalShow(false);
+          throw new Error(showErrorMessages(response.data));
         }
       })
       .then((data) => {
@@ -101,8 +83,13 @@ const InviteModal = ({
         handleInviteModalShow(false);
       })
       .catch((error) => {
-        console.log(error);
-        alert(error.message);
+        if (error.response && error.response.status === 400) {
+          const responseData = error.response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+        } else {
+          alert(error.message);
+        }
       });
   };
 

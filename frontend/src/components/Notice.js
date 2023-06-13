@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import handleRefreshToken from "./HandleRefreshToken";
+import axios from "../AxiosConfig";
 
 const Notice = ({ teamId }) => {
   const [showInput, setShowInput] = useState(false);
@@ -23,39 +23,25 @@ const Notice = ({ teamId }) => {
 
   const fetchNotice = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`${BASE_URL}/team/${teamId.id}/notice`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+    axios
+      .get(`${BASE_URL}/team/${teamId.id}/notice`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              fetchNotice();
-            } else {
-              navigate("/");
-            }
-          });
+          throw new Error(showErrorMessages(response.data));
         }
       })
       .then((data) => {
         setNoticeList(data.get_notices.reverse());
       })
       .catch((error) => {
-        {
-          console.log(error);
-        }
+        console.log(error);
       });
   };
 
@@ -74,35 +60,30 @@ const Notice = ({ teamId }) => {
       alert("공지사항을 입력해주세요.");
       return;
     }
-
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`${BASE_URL}/team/${teamId.id}/notice`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ content: inputValue }),
-    })
+    axios
+      .post(
+        `${BASE_URL}/team/${teamId.id}/notice`,
+        {
+          content: inputValue
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+          }
+        }
+      )
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              handleAddNotice();
-            } else {
-              navigate("/");
-            }
-          });
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
         }
       })
       .then((data) => {
@@ -111,49 +92,34 @@ const Notice = ({ teamId }) => {
         setInputValue("");
         setShowInput(false);
       })
-      .catch((error) => {
-        console.log(error);
-        alert(error.message);
-      });
+      .catch((error) => {});
   };
 
   const handleDeleteNotice = (noticeId) => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`${BASE_URL}/team/${teamId.id}/notice/${noticeId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+    axios
+      .delete(`${BASE_URL}/team/${teamId.id}/notice/${noticeId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              handleDeleteNotice(noticeId);
-            } else {
-              navigate("/");
-            }
-          });
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
         }
       })
       .then((data) => {
         console.log(data);
         fetchNotice();
       })
-      .catch((error) => {
-        console.log(error);
-        alert(error.message);
-      });
+      .catch((error) => {});
   };
 
   const handleEditNotice = (noticeId, content) => {
@@ -162,33 +128,29 @@ const Notice = ({ teamId }) => {
       return;
     }
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`${BASE_URL}/team/${teamId.id}/notice/${noticeId}`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ content: content }),
-    })
+    axios
+      .put(
+        `${BASE_URL}/team/${teamId.id}/notice/${noticeId}`,
+        {
+          content: content
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+          }
+        }
+      )
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              handleEditNotice(noticeId, content);
-            } else {
-              navigate("/");
-            }
-          });
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
         }
       })
       .then((data) => {
@@ -198,10 +160,7 @@ const Notice = ({ teamId }) => {
         setEditNoticeId(0);
         setEditNoticeContent("");
       })
-      .catch((error) => {
-        console.log(error);
-        alert(error.message);
-      });
+      .catch((error) => {});
   };
 
   const handleEditMode = (noticeId, content) => {

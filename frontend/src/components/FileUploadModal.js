@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Modal.css";
-import handleRefreshToken from "./HandleRefreshToken";
+import axios from "../AxiosConfig";
 
 const UploadModal = ({
   userInfo,
   teamId,
   uploadModalShow,
-  handleUploadModalShow,
+  handleUploadModalShow
 }) => {
   // const [newFileName, setFileName] = useState("");
   const [commitMessage, setCommitMessage] = useState("");
@@ -27,7 +27,7 @@ const UploadModal = ({
 
     const data = {
       commitMessage,
-      selectedFile,
+      selectedFile
     };
 
     // 파일을 FormData에 추가
@@ -40,40 +40,30 @@ const UploadModal = ({
         [
           JSON.stringify({
             commitMessage: commitMessage,
-            combination: "false",
-          }),
+            combination: "false"
+          })
         ],
         { type: "application/json" }
       )
     );
-
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`${BASE_URL}/team/${teamId.id}/file/`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      },
-      body: formData,
-    })
+    axios
+      .post(`${BASE_URL}/team/${teamId.id}/file/`, formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "multipart/form-data"
+        }
+      })
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              handleSubmit();
-            } else {
-              navigate("/");
-            }
-          });
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
         }
       })
       .then((data) => {
@@ -81,10 +71,7 @@ const UploadModal = ({
         console.log(data);
         handleUploadModalShow(false);
       })
-      .catch((error) => {
-        console.log(error);
-        alert(error.message);
-      });
+      .catch((error) => {});
   };
 
   const showErrorMessages = (jsonData) => {

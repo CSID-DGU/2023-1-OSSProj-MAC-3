@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import "./Modal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
-import handleRefreshToken from "./HandleRefreshToken";
+import axios from "../AxiosConfig";
 
 const HistoryModal = ({
   userInfo,
   teamId,
   fileId,
   historyModalShow,
-  handleHistoryModalShow,
+  handleHistoryModalShow
 }) => {
   const [fileList, setFileList] = useState([]);
   const [newFileName, setFileName] = useState("");
@@ -20,44 +20,31 @@ const HistoryModal = ({
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   console.log(historyModalShow);
+
   const fetchFileList = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    if (accessToken === null) {
-      alert("로그인이 필요합니다.");
-      navigate("/");
-    }
-    fetch(`${BASE_URL}/team/${teamId.id}/file/${fileId.id}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+    axios
+      .get(`${BASE_URL}/team/${teamId.id}/file/${fileId.id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              fetchFileList();
-            } else {
-              navigate("/");
-            }
-          });
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
         }
       })
       .then((data) => {
         setFileList(data.get_fileVersions);
       })
-      .catch((error) => {
-        console.log(error.message);
-      });
+      .catch((error) => {});
   };
 
   const showErrorMessages = (jsonData) => {
@@ -84,45 +71,33 @@ const HistoryModal = ({
   };
 
   const handleDownloadFile = async (fileVersionId, fileName) => {
-    console.log(fileId);
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(
-      `${BASE_URL}/team/${teamId.id}/fileDownload/${fileId.id}/${fileVersionId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
+    axios
+      .get(
+        `${BASE_URL}/team/${teamId.id}/fileDownload/${fileId.id}/${fileVersionId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
         }
-      }
-    )
+      )
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              handleDownloadFile(fileVersionId, fileName);
-            } else {
-              navigate("/");
-            }
-          });
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
         }
       })
       .then((data) => {
         console.log(data.s3Url);
         handleDownloadFile3(data.s3Url, fileName);
       })
-      .catch((error) => {
-        console.log(error);
-        alert(error.message);
-      });
+      .catch((error) => {});
   };
 
   return (
