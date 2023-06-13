@@ -2,8 +2,8 @@ package OSSP.demo.controller;
 
 import OSSP.demo.model.ResponseDto;
 import OSSP.demo.model.UserDto;
+import OSSP.demo.service.user.UserAuthService;
 import OSSP.demo.service.user.UserJoinService;
-import OSSP.demo.service.user.UserLoginService;
 import OSSP.demo.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class UserController {
     @Autowired
     private UserJoinService userJoinService;
     @Autowired
-    private UserLoginService userLoginService;
+    private UserAuthService userAuthService;
     @Autowired
     private UserService userService;
 
@@ -44,8 +44,18 @@ public class UserController {
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody UserDto userDto) {
         // 로그인 서비스를 통해 로그인을 시도하고, 결과를 반환
-        return userLoginService.signin(userDto);
+        return userAuthService.signin(userDto);
     }
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestBody UserDto userDto) {
+        return userAuthService.refresh(userDto.getRefreshToken());
+    }
+
+    @DeleteMapping("/signout")
+    public ResponseEntity<?> signout(@AuthenticationPrincipal String studentId) {
+        return userAuthService.signout(studentId);
+    }
+
     @GetMapping
     public ResponseEntity getUser(@AuthenticationPrincipal String studentId) {
         return userService.getUser(studentId);

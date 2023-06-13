@@ -1,0 +1,2 @@
+CREATE DATABASE IF NOT EXISTS contractb2b;
+USE contractb2b;

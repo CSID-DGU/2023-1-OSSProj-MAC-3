@@ -25,16 +25,17 @@ public class UserJoinService {
     @Autowired
     private UserRepository userRepository;
 
-    private PasswordEncoder encoder = new BCryptPasswordEncoder();
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public ResponseEntity<?> signup(UserDto.UserJoinRequestDto userDto) {
         User user = User.builder()
                 .studentId(userDto.getStudentId())
-                .password(encoder.encode(userDto.getPassword()))
+                .password(passwordEncoder.encode(userDto.getPassword()))
                 .name(userDto.getName())
                 .dept(userDto.getDept())
                 .build(); // UserDto -> User
-        User registerdUser; // 회원가입 처리 후 결과를 받음
+        User registerdUser = null; // 회원가입 처리 후 결과를 받음
         // 회원가입 처리
         try {
             registerdUser = join(user);

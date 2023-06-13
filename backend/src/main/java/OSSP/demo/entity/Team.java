@@ -1,5 +1,6 @@
 package OSSP.demo.entity;
 
+import OSSP.demo.service.security.AesEncryptor;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,7 +18,7 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
+    @Convert(converter = AesEncryptor.class)
     private String teamName;
 
     @OneToMany(mappedBy = "team")

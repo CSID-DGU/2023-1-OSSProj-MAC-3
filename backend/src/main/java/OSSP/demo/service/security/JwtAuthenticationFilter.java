@@ -1,5 +1,7 @@
 package OSSP.demo.service.security;
 
+import OSSP.demo.model.ResponseDto;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -16,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 
 // 토큰을 검증하고 SecurityContext에 저장하는 역할
 @Slf4j
@@ -30,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String token = parseBearerToken(request);
             log.info("필터가 동작합니다.");
-            if (token != null && !token.equalsIgnoreCase("null") && tokenProvider.validateTimeToken(token)) {
+            if (token != null && !token.equalsIgnoreCase("null")) {
                 String studentId = tokenProvider.validateAndGetStudentId(token); // 토큰에서 학번 추출
                 log.info("학번: {}", studentId);
                 AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -42,12 +45,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 securityContext.setAuthentication(authentication); // SecurityContext에 인증 객체 저장
                 SecurityContextHolder.setContext(securityContext); // SecurityContextHolder에 SecurityContext 저장
             }
+        } catch (ExpiredJwtException e) {
+            // 토큰이 만료된 경우 401 Unauthorized 상태 코드 반환
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰이 만료되었습니다.");
+            return;
         } catch (Exception e) {
-            logger.error("Could not set user authentication in security context", e); // 예외 발생 시 401 에러
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            // 그 외의 예외 발생 시 401 Unauthorized 상태 코드 반환
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "인증에 실패하였습니다.");
+            return;
         }
         filterChain.doFilter(request, response); // 다음 필터로 넘어감
     }
+
 
     // 헤더에서 토큰 추출
     private String parseBearerToken(HttpServletRequest request) {

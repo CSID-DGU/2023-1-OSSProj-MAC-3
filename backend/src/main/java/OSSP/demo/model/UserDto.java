@@ -15,12 +15,14 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-    private String token;
+    private String accessToken;
+    private String refreshToken;
     private Long id;
     private String studentId;
     private String password;
     private String name;
     private String dept;
+    private String expiresAt;
 
     //회원가입시 필요한 정보 검증
     @Getter

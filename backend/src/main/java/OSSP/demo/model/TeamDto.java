@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class TeamDto {
+    private String teamId;
     private String teamName;
     private List<TeamFellowDto> teamFellow;
 
