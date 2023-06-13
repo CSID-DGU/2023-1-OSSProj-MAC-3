@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import handleRefreshToken from "./HandleRefreshToken";
+import axios from "../AxiosConfig";
 
 const TeamInfo = ({ teamId, handleInviteModalShow }) => {
   const [teamInfo, setTeamInfo] = useState(null);
@@ -11,39 +11,28 @@ const TeamInfo = ({ teamId, handleInviteModalShow }) => {
 
   const fetchTeam = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`${BASE_URL}/team/${teamId.id}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+    axios
+      .get(`${BASE_URL}/team/${teamId.id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              fetchTeam();
-            } else {
-              navigate("/");
-            }
-          });
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
         }
       })
       .then((data) => {
         setTeamInfo(data);
       })
-      .catch((error) => {
-        console.log(error);
-        alert(error.message);
-      });
+      .catch((error) => {});
   };
 
   const showErrorMessages = (jsonData) => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import handleRefreshToken from "./HandleRefreshToken";
+import axios from "../AxiosConfig";
 
 const TeamList = ({ handleTeamIdFromChild }) => {
   const [userInfo, setUserInfo] = useState({});
@@ -26,33 +26,27 @@ const TeamList = ({ handleTeamIdFromChild }) => {
   const handleAddTeam = () => {
     console.log(newTeamName);
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`${BASE_URL}/team`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ teamName: newTeamName }),
-    })
+    axios
+      .post(
+        `${BASE_URL}/team`,
+        { teamName: newTeamName },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+          }
+        }
+      )
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              handleAddTeam();
-            } else {
-              navigate("/");
-            }
-          });
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
         }
       })
       .then((data) => {
@@ -61,84 +55,53 @@ const TeamList = ({ handleTeamIdFromChild }) => {
         setNewTeamName("");
         setShowInput(false);
       })
-      .catch((error) => {
-        console.log(error);
-        alert(error.message);
-      });
+      .catch((error) => {});
   };
 
   const handleDeleteTeam = (teamID) => {
     const accessToken = sessionStorage.getItem("accessToken");
     console.log(teamID);
-    fetch(`${BASE_URL}/team/${teamID}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json"
-      }
-    })
+    axios
+      .delete(`${BASE_URL}/team/${teamID}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        }
+      })
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              handleDeleteTeam(teamID);
-            } else {
-              navigate("/");
-            }
-          });
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
         }
       })
       .then((data) => {
         console.log(data);
-        // 삭제된 팀 정보를 업데이트합니다.
-        // setTeams((prevTeams) =>
-        //   prevTeams.filter((team) => team.teamID !== teamID)
-        // );
         fetchTeams();
       })
-      .catch((error) => {
-        console.log(error);
-        alert(error.message);
-      });
+      .catch((error) => {});
   };
 
   const fetchTeams = () => {
     const accessToken = sessionStorage.getItem("accessToken");
     console.log(accessToken);
-    fetch(`${BASE_URL}/team`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+    axios
+      .get(`${BASE_URL}/team`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              fetchTeams();
-            } else {
-              navigate("/");
-            }
-          });
+          throw new Error(showErrorMessages(response.data));
         }
       })
       .then((data) => {
@@ -196,7 +159,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
                     ? {
                         display: "flex",
                         alignItems: "center",
-                        backgroundColor: "#eaecf4",
+                        backgroundColor: "#eaecf4"
                       }
                     : { display: "flex", alignItems: "center" }
                 }
@@ -250,7 +213,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
             style={{
               width: "100%",
               border: "none",
-              backgroundColor: "#ccd1d9",
+              backgroundColor: "#ccd1d9"
             }}
             onClick={() => setShowInput(true)}
           >
@@ -263,7 +226,7 @@ const TeamList = ({ handleTeamIdFromChild }) => {
           style={{
             width: "100%",
             border: "none",
-            backgroundColor: "#ccd1d9",
+            backgroundColor: "#ccd1d9"
           }}
           onClick={() => setShowInput(true)}
         >

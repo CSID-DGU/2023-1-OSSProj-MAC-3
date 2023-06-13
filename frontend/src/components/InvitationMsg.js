@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import handleRefreshToken from "./HandleRefreshToken";
+import axios from "../AxiosConfig";
 
 const InvitationMsg = ({ invitationList, fetchInvitation }) => {
   const navigate = useNavigate();
@@ -8,120 +8,101 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const handleAcceptInvitation = (invitationId) => {
+    if (!window.confirm("초대를 수락합니다.")) {
+      return;
+    }
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`${BASE_URL}/team/invitation/${invitationId}/accept`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+    axios
+      .put(
+        `${BASE_URL}/team/invitation/${invitationId}/accept`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
+      )
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              handleAcceptInvitation(invitationId);
-            } else {
-              navigate("/");
-            }
-          });
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
         }
       })
       .then((data) => {
         console.log(data);
         fetchInvitation();
       })
-      .catch((error) => {
-        console.log(error);
-        alert(error.message);
-      });
+      .catch((error) => {});
   };
 
   const handleRejectInvitation = (invitationId) => {
+    if (!window.confirm("초대를 거절합니다.")) {
+      return;
+    }
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`${BASE_URL}/team/invitation/${invitationId}/reject`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+    axios
+      .put(
+        `${BASE_URL}/team/invitation/${invitationId}/reject`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
+      )
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              handleRejectInvitation(invitationId);
-            } else {
-              navigate("/");
-            }
-          });
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
         }
       })
       .then((data) => {
         console.log(data);
         fetchInvitation();
       })
-      .catch((error) => {
-        console.log(error);
-        alert(error.message);
-      });
+      .catch((error) => {});
   };
 
   const handleDeleteInvitation = (invitationId) => {
+    if (!window.confirm("초대장을 삭제합니다")) {
+      return;
+    }
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`${BASE_URL}/team/invitation/${invitationId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+    axios
+      .delete(`${BASE_URL}/team/invitation/${invitationId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              handleDeleteInvitation(invitationId);
-            } else {
-              navigate("/");
-            }
-          });
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
         }
       })
       .then((data) => {
         console.log(data);
         fetchInvitation();
       })
-      .catch((error) => {
-        console.log(error);
-        alert(error.message);
-      });
+      .catch((error) => {});
   };
 
   const showErrorMessages = (jsonData) => {
@@ -149,14 +130,14 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
                   초대하셨습니다.
                 </span>
                 <div className="btn-group">
-                  {invitation.isAccepted === false && (
+                  {invitation.isAccepted === "null" && (
                     <>
                       <button
                         className="btn btn-secondary btn-sm"
                         style={{
                           width: "50%",
                           backgroundColor: "#fc9a9d",
-                          border: "none",
+                          border: "none"
                         }}
                         role="button"
                         onClick={() => {
@@ -170,7 +151,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
                         style={{
                           width: "50%",
                           backgroundColor: "#9abbfc",
-                          border: "none",
+                          border: "none"
                         }}
                         role="button"
                         onClick={() => {
@@ -181,7 +162,37 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
                       </button>
                     </>
                   )}
-                  {invitation.isAccepted === true && (
+                  {invitation.isAccepted === "false" && (
+                    <>
+                      <button
+                        className="btn btn-secondary btn-sm"
+                        style={{
+                          width: "50%",
+                          backgroundColor: "#969696",
+                          border: "none"
+                        }}
+                        role="button"
+                        disabled
+                      >
+                        거절
+                      </button>
+                      <button
+                        className="btn btn-secondary btn-sm"
+                        style={{
+                          width: "50%",
+                          backgroundColor: "#9abbfc",
+                          border: "none"
+                        }}
+                        role="button"
+                        onClick={() => {
+                          handleDeleteInvitation(invitation.invitationId);
+                        }}
+                      >
+                        삭제
+                      </button>
+                    </>
+                  )}
+                  {invitation.isAccepted === "true" && (
                     <>
                       <button
                         className="btn btn-secondary btn-sm"
@@ -189,7 +200,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
                           width: "50%",
                           backgroundColor: "#969696",
                           border: "none",
-                          pointerEvents: "none",
+                          pointerEvents: "none"
                         }}
                         disabled
                       >
@@ -200,7 +211,7 @@ const InvitationMsg = ({ invitationList, fetchInvitation }) => {
                         style={{
                           width: "50%",
                           backgroundColor: "#9abbfc",
-                          border: "none",
+                          border: "none"
                         }}
                         role="button"
                         onClick={() => {
