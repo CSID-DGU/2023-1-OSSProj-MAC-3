@@ -1,16 +1,16 @@
 # 2023-1-OSSProj-MAC-3
 2023년 1학기 오픈소스소프트웨어 3조 (MAC) 팀입니다.
 
-## 🖥️ 데모 웹사이트
+## 🖥️ 데모 웹사이트(Demo Website)
 [http://13.209.241.70](http://13.209.241.70:3000/)
 <br><br>
 [시연영상] https://youtu.be/0JHX9DPPOrE
 
-## 프로젝트명
+## 프로젝트명(Project Name)
 
 동국대학교 LMS 내 협업 파일시스템 구축
 
-## 팀원 소개
+## 팀원 소개(Team Member)
 
 <!-- ### Front-End
 
@@ -64,21 +64,38 @@
   <img src="https://img.shields.io/badge/fontawesome-528DD7?style=for-the-badge&logo=fontawesome&logoColor=white">
 </div>
 
-## 개발 환경
+## 개발 환경(Development Environment)
+
+### OS
+- Ubuntu 22.04.1 LTS
+
+### Virtual Environment
+- Docker v24.0.2
+- Docker-Compose v2.5
 
 ### Backend
-- Spring Boot
+- Java(Corretto JDK11)
+- Spring Boot v2.7.10
 - MySQL 7.5
+- Intellij
+- Redis v3.0.504
+- Gradle v7.6.1
 
 ### Frontend
-- React 18.2.0
+- HTML5, CSS, JavaScript
+- React v18.2.0
+- BootStrap v5.2
+- Visual Studio Code v1.78.2
+
+### Storage
+- AWS
 
 
-## 프로젝트 내용
+## 프로젝트 내용(Project Description)
 
 동국대학교 LMS 내 팀 프로젝트 파일 스토리지 시스템 구축을 통해 파일 이력 관리를 가능하게 하여 협업 능률을 향상시킨다.
 
-### 사용한 오픈소스 코드 및 개선 사항
+### 사용한 오픈소스 코드 및 개선 사항(Utilized Open Source Code and Modifications)
 - [UI: 대시보드 템플릿](https://github.com/startbootstrap/startbootstrap-sb-admin-2)
   - 디자인 수정 및 리액트 도입
 - [인증 처리: 게시판 프로젝트](https://github.com/hojunnnnn/board)
@@ -97,29 +114,29 @@
   - 다운로드와 각 버전별 이력관리 추가
   - 수정메세지 추가
 
-### 웹사이트 소개 
-**1. 회원가입**
+### 웹사이트 소개(About Our Website) 
+**1. 회원가입(Join)**
 
 <img src="https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/cc101335-35ac-45f1-8e69-c292c0b5a206" width="1200" height="530">
 - 이름, 학번, 학과, 비밀번호를 입력해 회원가입.
 <br>
 <br>
 
-**2. 로그인**
+**2. 로그인(Login)**
 
 <img src="https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/8ba156a5-e1ef-40f0-a076-721907b11efa" width="1200" height="530">
 - 학번과 비밀번호를 입력해 로그인.
 <br>
 <br>
 
-**3. 과목 선택**
+**3. 과목 선택(Suject select)**
 
 <img src="https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/5d588138-d218-490c-8fb0-2a219bc63291" width="1200" height="530">
 - '내 강의실'에서 원하는 과목을 선택해 해당 과목 팀 활동 페이지로 이동.
 <br>
 <br>
 
-**4. 팀활동 페이지**
+**4. 팀활동 페이지(Main page)**
 
 <img src="https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/e1885558-b80c-4c4a-a97a-35dadee7575e" width="1200" height="530">
 - Navigation: 팀 활동 페이지 버튼 클릭 시 드롭다운 메뉴로 팀 선택 가능
@@ -130,7 +147,7 @@
 <br>
 <br>
 
-**5. 팀 생성 및 삭제**
+**5. 팀 생성 및 삭제(Team generate and delete)**
 
 <img src="https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/a54ff1c3-2630-483e-b6e2-34643e56513e" width="1200" height="530">
 - 팀명 입력 후 우측 +버튼으로 팀 생성. 
@@ -138,7 +155,7 @@
 <br>
 <br>
 
-**6. 파일 업로드(수정) 모달**
+**6. 파일 업로드(수정) 모달(File upload modal)**
 
 <img src="https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/b4b54010-5d9b-403b-a111-3da097514ad5" width="1200" height="530">
 - 파일 스토리지 우측 상단 +버튼을 클릭하면 나타나는 위 파일 업로드 모달로 파일 선택, 수정사항 입력해 파일 업로드.
@@ -146,14 +163,14 @@
 <br>
 <br>
 
-**7. 파일 이력 조회 모달**
+**7. 파일 이력 조회 모달(File history lookup modal)**
 
 <img src="https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/b3f0032f-654d-4c0b-9db9-9bae31ebf9f1" width="1200" height="530">
 - 이력 조회 버튼 클릭 시 위 모달로 파일 수정 이력 조회. 우측 다운로드 버튼으로 이전 버전 파일 저장 가능.
 <br>
 <br>
 
-**8. 팀원 초대**
+**8. 팀원 초대(Member invitation)**
 
 <img src="https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/b33dc3ee-4f3e-4c57-8975-0f50a5ef4bc5" width="1200" height="530">
 - 팀 구성 정보 섹션의 우측 상단 +버튼을 클릭하면 나타나는 위 팀원 초대 모달로 팀원 선택, 초대 버튼 눌러 초대 메시지 발송.
@@ -165,7 +182,7 @@
 <br>
 <br>
 
-**9. 공지사항**
+**9. 공지사항(Notice)**
 
 <img src="https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/4e1dc9d2-2a73-40c3-9fdc-0ee40bccef50" width="400" height="200">
 <br>
@@ -174,7 +191,7 @@
 <br>
 <br>
 
-**에러 발생 시**
+**에러 발생 시(Error handling)**
 
 <img src="https://github.com/CSID-DGU/2023-1-OSSProj-MAC-3/assets/87561425/ec28cd84-e325-4398-8790-3ace73b9b5c3" width="1200" height="500">
 -에러 발생 시 에러 원인을 경고창으로 알림.
