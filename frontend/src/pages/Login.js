@@ -1,19 +1,13 @@
 import "../bootstrap.css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "../AxiosConfig";
 
 const Login = () => {
   const [studentId, setStudentId] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const refreshToken = localStorage.getItem("refreshToken");
-    if (refreshToken) {
-      navigate("/select"); // 토큰이 없을 경우 리디렉션할 경로
-    }
-  }, []);
 
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -28,27 +22,22 @@ const Login = () => {
     const data = {
       studentId,
       password,
-      rememberMe,
+      rememberMe
     };
-    
-    // const accessToken = sessionStorage.getItem("accessToken");
-    // console.log("before login token:\n" + accessToken);
-    fetch(`${BASE_URL}/user/signin`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
+
+    axios
+      .post(`${BASE_URL}/user/signin`, data)
       .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지 출력
-            // 에러를 throw 하여 다음 catch 블록으로 이동
-            throw new Error(showErrorMessages(jsonData));
-          });
+        if (response.status === 200) {
+          console.log(200);
+          return response.data;
+        }
+        if (response.status === 400) {
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
         }
       })
       .then((data) => {
@@ -57,15 +46,7 @@ const Login = () => {
         localStorage.setItem("refreshToken", data.refreshToken);
         goSelect();
       })
-      .catch((error) => {
-        alert(error.message);
-      });
-  };
-
-  const showErrorMessages = (jsonData) => {
-    const errorMessages = Object.values(jsonData.error).join("\n");
-    // 메시지들을 결합하여 alert 창에 보여줍니다.
-    return errorMessages;
+      .catch((error) => {});
   };
 
   const movePage = useNavigate();

@@ -12,7 +12,7 @@ import VersionUploadModal from "../components/VersionUploadModal.js";
 import FileHistory from "../components/FileHistoryModal.js";
 import InvitationNav from "../components/InvitationNav.js";
 import DropdownButton from "../components/DropdownButton.js";
-import handleRefreshToken from "../components/HandleRefreshToken.js";
+import axios from "../AxiosConfig";
 
 const Team = () => {
   const [userInfo, setUserInfo] = useState({});
@@ -30,14 +30,14 @@ const Team = () => {
 
   useEffect(() => {
     if (!isLogin) {
-      navigate("/");
+      navigate("/login");
     }
   }, [isLogin]);
 
   useEffect(() => {
     const refreshToken = localStorage.getItem("refreshToken");
     if (!refreshToken) {
-      navigate("/"); // 토큰이 없을 경우 리디렉션할 경로
+      navigate("/login"); // 토큰이 없을 경우 리디렉션할 경로
     }
   }, []);
 
@@ -80,44 +80,32 @@ const Team = () => {
     setFileId(data);
   };
 
-
   const getUserInfo = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`${BASE_URL}/user`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+    axios
+      .get(`${BASE_URL}/user`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
-        }
-        if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              getUserInfo();
-            } else {
-              sessionStorage.removeItem("accessToken");
-              localStorage.removeItem("refreshToken");
-              setIsLogin(false);
-            }
-          });
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
+        } else {
+          navigate("/login");
         }
       })
       .then((data) => {
         setUserInfo(data);
       })
-      .catch((error) => {
-        console.log(error);
-        alert(error.message);
-      });
+      .catch((error) => {});
   };
 
   useEffect(() => {
@@ -129,33 +117,29 @@ const Team = () => {
     // 메시지들을 결합하여 alert 창에 보여줍니다.
     return errorMessages;
   };
+
   const handleLogout = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch("http://localhost:8080/user/signout", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+    axios
+      .delete(`${BASE_URL}/user/signout`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
       .then((response) => {
         if (response.status === 200) {
           sessionStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
           alert("로그아웃 되었습니다.");
-          return;
+          navigate("/login");
         }
         if (response.status === 400 || response.status === 403) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
+          throw new Error();
         }
       })
       .catch((error) => {
         console.log(error);
-        setIsLogin(false);
       });
     navigate("/login");
   };

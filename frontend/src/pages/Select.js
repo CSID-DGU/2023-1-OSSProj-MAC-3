@@ -1,67 +1,55 @@
 import "../bootstrap.css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import handleRefreshToken from "../components/HandleRefreshToken";
+import axios from "../AxiosConfig";
 
 function Select() {
   const [username, setUsername] = useState("");
   const [studentId, setStudentId] = useState("");
-  const [isLogin, setIsLogin] = useState(true);
+  // const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-  useEffect(() => {
-    if (!isLogin) {
-      navigate("/");
-    }
-  }, [isLogin]);
+  // useEffect(() => {
+  //   if (!isLogin) {
+  //     navigate("/login");
+  //   }
+  // }, [isLogin]);
 
-  useEffect(() => {
-    const refreshToken = localStorage.getItem("refreshToken");
-    if (!refreshToken) {
-      navigate("/"); // 토큰이 없을 경우 리디렉션할 경로
-    }
-  }, []);
-
-  const errorMessages = (jsonData) => {
-    const errorMessages = Object.values(jsonData.error).join("\n");
-    return errorMessages;
-  };
+  // useEffect(() => {
+  //   const refreshToken = localStorage.getItem("refreshToken");
+  //   if (!refreshToken) {
+  //     navigate("/login"); // 토큰이 없을 경우 리디렉션할 경로
+  //   }
+  // }, []);
 
   const fetchUserInfo = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch(`${BASE_URL}/user`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+    axios
+      .get(`${BASE_URL}/user`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
       .then((response) => {
         if (response.status === 200) {
-          return response.json();
+          return response.data;
         }
         if (response.status === 400) {
-          return response.json().then((jsonData) => {
-            throw new Error(errorMessages(jsonData));
-          });
-        } else if (response.status === 401) {
-          handleRefreshToken().then((result) => {
-            if (result) {
-              fetchUserInfo();
-            } else {
-              setIsLogin(false);
-              sessionStorage.removeItem("accessToken");
-              localStorage.removeItem("refreshToken");
-            }
-          });
+          console.log(400);
+          const responseData = response.data;
+          const errorMessages = Object.values(responseData.error).join("\n");
+          alert(errorMessages);
+          throw new Error();
+        } else {
+          navigate("/login");
         }
       })
       .then((data) => {
         setUsername(data.name);
         setStudentId(data.studentId);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   useEffect(() => {
@@ -70,39 +58,28 @@ function Select() {
 
   const handleLogout = () => {
     const accessToken = sessionStorage.getItem("accessToken");
-    fetch("http://localhost:8080/user/signout", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+    axios
+      .delete(`${BASE_URL}/user/signout`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
       .then((response) => {
         if (response.status === 200) {
           sessionStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
           alert("로그아웃 되었습니다.");
-          return;
+          navigate("/login");
         }
         if (response.status === 400 || response.status === 403) {
-          return response.json().then((jsonData) => {
-            // `showErrorMessages` 함수를 호출하여 메시지를 보여줍니다.
-            // 에러를 throw 하여 다음 catch 블록으로 이동합니다.
-            throw new Error(showErrorMessages(jsonData));
-          });
+          throw new Error();
         }
       })
       .catch((error) => {
         console.log(error);
-        setIsLogin(false);
       });
     navigate("/login");
-  };
-
-  const showErrorMessages = (jsonData) => {
-    const errorMessages = Object.values(jsonData.error).join("\n");
-    // 메시지들을 결합하여 alert 창에 보여줍니다.
-    return errorMessages;
   };
 
   const goTeam = () => {
@@ -141,7 +118,6 @@ function Select() {
                       </span>
                       {/* <!--마이페이지 버튼--> */}
                       <a
-                        href="index.html"
                         className="btn btn-primary btn-user"
                         style={{ width: "55%" }}
                       >
